@@ -129,6 +129,7 @@ function Manage() {
   const approve = useServerFn(setApproval);
   const upload = useServerFn(uploadPhoto);
   const removePhoto = useServerFn(deletePhoto);
+  const saveExpected = useServerFn(setExpectedGuests);
   const refresh = () => router.invalidate();
 
   // Origin-i lexohet vetëm në shfletues (useEffect) që SSR dhe klienti të
@@ -143,6 +144,31 @@ function Manage() {
   const pending = by("pending");
   const rejectedByCouple = d.rsvps.filter((r) => r.attending && r.approval === "rejected");
   const declined = d.rsvps.filter((r) => !r.attending);
+
+  // Mysafirë total vs të mbetur: totali i vendosur nga çifti minus personat
+  // që vijnë (aprovuar + në pritje; refuzuar dhe "nuk vjen" nuk numërohen).
+  const expected = inv.expected_guests;
+  const comingPersons = d.rsvps
+    .filter((r) => r.attending && r.approval !== "rejected")
+    .reduce((s, r) => s + Math.max(r.guest_count, 1), 0);
+  const remaining = expected != null ? Math.max(expected - comingPersons, 0) : null;
+  const [expectedInput, setExpectedInput] = useState(
+    expected != null ? String(expected) : "",
+  );
+  const saveExpectedCount = async () => {
+    const n = Number(expectedInput);
+    if (!Number.isInteger(n) || n < 0 || n > 2000) {
+      toast.error("Shkruani një numër nga 0 deri 2000.");
+      return;
+    }
+    try {
+      await saveExpected({ data: { token, expected_guests: n } });
+      toast.success("Numri u ruajt.");
+      refresh();
+    } catch {
+      toast.error("Nuk u ruajt. Provoni përsëri.");
+    }
+  };
 
   const shown = d.rsvps.filter(
     (r) =>
