@@ -412,7 +412,11 @@
   .home-footer > span { order: 3; width: 100%; }
   .preview-nav { padding: 10px 8px; grid-template-columns: minmax(0,1fr) auto; gap: 4px; }
   .preview-nav > span { display: none; }
-  .preview-nav a { font-size: 11px; padding-inline: 10px; min-height: 44px; }
+  .preview-nav a, .preview-nav button { font-size: 11px; padding-inline: 10px; min-height: 44px; }
+  .preview-nav > div { gap: 4px; }
+}
+@media (max-width: 400px) {
+  .preview-nav > div a { display: none; }
 }
 @media (max-width: 360px) {
   .home-hero h1 { font-size: 42px; }
