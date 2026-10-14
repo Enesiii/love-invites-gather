@@ -18,7 +18,10 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";
-import { getManageData } from "@/lib/invitations.functions";
+import { deleteGuest, getManageData } from "@/lib/invitations.functions";
+import { GuestDialog } from "@/components/GuestDialog";
+import { useServerFn } from "@tanstack/react-start";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/menaxho/$token")({
   loader: async ({ params }) => {
@@ -51,6 +54,19 @@ function Manage() {
   const { invitation: inv } = d;
   const [filter, setFilter] = useState<Filter>("all");
   const [q, setQ] = useState("");
+  const { token } = Route.useParams();
+  const remove = useServerFn(deleteGuest);
+  const refresh = () => router.invalidate();
+  const onDelete = async (id: string, name: string) => {
+    if (!window.confirm(`Ta heqim ${name} nga lista?`)) return;
+    try {
+      await remove({ data: { token, id } });
+      toast.success("Mysafiri u hoq.");
+      refresh();
+    } catch {
+      toast.error("Nuk u hoq. Provoni përsëri.");
+    }
+  };
   const link =
     typeof window !== "undefined"
       ? `${window.location.origin}/ftesa/${inv.id}`
@@ -190,7 +206,17 @@ function Manage() {
         <section className="rounded-md border border-border bg-card p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="font-display text-2xl">Lista e mysafirëve</h2>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <GuestDialog
+                token={token}
+                onSaved={refresh}
+                trigger={
+                  <Button size="sm">
+                    <Plus className="mr-1.5 h-4 w-4" />
+                    Shto mysafir
+                  </Button>
+                }
+              />
               <Button size="sm" variant="outline" onClick={() => router.invalidate()}>
                 <RefreshCw className="mr-1.5 h-4 w-4" />
                 Rifresko
@@ -242,6 +268,30 @@ function Manage() {
                         ? `Vjen · ${r.guest_count} ${r.guest_count === 1 ? "person" : "persona"}`
                         : "Nuk vjen"}
                     </span>
+                    <div className="flex w-full justify-end gap-1 sm:w-auto">
+                      <GuestDialog
+                        token={token}
+                        guest={r}
+                        onSaved={refresh}
+                        trigger={
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            aria-label={`Modifiko ${r.guest_name}`}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        aria-label={`Hiq ${r.guest_name}`}
+                        onClick={() => onDelete(r.id, r.guest_name)}
+                      >
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {new Date(r.created_at).toLocaleString("sq")}
