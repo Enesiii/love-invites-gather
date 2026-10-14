@@ -15,3 +15,4 @@
 - Guest presentation is gated by a client-side envelope opening, with optional user-initiated Web Audio music and venue directions derived from existing invitation fields; this preserves the no-account RSVP data model without adding backend presentation settings.
 - Scope homepage theme overrides to `.home-page` so presentation changes do not alter existing guest invitation palettes.
 - Keep gallery samples in the browser-safe invitation collection module and preview them at `/preview/$style` without creating database rows; pass the selected theme to the existing creator through validated optional search parameters.
+- Order requests from the preview page are stored in `order_requests` (RLS on, service_role only) via `submitOrderRequest` in `src/lib/orders.functions.ts`; no payment or pricing in-app. Why: keeps the no-account model and avoids inventing business terms.
