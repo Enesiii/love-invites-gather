@@ -27,8 +27,8 @@ export const submitOrderRequest = createServerFn({ method: "POST" })
   });
 
 function checkKey(key: string) {
-  const expected = process.env["ADMIN_KEY"];
-  if (!expected || expected.length < 8 || key !== expected) {
+  const expected = process.env["ADMIN_KEY"]?.trim();
+  if (!expected || expected.length < 8 || key.trim() !== expected) {
     throw new Error("Kodi i administrimit nuk është i saktë.");
   }
 }
