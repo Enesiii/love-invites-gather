@@ -14,6 +14,7 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SupportButton } from "@/components/SupportButton";
 import {
   Accordion,
   AccordionContent,
@@ -295,6 +296,7 @@ function Index() {
           <Heart className="h-4 w-4 text-primary" /> Ftesa Dasme.
         </Link>
         <span>Me dashuri, në Kosovë.</span>
+        <SupportButton variant="ghost" className="home-support" />
         <Button
           variant="ghost"
           onClick={() =>

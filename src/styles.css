@@ -208,6 +208,10 @@
 .music-control svg { flex-shrink: 0; }
 .maps-control { min-height: 44px; height: auto; padding: 10px 12px; touch-action: manipulation; }
 .maps-control span { white-space: normal; overflow-wrap: anywhere; }
+.support-control { min-height: 44px; height: auto; padding: 10px 14px; font-size: 13px; touch-action: manipulation; border-color: var(--accent); }
+.support-control span { white-space: normal; overflow-wrap: anywhere; }
+.invitation-support { display: flex; flex-direction: column; align-items: center; gap: 8px; padding-bottom: 8px; text-align: center; color: var(--muted-foreground); font-size: 12px; }
+.home-support { color: var(--muted-foreground); font-size: 12px; min-height: 40px; }
 .invitation-opening { min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; overflow: hidden; transition: opacity .4s ease 1s; }
 .opening-dedication { font-size: 13px; color: var(--muted-foreground); }
 .opening-names { margin-top: 16px; max-width: 580px; text-align: center; font-size: 44px; line-height: 1.12; overflow-wrap: anywhere; }
