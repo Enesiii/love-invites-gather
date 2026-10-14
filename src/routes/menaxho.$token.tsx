@@ -213,7 +213,16 @@ function Manage() {
         /* cancelled */
       }
     }
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noreferrer");
+    const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    try {
+      if (window.self !== window.top) {
+        window.location.href = waUrl;
+      } else {
+        window.open(waUrl, "_blank", "noreferrer");
+      }
+    } catch {
+      window.open(waUrl, "_blank", "noreferrer");
+    }
   };
   const exportCsv = () => {
     const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;

@@ -1,4 +1,5 @@
 import { CalendarDays, Clock, Heart, MapPin, Navigation } from "lucide-react";
+import { toast } from "sonner";
 import { formatDate } from "@/lib/format-date";
 import { Button } from "@/components/ui/button";
 import botanical from "@/assets/wedding-botanical.png";
@@ -15,6 +16,24 @@ export type InvitationView = {
 };
 
 export function InvitationCard({ inv, showDirections = false }: { inv: InvitationView; showDirections?: boolean }) {
+  const mapsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    [inv.venue, inv.address].filter(Boolean).join(", "),
+  )}`;
+  // Brenda parapamjes (iframe), hapja e faqeve të reja mund të bllokohet —
+  // provojmë tab të ri dhe, nëse bllokohet, kërkojmë hapjen jashtë parapamjes.
+  function handleMapsClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    try {
+      if (window.self !== window.top) {
+        e.preventDefault();
+        const opened = window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
+        if (!opened) {
+          toast.info("Parapamja nuk mund të hapë Google Maps. Hapni ftesën me linkun e ndarë (p.sh. në WhatsApp) dhe butoni do të funksionojë.");
+        }
+      }
+    } catch {
+      /* default behavior */
+    }
+  }
   return (
     <div className={`theme-${inv.theme}`}>
       <div className="luxury-invitation rounded-sm border border-border bg-card p-3 shadow-[var(--shadow-soft)]">
@@ -48,7 +67,7 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
           </div>
           {showDirections && inv.venue.trim() ? (
             <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
-              <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent([inv.venue, inv.address].filter(Boolean).join(", "))}`} target="_blank" rel="noopener noreferrer">
+              <a href={mapsHref} target="_blank" rel="noopener noreferrer" onClick={handleMapsClick}>
                 <Navigation className="h-4 w-4 shrink-0" /> <span>Navigo në Google Maps</span>
               </a>
             </Button>
