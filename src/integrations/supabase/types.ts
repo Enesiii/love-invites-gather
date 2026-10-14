@@ -49,6 +49,7 @@ export type Database = {
           created_at: string
           event_date: string
           event_time: string
+          expected_guests: number | null
           id: string
           manage_token: string
           message: string | null
@@ -63,6 +64,7 @@ export type Database = {
           created_at?: string
           event_date: string
           event_time?: string
+          expected_guests?: number | null
           id?: string
           manage_token?: string
           message?: string | null
@@ -77,6 +79,7 @@ export type Database = {
           created_at?: string
           event_date?: string
           event_time?: string
+          expected_guests?: number | null
           id?: string
           manage_token?: string
           message?: string | null

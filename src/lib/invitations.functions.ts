@@ -91,7 +91,7 @@ export const getManageData = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme")
+      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests")
       .eq("manage_token", data.token)
       .maybeSingle();
     if (!inv) return null;
@@ -202,6 +202,28 @@ export const setApproval = createServerFn({ method: "POST" })
       .eq("id", data.id)
       .eq("invitation_id", invitationId);
     if (error) throw new Error("Statusi nuk u ndryshua.");
+    return { ok: true };
+  });
+
+export const setExpectedGuests = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().uuid(),
+        expected_guests: z.number().int().min(0).max(2000),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { error } = await supabaseAdmin
+      .from("invitations")
+      .update({ expected_guests: data.expected_guests })
+      .eq("id", invitationId);
+    if (error) {
+      console.error("setExpectedGuests failed", error);
+      throw new Error("Numri nuk u ruajt.");
+    }
     return { ok: true };
   });
 

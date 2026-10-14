@@ -42,6 +42,7 @@ import {
   deletePhoto,
   getManageData,
   setApproval,
+  setExpectedGuests,
   uploadPhoto,
 } from "@/lib/invitations.functions";
 import { GuestDialog } from "@/components/GuestDialog";
@@ -128,6 +129,7 @@ function Manage() {
   const approve = useServerFn(setApproval);
   const upload = useServerFn(uploadPhoto);
   const removePhoto = useServerFn(deletePhoto);
+  const saveExpected = useServerFn(setExpectedGuests);
   const refresh = () => router.invalidate();
 
   // Origin-i lexohet vetëm në shfletues (useEffect) që SSR dhe klienti të
@@ -142,6 +144,31 @@ function Manage() {
   const pending = by("pending");
   const rejectedByCouple = d.rsvps.filter((r) => r.attending && r.approval === "rejected");
   const declined = d.rsvps.filter((r) => !r.attending);
+
+  // Mysafirë total vs të mbetur: totali i vendosur nga çifti minus personat
+  // që vijnë (aprovuar + në pritje; refuzuar dhe "nuk vjen" nuk numërohen).
+  const expected = inv.expected_guests;
+  const comingPersons = d.rsvps
+    .filter((r) => r.attending && r.approval !== "rejected")
+    .reduce((s, r) => s + Math.max(r.guest_count, 1), 0);
+  const remaining = expected != null ? Math.max(expected - comingPersons, 0) : null;
+  const [expectedInput, setExpectedInput] = useState(
+    expected != null ? String(expected) : "",
+  );
+  const saveExpectedCount = async () => {
+    const n = Number(expectedInput);
+    if (!Number.isInteger(n) || n < 0 || n > 2000) {
+      toast.error("Shkruani një numër nga 0 deri 2000.");
+      return;
+    }
+    try {
+      await saveExpected({ data: { token, expected_guests: n } });
+      toast.success("Numri u ruajt.");
+      refresh();
+    } catch {
+      toast.error("Nuk u ruajt. Provoni përsëri.");
+    }
+  };
 
   const shown = d.rsvps.filter(
     (r) =>
@@ -431,6 +458,41 @@ function Manage() {
                 </div>
               </div>
             ))}
+          </section>
+
+          <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <h2 className="flex items-center gap-2 text-sm font-semibold">
+                  <Users className="h-4 w-4" /> Musafirë total
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Sa mysafirë pritni gjithsej. Numri i mbetur zvogëlohet me secilin që shtohet.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  max={2000}
+                  value={expectedInput}
+                  onChange={(e) => setExpectedInput(e.target.value)}
+                  placeholder="p.sh. 250"
+                  aria-label="Numri total i mysafirëve"
+                  className="w-28 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+                <Button size="sm" onClick={saveExpectedCount}>
+                  Ruaj
+                </Button>
+                {remaining != null ? (
+                  <span className="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-success">
+                    Të mbetur: <strong>{remaining}</strong>
+                  </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground">Vendosni totalin</span>
+                )}
+              </div>
+            </div>
           </section>
 
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
