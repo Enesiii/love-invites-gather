@@ -68,6 +68,7 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
               {inv.address ? <span className="text-muted-foreground">· {inv.address}</span> : null}
             </p>
           </div>
+          {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
           {showDirections && inv.venue.trim() ? (
             <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
               <a href={mapsHref} target="_blank" rel="noopener noreferrer" onClick={handleMapsClick}>
