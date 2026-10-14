@@ -48,8 +48,14 @@ function InvitePage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim()) return toast.error("Shkruani emrin tuaj.");
-    if (attending === null) return toast.error("Zgjidhni nëse do të vini.");
+    if (!name.trim()) {
+      toast.error("Shkruani emrin tuaj.");
+      return;
+    }
+    if (attending === null) {
+      toast.error("Zgjidhni nëse do të vini.");
+      return;
+    }
     setBusy(true);
     try {
       await submit({
