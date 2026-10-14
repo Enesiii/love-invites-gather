@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
+import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpening";
+import { Heart } from "lucide-react";
 import { getInvitation, submitRsvp } from "@/lib/invitations.functions";
 
 export const Route = createFileRoute("/ftesa/$id")({
@@ -45,6 +47,7 @@ function InvitePage() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<boolean | null>(null);
+  const [opened, setOpened] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -70,11 +73,14 @@ function InvitePage() {
   }
 
   return (
-    <div className={`theme-${inv.theme} min-h-screen`}>
-      <main className="mx-auto max-w-xl space-y-8 px-6 py-12">
-        <InvitationCard inv={inv} />
-        <section className="rounded-sm border border-border bg-card p-6 text-card-foreground">
-          <h2 className="font-display text-3xl">RSVP</h2>
+    <div className={`theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
+      {!opened ? <InvitationOpening inv={inv} onOpen={() => setOpened(true)} /> : (
+      <main className="invitation-reveal mx-auto max-w-xl space-y-8 px-4 pb-14 pt-6 sm:px-6">
+        <div className="flex justify-center"><InvitationMusic /></div>
+        <InvitationCard inv={inv} showDirections />
+        <section className="rsvp-section px-3 py-8 text-card-foreground sm:px-6">
+          <Heart className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
+          <h2 className="font-display text-center text-4xl">A do të jeni me ne?</h2>
           {done !== null ? (
             <p className="mt-4 text-muted-foreground">
               {done
@@ -112,13 +118,14 @@ function InvitePage() {
                 <Label htmlFor="note">Mesazh (opsional)</Label>
                 <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2} />
               </div>
-              <Button type="submit" disabled={busy} className="w-full">
+          <Button type="submit" disabled={busy} className="w-full">
                 {busy ? "Duke dërguar…" : "Dërgo përgjigjen"}
               </Button>
             </form>
           )}
         </section>
       </main>
+      )}
     </div>
   );
 }

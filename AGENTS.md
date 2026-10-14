@@ -12,3 +12,4 @@
 ## Wedding invitations
 - `invitations` and `rsvps` tables have RLS on with no anon/authenticated policies; all access goes through server functions in `src/lib/invitations.functions.ts` using the admin client loaded inside handlers. Why: no accounts, so the secret `manage_token` must never be readable via the Data API.
 - Owners view responses at `/menaxho/$token` (token = bearer secret); guests use public `/ftesa/$id`.
+- Guest presentation is gated by a client-side envelope opening, with optional user-initiated Web Audio music and venue directions derived from existing invitation fields; this preserves the no-account RSVP data model without adding backend presentation settings.

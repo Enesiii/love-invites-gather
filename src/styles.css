@@ -183,3 +183,37 @@
     font-variant-numeric: lining-nums;
   }
 }
+
+/* Luxury stationery uses each invitation's existing semantic theme. */
+.luxury-invitation { position: relative; overflow: hidden; }
+.invitation-inner { position: relative; z-index: 1; }
+.invitation-botanical { position: absolute; width: 55%; height: auto; pointer-events: none; z-index: 0; opacity: .75; }
+.botanical-top { top: -1%; left: -1%; }
+.botanical-bottom { right: -1%; bottom: -1%; transform: rotate(180deg); }
+.invitation-couple, .invitation-message { overflow-wrap: anywhere; }
+.invitation-divider { display: flex; align-items: center; justify-content: center; gap: 14px; width: 120px; color: var(--accent); }
+.invitation-divider::before, .invitation-divider::after { content: ""; height: 1px; flex: 1; background: var(--accent); }
+.guest-invitation { background-image: radial-gradient(var(--border) .6px, transparent .6px); background-size: 9px 9px; }
+.rsvp-section { border-top: 1px solid var(--accent); }
+.music-control { border-color: var(--accent); background: var(--card); font-size: 12px; height: 38px; }
+.invitation-opening { min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; overflow: hidden; transition: opacity .4s ease 1s; }
+.opening-dedication { font-size: 13px; color: var(--muted-foreground); }
+.opening-names { margin-top: 16px; max-width: 580px; text-align: center; font-size: 44px; line-height: 1.12; overflow-wrap: anywhere; }
+.opening-names span { color: var(--primary); font-style: italic; }
+.envelope { position: relative; width: min(100%, 400px); aspect-ratio: 1.5; margin: 90px 0 40px; background: var(--muted); border: 1px solid var(--accent); perspective: 1000px; box-shadow: var(--shadow-soft); }
+.envelope-letter { position: absolute; inset: 8% 6%; background: var(--card); color: var(--primary); text-align: center; padding-top: 30px; border: 1px solid var(--accent); transition: transform .8s ease .5s; }
+.envelope-pocket { position: absolute; inset: 0; z-index: 3; background: var(--secondary); clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%); }
+.envelope-flap { position: absolute; inset: 0; z-index: 4; background: var(--muted); clip-path: polygon(0 0, 100% 0, 50% 55%); transform-origin: top; transition: transform .7s ease, z-index 0s .35s; backface-visibility: hidden; }
+.envelope-seal { position: absolute; z-index: 5; top: 47%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--primary); color: var(--primary-foreground); border: 3px double var(--accent); box-shadow: var(--shadow-soft); transition: opacity .25s; }
+.opening-button { border-color: var(--accent); background: var(--card); min-width: 190px; }
+.is-opening .envelope-flap { transform: rotateX(180deg); z-index: 0; }
+.is-opening .envelope-seal { opacity: 0; }
+.is-opening .envelope-letter { transform: translateY(-45%); }
+.is-opening { opacity: 0; }
+.invitation-reveal { animation: invitation-reveal .9s ease both; }
+@keyframes invitation-reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 480px) { .opening-names { font-size: 36px; } .envelope { margin-top: 70px; } }
+@media (prefers-reduced-motion: reduce) {
+  .invitation-opening, .envelope-flap, .envelope-letter, .envelope-seal { transition: none; }
+  .invitation-reveal { animation: none; }
+}
