@@ -88,19 +88,32 @@ export const getManageData = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue")
+      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme")
       .eq("manage_token", data.token)
       .maybeSingle();
     if (!inv) return null;
     const { data: rsvps } = await supabaseAdmin
       .from("rsvps")
-      .select("id, guest_name, attending, guest_count, note, created_at")
+      .select("id, guest_name, attending, guest_count, note, created_at, approval")
       .eq("invitation_id", inv.id)
       .order("created_at", { ascending: false });
     const list = rsvps ?? [];
+    const { data: photoRows } = await supabaseAdmin
+      .from("event_photos")
+      .select("id, path, created_at")
+      .eq("invitation_id", inv.id)
+      .order("created_at", { ascending: false });
+    const photos: { id: string; url: string }[] = [];
+    for (const p of photoRows ?? []) {
+      const { data: s } = await supabaseAdmin.storage
+        .from("event-photos")
+        .createSignedUrl(p.path, 3600);
+      if (s?.signedUrl) photos.push({ id: p.id, url: s.signedUrl });
+    }
     return {
       invitation: inv,
       rsvps: list,
+      photos,
       attendingGuests: list.filter((r) => r.attending).reduce((s, r) => s + r.guest_count, 0),
       attendingResponses: list.filter((r) => r.attending).length,
       declined: list.filter((r) => !r.attending).length,
@@ -136,6 +149,7 @@ export const saveGuest = createServerFn({ method: "POST" })
       attending: data.attending,
       guest_count: data.attending ? data.guest_count : 0,
       note: data.note || null,
+      approval: data.attending ? "approved" : "pending",
     };
     const { error } = data.id
       ? await supabaseAdmin
@@ -163,5 +177,83 @@ export const deleteGuest = createServerFn({ method: "POST" })
       .eq("id", data.id)
       .eq("invitation_id", invitationId);
     if (error) throw new Error("Mysafiri nuk u hoq.");
+    return { ok: true };
+  });
+
+export const setApproval = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().uuid(),
+        id: z.string().uuid(),
+        approval: z.enum(["pending", "approved", "rejected"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { error } = await supabaseAdmin
+      .from("rsvps")
+      .update({ approval: data.approval })
+      .eq("id", data.id)
+      .eq("invitation_id", invitationId);
+    if (error) throw new Error("Statusi nuk u ndryshua.");
+    return { ok: true };
+  });
+
+export const updateInvitation = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    createSchema.extend({ token: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { token: _t, ...rest } = data;
+    const { error } = await supabaseAdmin
+      .from("invitations")
+      .update({ ...rest, address: rest.address || null, message: rest.message || null })
+      .eq("id", invitationId);
+    if (error) throw new Error("Ngjarja nuk u përditësua.");
+    return { ok: true };
+  });
+
+const MAX_PHOTO = 6 * 1024 * 1024;
+export const uploadPhoto = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().uuid(),
+        type: z.enum(["image/jpeg", "image/png", "image/webp"]),
+        base64: z.string().min(10).max(Math.ceil((MAX_PHOTO * 4) / 3) + 8),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const bin = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    const ext = data.type.split("/")[1];
+    const path = `${invitationId}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabaseAdmin.storage
+      .from("event-photos")
+      .upload(path, bin, { contentType: data.type });
+    if (error) throw new Error("Fotoja nuk u ngarkua.");
+    await supabaseAdmin.from("event_photos").insert({ invitation_id: invitationId, path });
+    return { ok: true };
+  });
+
+export const deletePhoto = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string().uuid(), id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { data: row } = await supabaseAdmin
+      .from("event_photos")
+      .select("path")
+      .eq("id", data.id)
+      .eq("invitation_id", invitationId)
+      .maybeSingle();
+    if (!row) throw new Error("Fotoja nuk u gjet.");
+    await supabaseAdmin.storage.from("event-photos").remove([row.path]);
+    await supabaseAdmin.from("event_photos").delete().eq("id", data.id);
     return { ok: true };
   });

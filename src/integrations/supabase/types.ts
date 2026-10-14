@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      event_photos: {
+        Row: {
+          created_at: string
+          id: string
+          invitation_id: string
+          path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invitation_id: string
+          path: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invitation_id?: string
+          path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_photos_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invitations: {
         Row: {
           address: string | null
@@ -97,6 +126,7 @@ export type Database = {
       }
       rsvps: {
         Row: {
+          approval: string
           attending: boolean
           created_at: string
           guest_count: number
@@ -106,6 +136,7 @@ export type Database = {
           note: string | null
         }
         Insert: {
+          approval?: string
           attending: boolean
           created_at?: string
           guest_count?: number
@@ -115,6 +146,7 @@ export type Database = {
           note?: string | null
         }
         Update: {
+          approval?: string
           attending?: boolean
           created_at?: string
           guest_count?: number
