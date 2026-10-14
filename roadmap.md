@@ -12,3 +12,5 @@
 - [x] Add optimized gallery imagery and working invitation preview pages
 - [x] Verify homepage and preview flows across mobile and desktop
 - [x] Order request flow from preview page (order_requests table + dialog)
+- [x] Order form validation + admin view (/admin)
+- [ ] Order confirmation email (blocked: needs verified email domain)
