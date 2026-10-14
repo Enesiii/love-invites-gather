@@ -195,7 +195,11 @@
 .invitation-divider::before, .invitation-divider::after { content: ""; height: 1px; flex: 1; background: var(--accent); }
 .guest-invitation { background-image: radial-gradient(var(--border) .6px, transparent .6px); background-size: 9px 9px; }
 .rsvp-section { border-top: 1px solid var(--accent); }
-.music-control { border-color: var(--accent); background: var(--card); font-size: 12px; height: 38px; }
+.music-control { border-color: var(--accent); background: var(--card); font-size: 13px; min-height: 44px; height: auto; width: 170px; max-width: 100%; padding: 10px 12px; touch-action: manipulation; }
+.music-control span { white-space: normal; overflow-wrap: anywhere; }
+.music-control svg { flex-shrink: 0; }
+.maps-control { min-height: 44px; height: auto; padding: 10px 12px; touch-action: manipulation; }
+.maps-control span { white-space: normal; overflow-wrap: anywhere; }
 .invitation-opening { min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; overflow: hidden; transition: opacity .4s ease 1s; }
 .opening-dedication { font-size: 13px; color: var(--muted-foreground); }
 .opening-names { margin-top: 16px; max-width: 580px; text-align: center; font-size: 44px; line-height: 1.12; overflow-wrap: anywhere; }
@@ -205,14 +209,30 @@
 .envelope-pocket { position: absolute; inset: 0; z-index: 3; background: var(--secondary); clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%); }
 .envelope-flap { position: absolute; inset: 0; z-index: 4; background: var(--muted); clip-path: polygon(0 0, 100% 0, 50% 55%); transform-origin: top; transition: transform .7s ease, z-index 0s .35s; backface-visibility: hidden; }
 .envelope-seal { position: absolute; z-index: 5; top: 47%; left: 50%; transform: translate(-50%, -50%); width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--primary); color: var(--primary-foreground); border: 3px double var(--accent); box-shadow: var(--shadow-soft); transition: opacity .25s; }
-.opening-button { border-color: var(--accent); background: var(--card); min-width: 190px; }
+.opening-button { border-color: var(--accent); background: var(--card); min-width: 190px; min-height: 48px; max-width: 100%; flex-shrink: 0; touch-action: manipulation; }
 .is-opening .envelope-flap { transform: rotateX(180deg); z-index: 0; }
 .is-opening .envelope-seal { opacity: 0; }
 .is-opening .envelope-letter { transform: translateY(-45%); }
 .is-opening { opacity: 0; }
 .invitation-reveal { animation: invitation-reveal .9s ease both; }
 @keyframes invitation-reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 480px) { .opening-names { font-size: 36px; } .envelope { margin-top: 70px; } }
+@media (max-width: 480px) {
+  .invitation-opening { padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
+  .opening-names { font-size: 36px; width: 100%; }
+  .envelope { width: min(100%, 340px); margin: 80px 0 28px; flex-shrink: 0; }
+  .envelope-letter { padding-top: 20px; }
+  .envelope-letter p { font-size: 26px; margin-top: 10px; }
+  .envelope-seal { width: 48px; height: 48px; }
+  .opening-button { width: min(100%, 240px); }
+  .maps-control { width: 100%; font-size: 13px; }
+}
+@media (max-height: 600px) and (max-width: 767px) {
+  .invitation-opening { padding-top: max(20px, env(safe-area-inset-top)); padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+  .opening-names { font-size: 30px; margin-top: 10px; }
+  .envelope { width: min(100%, 250px); margin: 68px 0 20px; flex-shrink: 0; }
+  .envelope-letter { padding-top: 14px; }
+  .envelope-letter p { font-size: 22px; margin-top: 8px; }
+}
 @media (prefers-reduced-motion: reduce) {
   .invitation-opening, .envelope-flap, .envelope-letter, .envelope-seal { transition: none; }
   .invitation-reveal { animation: none; }

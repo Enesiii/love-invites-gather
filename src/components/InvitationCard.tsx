@@ -47,9 +47,9 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
             </p>
           </div>
           {showDirections && inv.venue.trim() ? (
-            <Button asChild variant="outline" className="mt-6 max-w-full border-accent bg-card/80">
+            <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
               <a href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent([inv.venue, inv.address].filter(Boolean).join(", "))}`} target="_blank" rel="noopener noreferrer">
-                <Navigation className="h-4 w-4" /> Navigo në Google Maps
+                <Navigation className="h-4 w-4 shrink-0" /> <span>Navigo në Google Maps</span>
               </a>
             </Button>
           ) : null}
