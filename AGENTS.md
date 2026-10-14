@@ -16,3 +16,4 @@
 - Scope homepage theme overrides to `.home-page` so presentation changes do not alter existing guest invitation palettes.
 - Keep gallery samples in the browser-safe invitation collection module and preview them at `/preview/$style` without creating database rows; pass the selected theme to the existing creator through validated optional search parameters.
 - Order requests from the preview page are stored in `order_requests` (RLS on, service_role only) via `submitOrderRequest` in `src/lib/orders.functions.ts`; no payment or pricing in-app. Why: keeps the no-account model and avoids inventing business terms.
+- Optional accounts (email/Google) own invitations via `invitations.owner_id`; claiming requires the secret manage_token (`src/lib/account.functions.ts`, requireSupabaseAuth + admin client). Why: panel links stay valid while couples can recover them at `/ngjarjet`.
