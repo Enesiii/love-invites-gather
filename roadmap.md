@@ -8,3 +8,6 @@
 - [x] Add luxurious invitation styling and animated envelope opening
 - [x] Add optional background music and Google Maps navigation
 - [x] Verify guest experience and existing RSVP flow
+- [ ] Redesign homepage using the ten visual references without copying business claims
+- [ ] Add optimized gallery imagery and working invitation preview pages
+- [ ] Verify homepage and preview flows across mobile and desktop
