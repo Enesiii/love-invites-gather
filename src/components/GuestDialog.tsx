@@ -41,7 +41,10 @@ export function GuestDialog({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return toast.error("Shkruani emrin.");
+    if (!name.trim()) {
+      toast.error("Shkruani emrin.");
+      return;
+    }
     setBusy(true);
     try {
       await save({
