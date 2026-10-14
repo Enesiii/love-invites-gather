@@ -16,3 +16,5 @@
 - [ ] Order confirmation email (blocked: needs verified email domain)
 - [x] Fix Google Maps button blocked in preview (ERR_BLOCKED_BY_RESPONSE)
 - [x] Approve flow: guests who confirm attendance are approved automatically; hydration and Approve button verified
+- [x] Buy Me a Coffee support button (homepage footer + invitation page) — needs the real buymeacoffee.com link from the owner
+- [ ] Admin login (/admin) fails for the owner — diagnose and fix
