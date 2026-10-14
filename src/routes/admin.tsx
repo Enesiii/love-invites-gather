@@ -71,7 +71,7 @@ function AdminPage() {
         o.contact_phone,
         o.contact_email ?? "",
         o.notes ?? "",
-        ORDER_STATUS_LABELS[o.status],
+        ORDER_STATUS_LABELS[o.status as Status],
       ]
         .map((v) => esc(String(v)))
         .join(","),
