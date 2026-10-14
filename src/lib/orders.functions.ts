@@ -1,20 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-
-const orderSchema = z.object({
-  style: z.enum(["rose", "sage", "night"]),
-  partner_one: z.string().trim().min(1, "Shkruani emrin").max(60),
-  partner_two: z.string().trim().min(1, "Shkruani emrin").max(60),
-  wedding_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Zgjidhni datën e dasmës"),
-  contact_phone: z
-    .string()
-    .trim()
-    .min(6, "Shkruani numrin e telefonit")
-    .max(30)
-    .regex(/^[0-9+()\s-]+$/, "Numri i telefonit nuk është i vlefshëm"),
-  contact_email: z.string().trim().email("Email i pavlefshëm").max(255).optional().or(z.literal("")),
-  notes: z.string().trim().max(500).optional().default(""),
-});
+import { ORDER_STATUSES, orderSchema } from "./order-validation";
 
 export const submitOrderRequest = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => orderSchema.parse(input))
@@ -38,4 +24,42 @@ export const submitOrderRequest = createServerFn({ method: "POST" })
       throw new Error("Porosia nuk u dërgua. Provoni përsëri.");
     }
     return { ok: true, id: row.id };
+  });
+
+function checkKey(key: string) {
+  const expected = process.env["ADMIN_KEY"];
+  if (!expected || expected.length < 8 || key !== expected) {
+    throw new Error("Kodi i administrimit nuk është i saktë.");
+  }
+}
+
+const keySchema = z.object({ key: z.string().min(1).max(200) });
+
+export const listOrderRequests = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => keySchema.parse(input))
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: rows, error } = await supabaseAdmin
+      .from("order_requests")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (error) throw new Error("Kërkesat nuk u ngarkuan.");
+    return rows ?? [];
+  });
+
+export const updateOrderStatus = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    keySchema.extend({ id: z.string().uuid(), status: z.enum(ORDER_STATUSES) }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("order_requests")
+      .update({ status: data.status })
+      .eq("id", data.id);
+    if (error) throw new Error("Statusi nuk u përditësua.");
+    return { ok: true };
   });
