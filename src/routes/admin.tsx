@@ -33,14 +33,18 @@ function AdminPage() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   async function load(e?: React.FormEvent) {
     e?.preventDefault();
     setBusy(true);
+    setLoginError(null);
     try {
-      setOrders(await list({ data: { key } }));
+      setOrders(await list({ data: { key: key.trim() } }));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Gabim.");
+      const msg = err instanceof Error ? err.message : "Gabim.";
+      setLoginError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
@@ -48,7 +52,7 @@ function AdminPage() {
 
   async function change(id: string, status: Status) {
     try {
-      await update({ data: { key, id, status } });
+      await update({ data: { key: key.trim(), id, status } });
       setOrders((o) => o?.map((r) => (r.id === id ? { ...r, status } : r)) ?? null);
       toast.success("Statusi u përditësua.");
     } catch (err) {
@@ -97,8 +101,9 @@ function AdminPage() {
       {!orders ? (
         <form onSubmit={load} className="mt-8 max-w-sm space-y-3">
           <Label htmlFor="admin-key">Kodi i administrimit</Label>
-          <Input id="admin-key" type="password" value={key} onChange={(e) => setKey(e.target.value)} />
-          <Button type="submit" disabled={busy || !key}>{busy ? "Duke hyrë…" : "Hyr"}</Button>
+          <Input id="admin-key" type="password" autoComplete="current-password" value={key} onChange={(e) => { setKey(e.target.value); setLoginError(null); }} />
+          {loginError && <p role="alert" className="text-sm text-destructive">{loginError}</p>}
+          <Button type="submit" disabled={busy || !key.trim()}>{busy ? "Duke hyrë…" : "Hyr"}</Button>
         </form>
       ) : (
         <>
