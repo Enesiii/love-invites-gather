@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as KrijoRouteImport } from './routes/krijo'
 import { Route as FtesaIdRouteImport } from './routes/ftesa.$id'
 import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
@@ -18,6 +19,11 @@ import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KrijoRoute = KrijoRouteImport.update({
@@ -43,6 +49,7 @@ const PreviewStyleRoute = PreviewStyleRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/krijo': typeof KrijoRoute
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/krijo': typeof KrijoRoute
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/krijo': typeof KrijoRoute
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
@@ -66,12 +75,24 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/krijo' | '/ftesa/$id' | '/menaxho/$token' | '/preview/$style'
+    | '/'
+    | '/admin'
+    | '/krijo'
+    | '/ftesa/$id'
+    | '/menaxho/$token'
+    | '/preview/$style'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/krijo' | '/ftesa/$id' | '/menaxho/$token' | '/preview/$style'
+  to:
+    | '/'
+    | '/admin'
+    | '/krijo'
+    | '/ftesa/$id'
+    | '/menaxho/$token'
+    | '/preview/$style'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/krijo'
     | '/ftesa/$id'
     | '/menaxho/$token'
@@ -80,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   KrijoRoute: typeof KrijoRoute
   FtesaIdRoute: typeof FtesaIdRoute
   MenaxhoTokenRoute: typeof MenaxhoTokenRoute
@@ -93,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/krijo': {
@@ -128,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   KrijoRoute: KrijoRoute,
   FtesaIdRoute: FtesaIdRoute,
   MenaxhoTokenRoute: MenaxhoTokenRoute,
