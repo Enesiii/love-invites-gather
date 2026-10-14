@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
+import { claimInvitation } from "@/lib/account.functions";
+import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/krijo")({
   validateSearch: (search: Record<string, unknown>): { theme?: string } => {
@@ -40,6 +42,8 @@ function Create() {
   const { theme } = Route.useSearch();
   const navigate = useNavigate();
   const create = useServerFn(createInvitation);
+  const claim = useServerFn(claimInvitation);
+  const session = useSession();
   const [busy, setBusy] = useState(false);
   const [f, setF] = useState({
     partner_one: "",
@@ -64,6 +68,13 @@ function Create() {
     setBusy(true);
     try {
       const res = await create({ data: f });
+      if (session) {
+        try {
+          await claim({ data: { token: res.token } });
+        } catch {
+          /* the panel offers saving again */
+        }
+      }
       navigate({ to: "/menaxho/$token", params: { token: res.token } });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gabim gjatë ruajtjes.");
