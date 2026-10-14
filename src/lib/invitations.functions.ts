@@ -4,7 +4,7 @@ import { z } from "zod";
 const createSchema = z.object({
   partner_one: z.string().trim().min(1, "Shkruani emrin").max(60),
   partner_two: z.string().trim().min(1, "Shkruani emrin").max(60),
-  event_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Zgjidhni datën"),
+  event_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Zgjidhni datën").refine((d) => d >= new Date(Date.now() - 864e5).toISOString().slice(0, 10) && d.slice(0, 4) <= "2100", "Data e dasmës duhet të jetë në të ardhmen."),
   event_time: z.string().trim().min(1).max(10),
   venue: z.string().trim().min(1, "Shkruani vendin").max(120),
   address: z.string().trim().max(200).optional().default(""),

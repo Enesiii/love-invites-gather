@@ -81,7 +81,7 @@ export function EditEventDialog({
             </label>
             <label className="text-sm">
               Data
-              <input type="date" className={field} value={f.event_date} onChange={set("event_date")} />
+              <input type="date" min={new Date().toISOString().slice(0, 10)} max="2100-12-31" className={field} value={f.event_date} onChange={set("event_date")} />
             </label>
             <label className="text-sm">
               Ora
