@@ -153,7 +153,7 @@ function Index() {
             <Heart className="h-5 w-5 fill-primary text-primary" />
             <span>ME GËZIM JU FTOJMË</span>
             <p className="font-display">
-              Arta <em>&</em> Besnik
+              Enes{"\u00a0"}<em>&</em>{"\u00a0"}Selma
             </p>
             <span>19 QERSHOR 2027 · PRISHTINË</span>
           </div>
