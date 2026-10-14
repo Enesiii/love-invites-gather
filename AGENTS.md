@@ -13,3 +13,5 @@
 - `invitations` and `rsvps` tables have RLS on with no anon/authenticated policies; all access goes through server functions in `src/lib/invitations.functions.ts` using the admin client loaded inside handlers. Why: no accounts, so the secret `manage_token` must never be readable via the Data API.
 - Owners view responses at `/menaxho/$token` (token = bearer secret); guests use public `/ftesa/$id`.
 - Guest presentation is gated by a client-side envelope opening, with optional user-initiated Web Audio music and venue directions derived from existing invitation fields; this preserves the no-account RSVP data model without adding backend presentation settings.
+- Scope homepage theme overrides to `.home-page` so presentation changes do not alter existing guest invitation palettes.
+- Keep gallery samples in the browser-safe invitation collection module and preview them at `/preview/$style` without creating database rows; pass the selected theme to the existing creator through validated optional search parameters.
