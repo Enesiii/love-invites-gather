@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InvitationCard } from "@/components/InvitationCard";
+import { OrderDialog } from "@/components/OrderDialog";
 import { InvitationOpening, InvitationMusic } from "@/components/InvitationOpening";
 import { findInvitationStyle, previewInvitation } from "@/lib/invitation-collection";
 
@@ -44,11 +45,14 @@ function StylePreview() {
           </Link>
         </Button>
         <span className="text-xs text-muted-foreground">Shembull ftese</span>
-        <Button asChild variant="outline">
-          <Link to="/krijo" search={{ theme: style.id }}>
-            Përdor këtë stil <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild variant="outline">
+            <Link to="/krijo" search={{ theme: style.id }}>
+              Përdor këtë stil <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+          <OrderDialog style={style.id} styleName={style.name} />
+        </div>
       </header>
       {opened ? (
         <main className="invitation-reveal mx-auto max-w-xl px-4 py-8">

@@ -11,3 +11,4 @@
 - [x] Redesign homepage using the ten visual references without copying business claims
 - [x] Add optimized gallery imagery and working invitation preview pages
 - [x] Verify homepage and preview flows across mobile and desktop
+- [x] Order request flow from preview page (order_requests table + dialog)
