@@ -14,7 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      invitations: {
+        Row: {
+          address: string | null
+          created_at: string
+          event_date: string
+          event_time: string
+          id: string
+          manage_token: string
+          message: string | null
+          partner_one: string
+          partner_two: string
+          theme: string
+          venue: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          event_date: string
+          event_time?: string
+          id?: string
+          manage_token?: string
+          message?: string | null
+          partner_one: string
+          partner_two: string
+          theme?: string
+          venue: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          event_date?: string
+          event_time?: string
+          id?: string
+          manage_token?: string
+          message?: string | null
+          partner_one?: string
+          partner_two?: string
+          theme?: string
+          venue?: string
+        }
+        Relationships: []
+      }
+      rsvps: {
+        Row: {
+          attending: boolean
+          created_at: string
+          guest_count: number
+          guest_name: string
+          id: string
+          invitation_id: string
+          note: string | null
+        }
+        Insert: {
+          attending: boolean
+          created_at?: string
+          guest_count?: number
+          guest_name: string
+          id?: string
+          invitation_id: string
+          note?: string | null
+        }
+        Update: {
+          attending?: boolean
+          created_at?: string
+          guest_count?: number
+          guest_name?: string
+          id?: string
+          invitation_id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
