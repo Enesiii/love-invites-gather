@@ -42,6 +42,7 @@ import {
   deletePhoto,
   getManageData,
   setApproval,
+  setExpectedGuests,
   uploadPhoto,
 } from "@/lib/invitations.functions";
 import { GuestDialog } from "@/components/GuestDialog";

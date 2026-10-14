@@ -29,6 +29,13 @@
       "when": 1791980897542,
       "tag": "0003_invitation_owner",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791995867865,
+      "tag": "0004_invitations_expected_guests",
+      "breakpoints": true
     }
   ]
 }
