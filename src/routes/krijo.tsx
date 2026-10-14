@@ -10,6 +10,7 @@ import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
 
 export const Route = createFileRoute("/krijo")({
+  validateSearch: (search: Record<string, unknown>) => ({ theme: typeof search.theme === 'string' && ['rose', 'sage', 'night'].includes(search.theme) ? search.theme : undefined }),
   head: () => ({
     meta: [
       { title: "Krijo ftesën e dasmës — Ftesa Dasme" },
@@ -30,6 +31,7 @@ const themes = [
 ];
 
 function Create() {
+  const { theme } = Route.useSearch();
   const navigate = useNavigate();
   const create = useServerFn(createInvitation);
   const [busy, setBusy] = useState(false);
@@ -41,7 +43,7 @@ function Create() {
     venue: "",
     address: "",
     message: "",
-    theme: "rose",
+    theme: theme ?? "rose",
   });
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
