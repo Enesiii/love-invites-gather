@@ -58,6 +58,38 @@ function AdminPage() {
 
   const shown = orders?.filter((o) => filter === "all" || o.status === filter) ?? [];
 
+  function exportCsv() {
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const header = ["E dërguar", "Partneri 1", "Partneri 2", "Dasma", "Stili", "Telefoni", "Emaili", "Shënime", "Statusi"];
+    const rows = shown.map((o) =>
+      [
+        new Date(o.created_at).toLocaleString("sq"),
+        o.partner_one,
+        o.partner_two,
+        o.wedding_date,
+        o.style,
+        o.contact_phone,
+        o.contact_email ?? "",
+        o.notes ?? "",
+        ORDER_STATUS_LABELS[o.status],
+      ]
+        .map((v) => esc(String(v)))
+        .join(","),
+    );
+    const csv = "\uFEFF" + [header.map(esc).join(","), ...rows].join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `porosite-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    toast.success(`${shown.length} kërkesa u eksportuan.`);
+  }
+
+
   return (
     <main className="mx-auto min-h-screen max-w-5xl px-4 py-10">
       <Link to="/" className="text-sm text-muted-foreground">← Kthehu</Link>
@@ -78,6 +110,8 @@ function AdminPage() {
               </Button>
             ))}
             <Button size="sm" variant="ghost" onClick={() => load()}>Rifresko</Button>
+            <Button size="sm" variant="ghost" onClick={exportCsv} disabled={shown.length === 0}>Eksporto CSV</Button>
+
           </div>
           <div className="mt-6 space-y-3">
             {shown.length === 0 && <p className="text-muted-foreground">Nuk ka kërkesa.</p>}
