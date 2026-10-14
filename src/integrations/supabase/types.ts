@@ -56,6 +56,45 @@ export type Database = {
         }
         Relationships: []
       }
+      order_requests: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string
+          created_at: string
+          id: string
+          notes: string | null
+          partner_one: string
+          partner_two: string
+          status: string
+          style: string
+          wedding_date: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_one: string
+          partner_two: string
+          status?: string
+          style: string
+          wedding_date: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          partner_one?: string
+          partner_two?: string
+          status?: string
+          style?: string
+          wedding_date?: string
+        }
+        Relationships: []
+      }
       rsvps: {
         Row: {
           attending: boolean
