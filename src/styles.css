@@ -203,6 +203,17 @@
 .invitation-divider::before, .invitation-divider::after { content: ""; height: 1px; flex: 1; background: var(--accent); }
 .guest-invitation { background-image: radial-gradient(var(--border) .6px, transparent .6px); background-size: 9px 9px; }
 .rsvp-section { border-top: 1px solid var(--accent); }
+.countdown { margin-top: 28px; }
+.countdown-label { font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted-foreground); }
+.countdown-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.countdown-cell { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; border: 1px solid var(--accent); background: var(--card); }
+.countdown-value { font-family: "Cormorant Garamond", Georgia, serif; font-size: 28px; font-variant-numeric: tabular-nums; line-height: 1; color: var(--primary); }
+.countdown-unit { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted-foreground); }
+@media (max-width: 480px) {
+  .countdown-grid { gap: 6px; }
+  .countdown-value { font-size: 22px; }
+  .countdown-cell { padding: 8px 2px; }
+}
 .music-control { border-color: var(--accent); background: var(--card); color: var(--card-foreground); font-size: 13px; min-height: 44px; height: auto; width: 170px; max-width: 100%; padding: 10px 12px; touch-action: manipulation; }
 .music-control span { white-space: normal; overflow-wrap: anywhere; }
 .music-control svg { flex-shrink: 0; }

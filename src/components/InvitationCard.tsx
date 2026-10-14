@@ -1,4 +1,5 @@
 import { CalendarDays, Clock, Heart, MapPin, Navigation } from "lucide-react";
+import { Countdown } from "@/components/Countdown";
 import { toast } from "sonner";
 import { formatDate } from "@/lib/format-date";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,7 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
               {inv.address ? <span className="text-muted-foreground">· {inv.address}</span> : null}
             </p>
           </div>
+          {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
           {showDirections && inv.venue.trim() ? (
             <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
               <a href={mapsHref} target="_blank" rel="noopener noreferrer" onClick={handleMapsClick}>
