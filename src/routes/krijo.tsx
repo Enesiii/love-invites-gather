@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { AiWriter } from "@/components/AiWriter";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
@@ -121,7 +122,11 @@ function Create() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="m">Mesazh (opsional)</Label>
-            <Textarea id="m" value={f.message} onChange={set("message")} maxLength={500} rows={3} />
+            <Textarea id="m" value={f.message} onChange={set("message")} maxLength={500} rows={4} />
+            <AiWriter
+              details={{ partner_one: f.partner_one, partner_two: f.partner_two, event_date: f.event_date, event_time: f.event_time, venue: f.venue }}
+              onText={(text) => setF((p) => ({ ...p, message: text }))}
+            />
           </div>
           <div className="space-y-2">
             <Label>Stili</Label>
