@@ -46,6 +46,7 @@ import {
 } from "@/lib/invitations.functions";
 import { GuestDialog } from "@/components/GuestDialog";
 import { EditEventDialog } from "@/components/EditEventDialog";
+import { SaveToAccount } from "@/components/SaveToAccount";
 
 export const Route = createFileRoute("/menaxho/$token")({
   loader: async ({ params }) => {
@@ -287,13 +288,12 @@ function Manage() {
           </a>
         </li>
         <li>
-          <a
-            href="#mysafiret"
-            onClick={() => setMenuOpen(false)}
+          <Link
+            to="/ngjarjet"
             className="flex items-center gap-2 rounded-md px-2 py-2 hover:bg-muted"
           >
             <CalendarDays className="h-4 w-4" /> Ngjarjet e Mia
-          </a>
+          </Link>
         </li>
         <li>
           <Link
@@ -347,6 +347,7 @@ function Manage() {
         </header>
 
         <main id="paneli" className="space-y-5 p-4 pb-20 sm:p-6">
+          <SaveToAccount token={token} />
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="flex min-w-0 items-start gap-3">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground sm:h-14 sm:w-14">

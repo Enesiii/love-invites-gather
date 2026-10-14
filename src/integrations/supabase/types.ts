@@ -52,6 +52,7 @@ export type Database = {
           id: string
           manage_token: string
           message: string | null
+          owner_id: string | null
           partner_one: string
           partner_two: string
           theme: string
@@ -65,6 +66,7 @@ export type Database = {
           id?: string
           manage_token?: string
           message?: string | null
+          owner_id?: string | null
           partner_one: string
           partner_two: string
           theme?: string
@@ -78,6 +80,7 @@ export type Database = {
           id?: string
           manage_token?: string
           message?: string | null
+          owner_id?: string | null
           partner_one?: string
           partner_two?: string
           theme?: string

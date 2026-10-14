@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as HyrRouteImport } from './routes/hyr'
 import { Route as KrijoRouteImport } from './routes/krijo'
+import { Route as NgjarjetRouteImport } from './routes/ngjarjet'
 import { Route as FtesaIdRouteImport } from './routes/ftesa.$id'
 import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
@@ -26,9 +28,19 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HyrRoute = HyrRouteImport.update({
+  id: '/hyr',
+  path: '/hyr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KrijoRoute = KrijoRouteImport.update({
   id: '/krijo',
   path: '/krijo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NgjarjetRoute = NgjarjetRouteImport.update({
+  id: '/ngjarjet',
+  path: '/ngjarjet',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FtesaIdRoute = FtesaIdRouteImport.update({
@@ -50,7 +62,9 @@ const PreviewStyleRoute = PreviewStyleRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/hyr': typeof HyrRoute
   '/krijo': typeof KrijoRoute
+  '/ngjarjet': typeof NgjarjetRoute
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
@@ -58,7 +72,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/hyr': typeof HyrRoute
   '/krijo': typeof KrijoRoute
+  '/ngjarjet': typeof NgjarjetRoute
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
@@ -67,7 +83,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/hyr': typeof HyrRoute
   '/krijo': typeof KrijoRoute
+  '/ngjarjet': typeof NgjarjetRoute
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
@@ -77,7 +95,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/hyr'
     | '/krijo'
+    | '/ngjarjet'
     | '/ftesa/$id'
     | '/menaxho/$token'
     | '/preview/$style'
@@ -85,7 +105,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/hyr'
     | '/krijo'
+    | '/ngjarjet'
     | '/ftesa/$id'
     | '/menaxho/$token'
     | '/preview/$style'
@@ -93,7 +115,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/hyr'
     | '/krijo'
+    | '/ngjarjet'
     | '/ftesa/$id'
     | '/menaxho/$token'
     | '/preview/$style'
@@ -102,7 +126,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  HyrRoute: typeof HyrRoute
   KrijoRoute: typeof KrijoRoute
+  NgjarjetRoute: typeof NgjarjetRoute
   FtesaIdRoute: typeof FtesaIdRoute
   MenaxhoTokenRoute: typeof MenaxhoTokenRoute
   PreviewStyleRoute: typeof PreviewStyleRoute
@@ -124,11 +150,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hyr': {
+      id: '/hyr'
+      path: '/hyr'
+      fullPath: '/hyr'
+      preLoaderRoute: typeof HyrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/krijo': {
       id: '/krijo'
       path: '/krijo'
       fullPath: '/krijo'
       preLoaderRoute: typeof KrijoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ngjarjet': {
+      id: '/ngjarjet'
+      path: '/ngjarjet'
+      fullPath: '/ngjarjet'
+      preLoaderRoute: typeof NgjarjetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ftesa/$id': {
@@ -158,7 +198,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  HyrRoute: HyrRoute,
   KrijoRoute: KrijoRoute,
+  NgjarjetRoute: NgjarjetRoute,
   FtesaIdRoute: FtesaIdRoute,
   MenaxhoTokenRoute: MenaxhoTokenRoute,
   PreviewStyleRoute: PreviewStyleRoute,
