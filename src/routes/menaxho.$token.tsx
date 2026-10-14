@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Copy, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/components/InvitationCard";
+import { formatDate } from "@/lib/format-date";
 import { getManageData } from "@/lib/invitations.functions";
 
 export const Route = createFileRoute("/menaxho/$token")({
