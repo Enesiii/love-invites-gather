@@ -1,4 +1,5 @@
 import { CalendarDays, Clock, Heart, MapPin, Navigation } from "lucide-react";
+import { toast } from "sonner";
 import { formatDate } from "@/lib/format-date";
 import { Button } from "@/components/ui/button";
 import botanical from "@/assets/wedding-botanical.png";
@@ -19,12 +20,15 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
     [inv.venue, inv.address].filter(Boolean).join(", "),
   )}`;
   // Brenda parapamjes (iframe), hapja e faqeve të reja mund të bllokohet —
-  // në atë rast navigojmë këdren aktuale në vend të tab të ri.
+  // provojmë tab të ri dhe, nëse bllokohet, kërkojmë hapjen jashtë parapamjes.
   function handleMapsClick(e: React.MouseEvent<HTMLAnchorElement>) {
     try {
       if (window.self !== window.top) {
         e.preventDefault();
-        window.location.href = e.currentTarget.href;
+        const opened = window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
+        if (!opened) {
+          toast.info("Parapamja nuk mund të hapë Google Maps. Hapni ftesën me linkun e ndarë (p.sh. në WhatsApp) dhe butoni do të funksionojë.");
+        }
       }
     } catch {
       /* default behavior */
