@@ -10,7 +10,7 @@ import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
 
 export const Route = createFileRoute("/krijo")({
-  validateSearch: (search: Record<string, unknown>) => ({ theme: typeof search.theme === 'string' && ['rose', 'sage', 'night'].includes(search.theme) ? search.theme : undefined }),
+  validateSearch: (search: Record<string, unknown>): { theme?: string } => ({ theme: typeof search['theme'] === 'string' && ['rose', 'sage', 'night'].includes(search['theme']) ? search['theme'] : undefined }),
   head: () => ({
     meta: [
       { title: "Krijo ftesën e dasmës — Ftesa Dasme" },
