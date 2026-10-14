@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CalendarDays,
   Check,
@@ -36,7 +36,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatDate } from "@/lib/format-date";
+import { formatDate, formatDateTime } from "@/lib/format-date";
 import {
   deleteGuest,
   deletePhoto,
@@ -129,10 +129,11 @@ function Manage() {
   const removePhoto = useServerFn(deletePhoto);
   const refresh = () => router.invalidate();
 
-  const link =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/ftesa/${inv.id}`
-      : `/ftesa/${inv.id}`;
+  // Origin-i lexohet vetëm në shfletues (useEffect) që SSR dhe klienti të
+  // japin të njëjtin HTML fillestar — pa gabim hidratimi.
+  const [origin, setOrigin] = useState("");
+  useEffect(() => setOrigin(window.location.origin), []);
+  const link = `${origin}/ftesa/${inv.id}`;
 
   const sum = (rows: Row[]) => rows.reduce((s, r) => s + Math.max(r.guest_count, 1), 0);
   const by = (f: Exclude<Filter, "all">) => d.rsvps.filter((r) => statusOf(r) === f);
@@ -234,7 +235,7 @@ function Manage() {
         label[statusOf(r)],
         String(r.attending ? r.guest_count : 0),
         r.note ?? "",
-        new Date(r.created_at).toLocaleString("sq"),
+        formatDateTime(r.created_at),
       ]),
     ];
     const blob = new Blob(["\uFEFF" + rows.map((r) => r.map(esc).join(",")).join("\n")], {
@@ -505,7 +506,7 @@ function Manage() {
                             <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                               <Users className="h-3.5 w-3.5" />
                               {r.attending ? `${r.guest_count} mysafirë` : "Nuk vjen"} ·{" "}
-                              {new Date(r.created_at).toLocaleDateString("sq")}
+                              {formatDateTime(r.created_at)}
                             </p>
                           </div>
                           <div className="flex shrink-0 flex-wrap items-center gap-1">

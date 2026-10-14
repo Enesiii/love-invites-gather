@@ -19,19 +19,22 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
   const mapsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     [inv.venue, inv.address].filter(Boolean).join(", "),
   )}`;
-  // Brenda parapamjes (iframe), hapja e faqeve të reja mund të bllokohet —
-  // provojmë tab të ri dhe, nëse bllokohet, kërkojmë hapjen jashtë parapamjes.
+  // Brenda parapmjes (iframe), shfletuesi mund ta bllokojë hapjen e faqeve të jashtme.
+  // Ndalojmë gjithmonë navigimin e vetë fremit dhe provojmë tab të ri; nëse bllokohet,
+  // e kopjojmë linkun dhe e shpjegojmë përdoruesit.
   function handleMapsClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
     try {
-      if (window.self !== window.top) {
-        e.preventDefault();
-        const opened = window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
-        if (!opened) {
-          toast.info("Parapamja nuk mund të hapë Google Maps. Hapni ftesën me linkun e ndarë (p.sh. në WhatsApp) dhe butoni do të funksionojë.");
-        }
+      const opened = window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
+      if (!opened) {
+        navigator.clipboard?.writeText(e.currentTarget.href).catch(() => undefined);
+        toast.info(
+          "Shfletuesi bllokoi hapjen e Google Maps këtu. Linku u kopjua — hapeni në shfletues ose hapni ftesën me linkun e ndarë.",
+        );
       }
     } catch {
-      /* default behavior */
+      navigator.clipboard?.writeText(e.currentTarget.href).catch(() => undefined);
+      toast.info("Linku i Google Maps u kopjua — hapeni në shfletues.");
     }
   }
   return (

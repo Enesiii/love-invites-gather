@@ -72,6 +72,9 @@ export const submitRsvp = createServerFn({ method: "POST" })
       attending: data.attending,
       guest_count: data.attending ? data.guest_count : 0,
       note: data.note || null,
+      // Mysafiri që konfirmon ardhjen (Po) approve-ohet vetvetiu; ai që nuk vjen
+      // mbetet pa aprovim (statusi "Nuk mund të vijë" vjen nga attending=false).
+      approval: data.attending ? "approved" : "pending",
     });
     if (error) {
       console.error("submitRsvp failed", error);
