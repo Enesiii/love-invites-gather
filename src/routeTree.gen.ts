@@ -17,6 +17,7 @@ import { Route as NgjarjetRouteImport } from './routes/ngjarjet'
 import { Route as FtesaIdRouteImport } from './routes/ftesa.$id'
 import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
+import { Route as FtesaIdFotoRouteImport } from './routes/ftesa_.$id.foto'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const PreviewStyleRoute = PreviewStyleRouteImport.update({
   path: '/preview/$style',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FtesaIdFotoRoute = FtesaIdFotoRouteImport.update({
+  id: '/ftesa_/$id/foto',
+  path: '/ftesa/$id/foto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/ftesa/$id/foto': typeof FtesaIdFotoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/ftesa/$id/foto': typeof FtesaIdFotoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/ftesa/$id': typeof FtesaIdRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/ftesa_/$id/foto': typeof FtesaIdFotoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/ftesa/$id'
     | '/menaxho/$token'
     | '/preview/$style'
+    | '/ftesa/$id/foto'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/ftesa/$id'
     | '/menaxho/$token'
     | '/preview/$style'
+    | '/ftesa/$id/foto'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/ftesa/$id'
     | '/menaxho/$token'
     | '/preview/$style'
+    | '/ftesa_/$id/foto'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   FtesaIdRoute: typeof FtesaIdRoute
   MenaxhoTokenRoute: typeof MenaxhoTokenRoute
   PreviewStyleRoute: typeof PreviewStyleRoute
+  FtesaIdFotoRoute: typeof FtesaIdFotoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PreviewStyleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ftesa_/$id/foto': {
+      id: '/ftesa_/$id/foto'
+      path: '/ftesa/$id/foto'
+      fullPath: '/ftesa/$id/foto'
+      preLoaderRoute: typeof FtesaIdFotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   FtesaIdRoute: FtesaIdRoute,
   MenaxhoTokenRoute: MenaxhoTokenRoute,
   PreviewStyleRoute: PreviewStyleRoute,
+  FtesaIdFotoRoute: FtesaIdFotoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

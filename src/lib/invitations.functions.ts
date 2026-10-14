@@ -106,12 +106,13 @@ export const getManageData = createServerFn({ method: "GET" })
       .select("id, path, created_at")
       .eq("invitation_id", inv.id)
       .order("created_at", { ascending: false });
-    const photos: { id: string; url: string }[] = [];
+    const photos: { id: string; url: string; kind: "image" | "video" }[] = [];
     for (const p of photoRows ?? []) {
       const { data: s } = await supabaseAdmin.storage
         .from("event-photos")
         .createSignedUrl(p.path, 3600);
-      if (s?.signedUrl) photos.push({ id: p.id, url: s.signedUrl });
+      const kind = /\.(mp4|webm|mov)$/i.test(p.path) ? "video" : "image";
+      if (s?.signedUrl) photos.push({ id: p.id, url: s.signedUrl, kind });
     }
     return {
       invitation: inv,
@@ -240,6 +241,48 @@ export const uploadPhoto = createServerFn({ method: "POST" })
       .upload(path, bin, { contentType: data.type });
     if (error) throw new Error("Fotoja nuk u ngarkua.");
     await supabaseAdmin.from("event_photos").insert({ invitation_id: invitationId, path });
+    return { ok: true };
+  });
+
+const MAX_GUEST_FILE = 6 * 1024 * 1024;
+const GUEST_TYPES = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "video/mp4": "mp4",
+  "video/webm": "webm",
+  "video/quicktime": "mov",
+} as const;
+export const uploadGuestMedia = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        invitation_id: z.string().uuid(),
+        type: z.enum(Object.keys(GUEST_TYPES) as [keyof typeof GUEST_TYPES, ...(keyof typeof GUEST_TYPES)[]]),
+        base64: z.string().min(10).max(Math.ceil((MAX_GUEST_FILE * 4) / 3) + 8),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: inv } = await supabaseAdmin
+      .from("invitations")
+      .select("id")
+      .eq("id", data.invitation_id)
+      .maybeSingle();
+    if (!inv) throw new Error("Ftesa nuk u gjet.");
+    const { count } = await supabaseAdmin
+      .from("event_photos")
+      .select("id", { count: "exact", head: true })
+      .eq("invitation_id", inv.id);
+    if ((count ?? 0) >= 500) throw new Error("Albumi është plot.");
+    const bin = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    const path = `${inv.id}/${crypto.randomUUID()}.${GUEST_TYPES[data.type]}`;
+    const { error } = await supabaseAdmin.storage
+      .from("event-photos")
+      .upload(path, bin, { contentType: data.type });
+    if (error) throw new Error("Skedari nuk u ngarkua.");
+    await supabaseAdmin.from("event_photos").insert({ invitation_id: inv.id, path });
     return { ok: true };
   });
 

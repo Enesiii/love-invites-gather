@@ -606,12 +606,16 @@ function Manage() {
                     {d.photos.map((p) => (
                       <div key={p.id} className="group relative aspect-square">
                         <a href={p.url} target="_blank" rel="noreferrer">
-                          <img
-                            src={p.url}
-                            alt="Foto nga dasma"
-                            loading="lazy"
-                            className="h-full w-full rounded-md object-cover"
-                          />
+                          {p.kind === "video" ? (
+                            <video src={p.url} muted playsInline preload="metadata" className="h-full w-full rounded-md object-cover" />
+                          ) : (
+                            <img
+                              src={p.url}
+                              alt="Foto nga dasma"
+                              loading="lazy"
+                              className="h-full w-full rounded-md object-cover"
+                            />
+                          )}
                         </a>
                         <button
                           aria-label="Fshi foton"

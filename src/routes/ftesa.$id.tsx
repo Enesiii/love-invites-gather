@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { SupportButton } from "@/components/SupportButton";
 import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpening";
-import { Heart } from "lucide-react";
+import { Camera, Heart } from "lucide-react";
 import { getInvitation, submitRsvp } from "@/lib/invitations.functions";
 
 export const Route = createFileRoute("/ftesa/$id")({
@@ -124,6 +124,16 @@ function InvitePage() {
               </Button>
             </form>
           )}
+        </section>
+        <section className="rsvp-section px-3 py-8 text-center text-card-foreground sm:px-6">
+          <Camera className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
+          <h2 className="font-display text-3xl">Ndani kujtimet</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Bëtë një foto ose video të bukur? Dërgojani çiftit.
+          </p>
+          <Button asChild className="mt-4 min-h-11">
+            <Link to="/ftesa/$id/foto" params={{ id: inv.id }}>Ngarko foto ose video</Link>
+          </Button>
         </section>
         <div className="invitation-support">
           <p>Ftesa u krijua me dashuri nga Ftesa Dasme.</p>
