@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as KrijoRouteImport } from './routes/krijo'
+import { Route as FtesaIdRouteImport } from './routes/ftesa.$id'
+import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KrijoRoute = KrijoRouteImport.update({
+  id: '/krijo',
+  path: '/krijo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FtesaIdRoute = FtesaIdRouteImport.update({
+  id: '/ftesa/$id',
+  path: '/ftesa/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MenaxhoTokenRoute = MenaxhoTokenRouteImport.update({
+  id: '/menaxho/$token',
+  path: '/menaxho/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/krijo': typeof KrijoRoute
+  '/ftesa/$id': typeof FtesaIdRoute
+  '/menaxho/$token': typeof MenaxhoTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/krijo': typeof KrijoRoute
+  '/ftesa/$id': typeof FtesaIdRoute
+  '/menaxho/$token': typeof MenaxhoTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/krijo': typeof KrijoRoute
+  '/ftesa/$id': typeof FtesaIdRoute
+  '/menaxho/$token': typeof MenaxhoTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/krijo' | '/ftesa/$id' | '/menaxho/$token'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/krijo' | '/ftesa/$id' | '/menaxho/$token'
+  id: '__root__' | '/' | '/krijo' | '/ftesa/$id' | '/menaxho/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  KrijoRoute: typeof KrijoRoute
+  FtesaIdRoute: typeof FtesaIdRoute
+  MenaxhoTokenRoute: typeof MenaxhoTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/krijo': {
+      id: '/krijo'
+      path: '/krijo'
+      fullPath: '/krijo'
+      preLoaderRoute: typeof KrijoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ftesa/$id': {
+      id: '/ftesa/$id'
+      path: '/ftesa/$id'
+      fullPath: '/ftesa/$id'
+      preLoaderRoute: typeof FtesaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/menaxho/$token': {
+      id: '/menaxho/$token'
+      path: '/menaxho/$token'
+      fullPath: '/menaxho/$token'
+      preLoaderRoute: typeof MenaxhoTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  KrijoRoute: KrijoRoute,
+  FtesaIdRoute: FtesaIdRoute,
+  MenaxhoTokenRoute: MenaxhoTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
