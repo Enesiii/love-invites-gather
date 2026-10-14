@@ -11,13 +11,16 @@ import { createInvitation } from "@/lib/invitations.functions";
 
 export const Route = createFileRoute("/krijo")({
   validateSearch: (search: Record<string, unknown>): { theme?: string } => {
-    const theme = search['theme'];
-    return typeof theme === 'string' && ['rose', 'sage', 'night'].includes(theme) ? { theme } : {};
+    const theme = search["theme"];
+    return typeof theme === "string" && ["rose", "sage", "night"].includes(theme) ? { theme } : {};
   },
   head: () => ({
     meta: [
       { title: "Krijo ftesën e dasmës — Ftesa Dasme" },
-      { name: "description", content: "Plotësoni emrat, datën dhe vendin dhe krijoni ftesën tuaj të dasmës." },
+      {
+        name: "description",
+        content: "Plotësoni emrat, datën dhe vendin dhe krijoni ftesën tuaj të dasmës.",
+      },
       { property: "og:title", content: "Krijo ftesën e dasmës" },
       { property: "og:description", content: "Krijoni ftesën tuaj online në pak minuta." },
       { property: "og:type", content: "website" },
@@ -48,8 +51,9 @@ function Create() {
     message: "",
     theme: theme ?? "rose",
   });
-  const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setF((p) => ({ ...p, [k]: e.target.value }));
+  const set =
+    (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setF((p) => ({ ...p, [k]: e.target.value }));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -128,7 +132,9 @@ function Create() {
           </Button>
         </form>
         <div className="lg:sticky lg:top-8 lg:self-start">
-          <p className="mb-3 text-xs uppercase tracking-[0.3em] text-muted-foreground">Pamje paraprake</p>
+          <p className="mb-3 text-xs uppercase tracking-[0.3em] text-muted-foreground">
+            Pamje paraprake
+          </p>
           <InvitationCard inv={f} />
         </div>
       </main>
