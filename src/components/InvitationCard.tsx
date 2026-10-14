@@ -1,4 +1,5 @@
 import { CalendarDays, Clock, Heart, MapPin, Navigation } from "lucide-react";
+import { Countdown } from "@/components/Countdown";
 import { toast } from "sonner";
 import { formatDate } from "@/lib/format-date";
 import { Button } from "@/components/ui/button";
