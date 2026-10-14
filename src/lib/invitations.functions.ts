@@ -40,7 +40,9 @@ export const getInvitation = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme")
+      .select(
+        "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme",
+      )
       .eq("id", data.id)
       .maybeSingle();
     return row;
@@ -103,4 +105,63 @@ export const getManageData = createServerFn({ method: "GET" })
       attendingResponses: list.filter((r) => r.attending).length,
       declined: list.filter((r) => !r.attending).length,
     };
+  });
+
+const guestSchema = z.object({
+  token: z.string().uuid(),
+  id: z.string().uuid().optional(),
+  guest_name: z.string().trim().min(1, "Shkruani emrin").max(80),
+  attending: z.boolean(),
+  guest_count: z.number().int().min(1).max(20),
+  note: z.string().trim().max(300).optional().default(""),
+});
+
+async function invitationIdForToken(token: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("invitations")
+    .select("id")
+    .eq("manage_token", token)
+    .maybeSingle();
+  if (!data) throw new Error("Paneli nuk u gjet.");
+  return { supabaseAdmin, invitationId: data.id };
+}
+
+export const saveGuest = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => guestSchema.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const row = {
+      guest_name: data.guest_name,
+      attending: data.attending,
+      guest_count: data.attending ? data.guest_count : 0,
+      note: data.note || null,
+    };
+    const { error } = data.id
+      ? await supabaseAdmin
+          .from("rsvps")
+          .update(row)
+          .eq("id", data.id)
+          .eq("invitation_id", invitationId)
+      : await supabaseAdmin.from("rsvps").insert({ ...row, invitation_id: invitationId });
+    if (error) {
+      console.error("saveGuest failed", error);
+      throw new Error("Mysafiri nuk u ruajt.");
+    }
+    return { ok: true };
+  });
+
+export const deleteGuest = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string().uuid(), id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { error } = await supabaseAdmin
+      .from("rsvps")
+      .delete()
+      .eq("id", data.id)
+      .eq("invitation_id", invitationId);
+    if (error) throw new Error("Mysafiri nuk u hoq.");
+    return { ok: true };
   });
