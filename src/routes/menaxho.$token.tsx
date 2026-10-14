@@ -460,6 +460,41 @@ function Manage() {
             ))}
           </section>
 
+          <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <h2 className="flex items-center gap-2 text-sm font-semibold">
+                  <Users className="h-4 w-4" /> Musafirë total
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Sa mysafirë pritni gjithsej. Numri i mbetur zvogëlohet me secilin që shtohet.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  max={2000}
+                  value={expectedInput}
+                  onChange={(e) => setExpectedInput(e.target.value)}
+                  placeholder="p.sh. 250"
+                  aria-label="Numri total i mysafirëve"
+                  className="w-28 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                />
+                <Button size="sm" onClick={saveExpectedCount}>
+                  Ruaj
+                </Button>
+                {remaining != null ? (
+                  <span className="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs text-success">
+                    Të mbetur: <strong>{remaining}</strong>
+                  </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground">Vendosni totalin</span>
+                )}
+              </div>
+            </div>
+          </section>
+
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
             <section id="mysafiret" className="rounded-xl border border-border bg-card p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
