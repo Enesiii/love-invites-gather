@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { submitOrderRequest } from "@/lib/orders.functions";
+import { orderSchema } from "@/lib/order-validation";
 
 type Style = "rose" | "sage" | "night";
 
@@ -33,16 +34,27 @@ export function OrderDialog({ style, styleName }: { style: Style; styleName: str
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [f, setF] = useState(empty);
+  const [errors, setErrors] = useState<Partial<Record<keyof typeof empty, string>>>({});
+  const err = (k: keyof typeof empty) =>
+    errors[k] ? <p className="text-sm text-destructive">{errors[k]}</p> : null;
   const set =
     (k: keyof typeof empty) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setF((p) => ({ ...p, [k]: e.target.value }));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!f.partner_one.trim() || !f.partner_two.trim() || !f.wedding_date || !f.contact_phone.trim()) {
-      toast.error("Plotësoni emrat, datën e dasmës dhe numrin e telefonit.");
+    const parsed = orderSchema.safeParse({ ...f, style });
+    if (!parsed.success) {
+      const next: Partial<Record<keyof typeof empty, string>> = {};
+      for (const i of parsed.error.issues) {
+        const k = i.path[0] as keyof typeof empty;
+        if (!next[k]) next[k] = i.message;
+      }
+      setErrors(next);
+      toast.error("Kontrolloni fushat e shënuara.");
       return;
     }
+    setErrors({});
     setBusy(true);
     try {
       await submit({ data: { ...f, style } });
@@ -94,15 +106,18 @@ export function OrderDialog({ style, styleName }: { style: Style; styleName: str
                 <div className="space-y-2">
                   <Label htmlFor="o-p1">Emri i parë</Label>
                   <Input id="o-p1" value={f.partner_one} onChange={set("partner_one")} maxLength={60} />
+                  {err("partner_one")}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="o-p2">Emri i dytë</Label>
                   <Input id="o-p2" value={f.partner_two} onChange={set("partner_two")} maxLength={60} />
+                  {err("partner_two")}
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="o-date">Data e dasmës</Label>
-                <Input id="o-date" type="date" value={f.wedding_date} onChange={set("wedding_date")} />
+                <Input id="o-date" type="date" value={f.wedding_date} onChange={set("wedding_date")} min={new Date().toISOString().slice(0, 10)} />
+                {err("wedding_date")}
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
@@ -116,6 +131,7 @@ export function OrderDialog({ style, styleName }: { style: Style; styleName: str
                     onChange={set("contact_phone")}
                     maxLength={30}
                   />
+                  {err("contact_phone")}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="o-email">Email (opsional)</Label>
@@ -126,6 +142,7 @@ export function OrderDialog({ style, styleName }: { style: Style; styleName: str
                     onChange={set("contact_email")}
                     maxLength={255}
                   />
+                  {err("contact_email")}
                 </div>
               </div>
               <div className="space-y-2">
