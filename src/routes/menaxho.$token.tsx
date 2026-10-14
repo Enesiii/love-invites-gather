@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CalendarDays,
   Check,
@@ -129,10 +129,11 @@ function Manage() {
   const removePhoto = useServerFn(deletePhoto);
   const refresh = () => router.invalidate();
 
-  const link =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/ftesa/${inv.id}`
-      : `/ftesa/${inv.id}`;
+  // Origin-i lexohet vetëm në shfletues (useEffect) që SSR dhe klienti të
+  // japin të njëjtin HTML fillestar — pa gabim hidratimi.
+  const [origin, setOrigin] = useState("");
+  useEffect(() => setOrigin(window.location.origin), []);
+  const link = `${origin}/ftesa/${inv.id}`;
 
   const sum = (rows: Row[]) => rows.reduce((s, r) => s + Math.max(r.guest_count, 1), 0);
   const by = (f: Exclude<Filter, "all">) => d.rsvps.filter((r) => statusOf(r) === f);
