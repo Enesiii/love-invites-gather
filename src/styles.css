@@ -229,7 +229,7 @@
 @media (max-height: 600px) and (max-width: 767px) {
   .invitation-opening { padding-top: max(20px, env(safe-area-inset-top)); padding-bottom: max(20px, env(safe-area-inset-bottom)); }
   .opening-names { font-size: 30px; margin-top: 10px; }
-  .envelope { width: min(100%, 250px); margin: 68px 0 20px; flex-shrink: 0; }
+  .envelope { width: min(100%, 220px); margin: 56px 0 16px; flex-shrink: 0; }
   .envelope-letter { padding-top: 14px; }
   .envelope-letter p { font-size: 22px; margin-top: 8px; }
 }
