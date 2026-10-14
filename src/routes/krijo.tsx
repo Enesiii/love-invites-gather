@@ -105,7 +105,7 @@ function Create() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="d">Data</Label>
-              <Input id="d" type="date" value={f.event_date} onChange={set("event_date")} />
+              <Input id="d" type="date" min={new Date().toISOString().slice(0, 10)} max="2100-12-31" value={f.event_date} onChange={set("event_date")} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="t">Ora</Label>
