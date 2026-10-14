@@ -14,3 +14,5 @@
 - [x] Order request flow from preview page (order_requests table + dialog)
 - [x] Order form validation + admin view (/admin)
 - [ ] Order confirmation email (blocked: needs verified email domain)
+- [ ] Fix Google Maps button blocked in preview (ERR_BLOCKED_BY_RESPONSE)
+- [ ] Verify Approve button for guests who confirmed attendance
