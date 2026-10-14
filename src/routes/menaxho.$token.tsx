@@ -434,7 +434,7 @@ function Manage() {
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
             <section id="mysafiret" className="rounded-xl border border-border bg-card p-4 sm:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h2 className="text-sm font-semibold">Guest List</h2>
+                <h2 className="text-sm font-semibold">Lista e musafirëve</h2>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">{d.rsvps.length} RSVP</span>
                   <GuestDialog
