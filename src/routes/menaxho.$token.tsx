@@ -152,6 +152,32 @@ function Manage() {
     }
   };
   const refresh = () => router.invalidate();
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const downloadInvitation = async () => {
+    setPdfBusy(true);
+    try {
+      const { buildInvitationPdf } = await import("@/lib/invitation-pdf");
+      const blob = await buildInvitationPdf(inv);
+      const names = `${inv.partner_one}-${inv.partner_two}`
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ftesa-${names || "dasme"}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    } catch (e) {
+      console.error("PDF failed", e);
+      toast.error("Ftesa nuk u shkarkua. Provoni përsëri.");
+    } finally {
+      setPdfBusy(false);
+    }
+  };
 
   // Origin-i lexohet vetëm në shfletues (useEffect) që SSR dhe klienti të
   // japin të njëjtin HTML fillestar — pa gabim hidratimi.
@@ -443,6 +469,9 @@ function Manage() {
                 <Link to="/ftesa/$id" params={{ id: inv.id }} target="_blank">
                   <ExternalLink className="mr-1.5 h-4 w-4" /> Preview
                 </Link>
+              </Button>
+              <Button size="sm" variant="outline" onClick={downloadInvitation} disabled={pdfBusy}>
+                <Download className="mr-1.5 h-4 w-4" /> {pdfBusy ? "Duke përgatitur…" : "Shkarko ftesën"}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
