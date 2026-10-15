@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
+  Ban,
   CalendarDays,
   Check,
   Clock,
@@ -43,6 +44,7 @@ import {
   getManageData,
   setApproval,
   setExpectedGuests,
+  setInvitationClosed,
   uploadPhoto,
 } from "@/lib/invitations.functions";
 import { GuestDialog } from "@/components/GuestDialog";
@@ -130,6 +132,25 @@ function Manage() {
   const upload = useServerFn(uploadPhoto);
   const removePhoto = useServerFn(deletePhoto);
   const saveExpected = useServerFn(setExpectedGuests);
+  const toggleClosed = useServerFn(setInvitationClosed);
+  const isClosed = !!inv.closed_at;
+  const onToggleClosed = async () => {
+    const next = !isClosed;
+    if (
+      next &&
+      !window.confirm(
+        "Ta ndërpresim ftesën? Mysafirët nuk do të mund të përgjigjen apo të ngarkojnë foto. Mund ta riaktivizoni kur të doni.",
+      )
+    )
+      return;
+    try {
+      await toggleClosed({ data: { token, closed: next } });
+      toast.success(next ? "Ftesa u ndërpre." : "Ftesa u riaktivizua.");
+      refresh();
+    } catch {
+      toast.error("Nuk u ndryshua. Provoni përsëri.");
+    }
+  };
   const refresh = () => router.invalidate();
 
   // Origin-i lexohet vetëm në shfletues (useEffect) që SSR dhe klienti të
@@ -492,6 +513,37 @@ function Manage() {
                   <span className="text-xs text-muted-foreground">Vendosni totalin</span>
                 )}
               </div>
+            </div>
+          </section>
+
+          <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <h2 className="flex items-center gap-2 text-sm font-semibold">
+                  <Ban className="h-4 w-4" /> Statusi i ftesës
+                  <span
+                    className={`rounded-full border px-2 py-0.5 text-xs font-normal ${
+                      isClosed
+                        ? "border-destructive/30 bg-destructive/10 text-destructive"
+                        : "border-success/30 bg-success/10 text-success"
+                    }`}
+                  >
+                    {isClosed ? "Ndërprerë" : "Aktive"}
+                  </span>
+                </h2>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {isClosed
+                    ? "Linku i ftesës tregon se ftesa ka përfunduar. Mysafirët nuk mund të përgjigjen apo të ngarkojnë foto."
+                    : "Pas përfundimit të eventit, ndërprijeni linkun që mysafirët të mos dërgojnë më përgjigje apo foto."}
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant={isClosed ? "default" : "outline"}
+                onClick={onToggleClosed}
+              >
+                {isClosed ? "Riaktivizo ftesën" : "Ndërprit ftesën"}
+              </Button>
             </div>
           </section>
 
