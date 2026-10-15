@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
+import { ClosedInvitation } from "@/components/ClosedInvitation";
 import { SupportButton } from "@/components/SupportButton";
 import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpening";
 import { Camera, Heart } from "lucide-react";
@@ -71,6 +72,10 @@ function InvitePage() {
     } finally {
       setBusy(false);
     }
+  }
+
+  if (inv.closed_at) {
+    return <ClosedInvitation partnerOne={inv.partner_one} partnerTwo={inv.partner_two} theme={inv.theme} />;
   }
 
   return (

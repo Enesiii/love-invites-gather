@@ -1,0 +1,1 @@
+ALTER TABLE public.invitations ADD COLUMN IF NOT EXISTS closed_at timestamptz;

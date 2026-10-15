@@ -41,7 +41,7 @@ export const getInvitation = createServerFn({ method: "GET" })
     const { data: row } = await supabaseAdmin
       .from("invitations")
       .select(
-        "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme",
+        "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, closed_at",
       )
       .eq("id", data.id)
       .maybeSingle();
@@ -62,10 +62,11 @@ export const submitRsvp = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id")
+      .select("id, closed_at")
       .eq("id", data.invitation_id)
       .maybeSingle();
     if (!inv) throw new Error("Ftesa nuk u gjet.");
+    if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
     const { error } = await supabaseAdmin.from("rsvps").insert({
       invitation_id: data.invitation_id,
       guest_name: data.guest_name,
@@ -91,7 +92,7 @@ export const getManageData = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests")
+      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at")
       .eq("manage_token", data.token)
       .maybeSingle();
     if (!inv) return null;
@@ -227,6 +228,23 @@ export const setExpectedGuests = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const setInvitationClosed = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string().uuid(), closed: z.boolean() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { error } = await supabaseAdmin
+      .from("invitations")
+      .update({ closed_at: data.closed ? new Date().toISOString() : null })
+      .eq("id", invitationId);
+    if (error) {
+      console.error("setInvitationClosed failed", error);
+      throw new Error("Statusi i ftesës nuk u ndryshua.");
+    }
+    return { ok: true };
+  });
+
 export const updateInvitation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) =>
     createSchema.extend({ token: z.string().uuid() }).parse(input),
@@ -289,10 +307,11 @@ export const uploadGuestMedia = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id")
+      .select("id, closed_at")
       .eq("id", data.invitation_id)
       .maybeSingle();
     if (!inv) throw new Error("Ftesa nuk u gjet.");
+    if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
     const { count } = await supabaseAdmin
       .from("event_photos")
       .select("id", { count: "exact", head: true })

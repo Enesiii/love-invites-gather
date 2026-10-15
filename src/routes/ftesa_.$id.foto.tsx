@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Camera, CheckCircle2, Heart } from "lucide-react";
+import { ClosedInvitation } from "@/components/ClosedInvitation";
 import { Button } from "@/components/ui/button";
 import { getInvitation, uploadGuestMedia } from "@/lib/invitations.functions";
 
@@ -70,6 +71,10 @@ function GuestUploadPage() {
       setSent((s) => s + ok);
       toast.success(ok === 1 ? "U dërgua te çifti." : `${ok} skedarë u dërguan te çifti.`);
     }
+  }
+
+  if (inv.closed_at) {
+    return <ClosedInvitation partnerOne={inv.partner_one} partnerTwo={inv.partner_two} theme={inv.theme} />;
   }
 
   return (

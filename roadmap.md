@@ -18,3 +18,4 @@
 - [x] Approve flow: guests who confirm attendance are approved automatically; hydration and Approve button verified
 - [x] Buy Me a Coffee support button (homepage footer + invitation page) — needs the real buymeacoffee.com link from the owner
 - [x] Admin login (/admin) — failed because the database was paused; works after resume
+- [x] Manual close/reopen of an invitation from the dashboard (invitations.closed_at)
