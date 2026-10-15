@@ -73,9 +73,8 @@ export const submitRsvp = createServerFn({ method: "POST" })
       attending: data.attending,
       guest_count: data.attending ? data.guest_count : 0,
       note: data.note || null,
-      // Mysafiri që konfirmon ardhjen (Po) approve-ohet vetvetiu; ai që nuk vjen
-      // mbetet pa aprovim (statusi "Nuk mund të vijë" vjen nga attending=false).
-      approval: data.attending ? "approved" : "pending",
+      // Përgjigjet nga ftesa presin gjithmonë aprovimin e menaxherit.
+      approval: "pending",
     });
     if (error) {
       console.error("submitRsvp failed", error);
@@ -154,7 +153,6 @@ export const saveGuest = createServerFn({ method: "POST" })
       attending: data.attending,
       guest_count: data.attending ? data.guest_count : 0,
       note: data.note || null,
-      approval: data.attending ? "approved" : "pending",
     };
     const { error } = data.id
       ? await supabaseAdmin
@@ -162,7 +160,9 @@ export const saveGuest = createServerFn({ method: "POST" })
           .update(row)
           .eq("id", data.id)
           .eq("invitation_id", invitationId)
-      : await supabaseAdmin.from("rsvps").insert({ ...row, invitation_id: invitationId });
+      : await supabaseAdmin
+          .from("rsvps")
+          .insert({ ...row, approval: "approved", invitation_id: invitationId });
     if (error) {
       console.error("saveGuest failed", error);
       throw new Error("Mysafiri nuk u ruajt.");
