@@ -46,6 +46,7 @@ export type Database = {
       invitations: {
         Row: {
           address: string | null
+          closed_at: string | null
           created_at: string
           event_date: string
           event_time: string
@@ -61,6 +62,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          closed_at?: string | null
           created_at?: string
           event_date: string
           event_time?: string
@@ -76,6 +78,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          closed_at?: string | null
           created_at?: string
           event_date?: string
           event_time?: string

@@ -36,6 +36,13 @@
       "when": 1791995867865,
       "tag": "0004_invitations_expected_guests",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792071079325,
+      "tag": "0005_invitations_closed_at",
+      "breakpoints": true
     }
   ]
 }
