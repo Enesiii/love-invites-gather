@@ -55,12 +55,12 @@ function oklchToRgb([l, c, h]: Oklch): [number, number, number] {
     const x = Math.min(1, Math.max(0, v));
     return x <= 0.0031308 ? 12.92 * x : 1.055 * x ** (1 / 2.4) - 0.055;
   });
-  return [g[0], g[1], g[2]];
+  return [g[0] ?? 0, g[1] ?? 0, g[2] ?? 0];
 }
 
 export async function buildInvitationPdf(inv: PdfInvitation): Promise<Blob> {
   const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
-  const pal = PALETTES[inv.theme] ?? PALETTES.rose;
+  const pal = (PALETTES[inv.theme] ?? PALETTES["rose"]) as Palette;
   const col = (c: Oklch) => {
     const [r, g, b] = oklchToRgb(c);
     return rgb(r, g, b);
@@ -126,16 +126,17 @@ export async function buildInvitationPdf(inv: PdfInvitation): Promise<Blob> {
   center("JU FTOJMË NË DASMËN TONË", y, 10, regular, muted);
   y -= 62;
 
-  const names = [inv.partner_one || "Emri", "&", inv.partner_two || "Emri"];
+  const n1 = inv.partner_one || "Emri";
+  const n2 = inv.partner_two || "Emri";
   let size = 42;
-  while (size > 24 && Math.max(...[names[0], names[2]].map((n) => bold.widthOfTextAtSize(clean(n), size))) > W - 110) {
+  while (size > 24 && Math.max(...[n1, n2].map((n) => bold.widthOfTextAtSize(clean(n), size))) > W - 110) {
     size -= 2;
   }
-  center(names[0], y, size, regular, primary);
+  center(n1, y, size, regular, primary);
   y -= size * 0.95;
   center("&", y, size * 0.7, italic, accent);
   y -= size * 0.95;
-  center(names[2], y, size, regular, primary);
+  center(n2, y, size, regular, primary);
 
   y -= 38;
   divider(y);
