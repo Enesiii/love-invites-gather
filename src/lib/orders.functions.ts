@@ -35,6 +35,32 @@ function checkKey(key: string) {
 
 const keySchema = z.object({ key: z.string().min(1).max(200) });
 
+export const listAdminInvitations = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => keySchema.parse(input))
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const { setResponseHeader } = await import("@tanstack/react-start/server");
+    setResponseHeader("Cache-Control", "no-store");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const fetchPage = (start: number) => supabaseAdmin
+      .from("invitations")
+      .select("id, manage_token, partner_one, partner_two, event_date, event_time, venue, theme, closed_at, created_at")
+      .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
+      .range(start, start + 499);
+    const first = await fetchPage(0);
+    if (first.error) throw new Error("Ftesat nuk u ngarkuan. Provoni përsëri.");
+    const rows = first.data ?? [];
+    let pageSize = rows.length;
+    while (pageSize === 500) {
+      const next = await fetchPage(rows.length);
+      if (next.error) throw new Error("Ftesat nuk u ngarkuan. Provoni përsëri.");
+      pageSize = next.data?.length ?? 0;
+      rows.push(...(next.data ?? []));
+    }
+    return rows;
+  });
+
 export const listOrderRequests = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => keySchema.parse(input))
   .handler(async ({ data }) => {
