@@ -450,3 +450,33 @@
   .home-step h3 { font-size: 21px; }
 }
 @media (prefers-reduced-motion: reduce) { .collection-image img { transition: none; } }
+
+/* Butoni kontaktues "Na shkruani" — WhatsApp */
+.whatsapp-contact {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card) / 0.92);
+  color: hsl(var(--card-foreground));
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(6px);
+  touch-action: manipulation;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.whatsapp-contact:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift, var(--shadow-soft));
+}
+.whatsapp-contact svg {
+  color: hsl(var(--primary));
+}

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { InvitationCard } from "@/components/InvitationCard";
 import { OrderDialog } from "@/components/OrderDialog";
 import { InvitationOpening, InvitationMusic } from "@/components/InvitationOpening";
+import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { findInvitationStyle, previewInvitation } from "@/lib/invitation-collection";
 
 export const Route = createFileRoute("/preview/$style")({
@@ -54,6 +55,7 @@ function StylePreview() {
           <OrderDialog style={style.id} styleName={style.name} />
         </div>
       </header>
+      <WhatsAppContact />
       {opened ? (
         <main className="invitation-reveal mx-auto max-w-xl px-4 py-8">
           <div className="mb-6 flex justify-end">

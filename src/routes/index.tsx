@@ -22,6 +22,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { HomeNavigation } from "@/components/HomeNavigation";
+import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { HomeGallery } from "@/components/HomeGallery";
 import stationery from "@/assets/home-stationery.webp";
 
@@ -311,6 +312,7 @@ function Index() {
           Në fillim <ArrowDown className="h-4 w-4 rotate-180" />
         </Button>
       </footer>
+      <WhatsAppContact />
     </div>
   );
 }
