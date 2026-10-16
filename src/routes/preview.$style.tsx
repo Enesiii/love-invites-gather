@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { InvitationCard } from "@/components/InvitationCard";
 import { OrderDialog } from "@/components/OrderDialog";
 import { InvitationOpening, InvitationMusic } from "@/components/InvitationOpening";
+import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { findInvitationStyle, previewInvitation } from "@/lib/invitation-collection";
 
 export const Route = createFileRoute("/preview/$style")({
