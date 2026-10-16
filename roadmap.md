@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Admin: list all client invitations, open invitation/panel and copy recovery links; verify authenticated flow.
+- [x] Admin: list all client invitations, open invitation/panel and copy recovery links; verify authenticated flow.
 - [x] Database: invitations + rsvps tables
 - [x] Homepage (/)
 - [x] Invitation creator (/krijo)
