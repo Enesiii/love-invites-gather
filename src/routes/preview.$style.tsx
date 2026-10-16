@@ -55,6 +55,7 @@ function StylePreview() {
           <OrderDialog style={style.id} styleName={style.name} />
         </div>
       </header>
+      <WhatsAppContact />
       {opened ? (
         <main className="invitation-reveal mx-auto max-w-xl px-4 py-8">
           <div className="mb-6 flex justify-end">

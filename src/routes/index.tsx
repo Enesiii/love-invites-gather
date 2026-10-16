@@ -312,6 +312,7 @@ function Index() {
           Në fillim <ArrowDown className="h-4 w-4 rotate-180" />
         </Button>
       </footer>
+      <WhatsAppContact />
     </div>
   );
 }
