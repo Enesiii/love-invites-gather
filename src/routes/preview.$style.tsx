@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { InvitationCard } from "@/components/InvitationCard";
 import { OrderDialog } from "@/components/OrderDialog";
 import { InvitationOpening, InvitationMusic } from "@/components/InvitationOpening";
+import { PhonePreview } from "@/components/PhonePreview";
 import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { findInvitationStyle, previewInvitation } from "@/lib/invitation-collection";
 
@@ -56,16 +57,18 @@ function StylePreview() {
         </div>
       </header>
       <WhatsAppContact />
-      {opened ? (
-        <main className="invitation-reveal mx-auto max-w-xl px-4 py-8">
-          <div className="mb-6 flex justify-end">
-            <InvitationMusic />
-          </div>
-          <InvitationCard inv={inv} showDirections />
-        </main>
-      ) : (
-        <InvitationOpening inv={inv} onOpen={() => setOpened(true)} />
-      )}
+      <PhonePreview>
+        {opened ? (
+          <main className="invitation-reveal mx-auto max-w-xl px-4 py-8">
+            <div className="mb-6 flex justify-end">
+              <InvitationMusic />
+            </div>
+            <InvitationCard inv={inv} showDirections />
+          </main>
+        ) : (
+          <InvitationOpening inv={inv} onOpen={() => setOpened(true)} />
+        )}
+      </PhonePreview>
     </div>
   );
 }
