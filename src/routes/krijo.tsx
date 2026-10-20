@@ -15,7 +15,7 @@ import { useSession } from "@/hooks/use-session";
 export const Route = createFileRoute("/krijo")({
   validateSearch: (search: Record<string, unknown>): { theme?: string } => {
     const theme = search["theme"];
-    return typeof theme === "string" && ["rose", "sage", "night", "gold", "ivory", "blush"].includes(theme) ? { theme } : {};
+    return typeof theme === "string" && ["rose", "sage", "night", "gold", "ivory", "blush", "arch"].includes(theme) ? { theme } : {};
   },
   head: () => ({
     meta: [
@@ -40,6 +40,7 @@ const themes = [
   { id: "gold", label: "Ar" },
   { id: "ivory", label: "Fildiş" },
   { id: "blush", label: "Rozë" },
+  { id: "arch", label: "Harku" },
 ];
 
 function Create() {
@@ -133,7 +134,7 @@ function Create() {
           </div>
           <div className="space-y-2">
             <Label>Stili</Label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {themes.map((t) => (
                 <Button
                   key={t.id}

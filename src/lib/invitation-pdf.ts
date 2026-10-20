@@ -58,6 +58,13 @@ const PALETTES: Record<string, Palette> = {
     accent: [0.78, 0.08, 320],
     muted: [0.5, 0.05, 340],
   },
+  arch: {
+    card: [0.97, 0.015, 85],
+    text: [0.32, 0.03, 50],
+    primary: [0.55, 0.11, 40],
+    accent: [0.6, 0.05, 150],
+    muted: [0.5, 0.03, 60],
+  },
 };
 
 function oklchToRgb([l, c, h]: Oklch): [number, number, number] {

@@ -10,6 +10,8 @@ import ivory from "@/assets/gallery-ivory.webp";
 import ivorySmall from "@/assets/gallery-ivory-small.webp";
 import blush from "@/assets/gallery-blush.webp";
 import blushSmall from "@/assets/gallery-blush-small.webp";
+import arch from "@/assets/arch-floral.webp";
+import archSmall from "@/assets/arch-floral-small.webp";
 
 export const invitationCollection = [
   {
@@ -59,6 +61,14 @@ export const invitationCollection = [
     image: blush,
     small: blushSmall,
     description: "Nuanca rozë dhe livando si akvarel, plot ëmbëlsi dhe lule.",
+  },
+  {
+    id: "arch",
+    name: "Harku i luleve",
+    category: "MODEL I RI",
+    image: arch,
+    small: archSmall,
+    description: "Model krejt ndryshe: hark me lule akvarel, emra me shkrim dore dhe data në rresht.",
   },
 ] as const;
 
