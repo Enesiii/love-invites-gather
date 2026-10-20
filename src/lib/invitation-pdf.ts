@@ -37,6 +37,27 @@ const PALETTES: Record<string, Palette> = {
     accent: [0.8, 0.1, 85],
     muted: [0.75, 0.03, 85],
   },
+  gold: {
+    card: [0.2, 0.012, 60],
+    text: [0.92, 0.03, 90],
+    primary: [0.78, 0.12, 85],
+    accent: [0.78, 0.12, 85],
+    muted: [0.7, 0.04, 85],
+  },
+  ivory: {
+    card: [0.985, 0.006, 90],
+    text: [0.22, 0.01, 60],
+    primary: [0.25, 0.01, 60],
+    accent: [0.72, 0.06, 80],
+    muted: [0.45, 0.015, 60],
+  },
+  blush: {
+    card: [0.985, 0.01, 355],
+    text: [0.32, 0.04, 340],
+    primary: [0.55, 0.1, 350],
+    accent: [0.78, 0.08, 320],
+    muted: [0.5, 0.05, 340],
+  },
 };
 
 function oklchToRgb([l, c, h]: Oklch): [number, number, number] {

@@ -15,7 +15,7 @@ import { useSession } from "@/hooks/use-session";
 export const Route = createFileRoute("/krijo")({
   validateSearch: (search: Record<string, unknown>): { theme?: string } => {
     const theme = search["theme"];
-    return typeof theme === "string" && ["rose", "sage", "night"].includes(theme) ? { theme } : {};
+    return typeof theme === "string" && ["rose", "sage", "night", "gold", "ivory", "blush"].includes(theme) ? { theme } : {};
   },
   head: () => ({
     meta: [
@@ -37,6 +37,9 @@ const themes = [
   { id: "rose", label: "Trëndafil" },
   { id: "sage", label: "Sherbelë" },
   { id: "night", label: "Natë" },
+  { id: "gold", label: "Ar" },
+  { id: "ivory", label: "Fildiş" },
+  { id: "blush", label: "Rozë" },
 ];
 
 function Create() {
