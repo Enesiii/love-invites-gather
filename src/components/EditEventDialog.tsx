@@ -50,7 +50,7 @@ export function EditEventDialog({
     setBusy(true);
     try {
       await save({
-        data: { ...f, token, theme: f.theme as "rose" | "sage" | "night" },
+        data: { ...f, token, theme: f.theme as "rose" | "sage" | "night" | "gold" | "ivory" | "blush" },
       });
       toast.success("Ngjarja u përditësua.");
       setOpen(false);
@@ -106,6 +106,9 @@ export function EditEventDialog({
               <option value="rose">Rose</option>
               <option value="sage">Sage</option>
               <option value="night">Night</option>
+              <option value="gold">Ar</option>
+              <option value="ivory">Fildiş</option>
+              <option value="blush">Rozë</option>
             </select>
           </label>
           <Button type="submit" className="w-full" disabled={busy}>

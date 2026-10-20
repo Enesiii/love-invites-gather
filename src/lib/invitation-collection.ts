@@ -4,6 +4,12 @@ import sage from "@/assets/gallery-sage.webp";
 import sageSmall from "@/assets/gallery-sage-small.webp";
 import night from "@/assets/gallery-night.webp";
 import nightSmall from "@/assets/gallery-night-small.webp";
+import gold from "@/assets/gallery-gold.webp";
+import goldSmall from "@/assets/gallery-gold-small.webp";
+import ivory from "@/assets/gallery-ivory.webp";
+import ivorySmall from "@/assets/gallery-ivory-small.webp";
+import blush from "@/assets/gallery-blush.webp";
+import blushSmall from "@/assets/gallery-blush-small.webp";
 
 export const invitationCollection = [
   {
@@ -29,6 +35,30 @@ export const invitationCollection = [
     image: night,
     small: nightSmall,
     description: "Tonet e natës dhe detajet e arta për një festë të paharrueshme.",
+  },
+  {
+    id: "gold",
+    name: "Natë e artë",
+    category: "LUKSUZE",
+    image: gold,
+    small: goldSmall,
+    description: "E zezë e thellë me ar të gdhendur, për një mbrëmje madhështore.",
+  },
+  {
+    id: "ivory",
+    name: "Fildiš i pastër",
+    category: "MINIMALE",
+    image: ivory,
+    small: ivorySmall,
+    description: "Letër krem me vizatim të hollë bojëshire, elegancë e qetë.",
+  },
+  {
+    id: "blush",
+    name: "Ëndrra rozë",
+    category: "ROMANTIKE",
+    image: blush,
+    small: blushSmall,
+    description: "Nuanca rozë dhe livando si akvarel, plot ëmbëlsi dhe lule.",
   },
 ] as const;
 

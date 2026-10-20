@@ -9,7 +9,7 @@ const createSchema = z.object({
   venue: z.string().trim().min(1, "Shkruani vendin").max(120),
   address: z.string().trim().max(200).optional().default(""),
   message: z.string().trim().max(500).optional().default(""),
-  theme: z.enum(["rose", "sage", "night"]),
+  theme: z.enum(["rose", "sage", "night", "gold", "ivory", "blush"]),
 });
 
 export const createInvitation = createServerFn({ method: "POST" })
