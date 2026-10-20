@@ -14,7 +14,7 @@ function todayIso() {
 }
 
 export const orderSchema = z.object({
-  style: z.enum(["rose", "sage", "night"]),
+  style: z.enum(["rose", "sage", "night", "gold", "ivory", "blush"]),
   partner_one: z.string().trim().min(1, "Shkruani emrin e parë").max(60),
   partner_two: z.string().trim().min(1, "Shkruani emrin e dytë").max(60),
   wedding_date: z
