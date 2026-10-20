@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { submitOrderRequest } from "@/lib/orders.functions";
 import { orderSchema } from "@/lib/order-validation";
 
-type Style = "rose" | "sage" | "night" | "gold" | "ivory" | "blush";
+type Style = "rose" | "sage" | "night" | "gold" | "ivory" | "blush" | "arch";
 
 const empty = {
   partner_one: "",

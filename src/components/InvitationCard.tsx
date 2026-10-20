@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { formatDate } from "@/lib/format-date";
 import { Button } from "@/components/ui/button";
 import botanical from "@/assets/wedding-botanical.png";
+import archFloral from "@/assets/arch-floral.webp";
 
 export type InvitationView = {
   partner_one: string;
@@ -37,6 +38,46 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
       navigator.clipboard?.writeText(e.currentTarget.href).catch(() => undefined);
       toast.info("Linku i Google Maps u kopjua — hapeni në shfletues.");
     }
+  }
+  const directions =
+    showDirections && inv.venue.trim() ? (
+      <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
+        <a href={mapsHref} target="_blank" rel="noopener noreferrer" onClick={handleMapsClick}>
+          <Navigation className="h-4 w-4 shrink-0" /> <span>Navigo në Google Maps</span>
+        </a>
+      </Button>
+    ) : null;
+  if (inv.theme === "arch") {
+    const d = inv.event_date ? new Date(`${inv.event_date}T12:00:00`) : null;
+    const months = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
+    const days = ["E diel", "E hënë", "E martë", "E mërkurë", "E enjte", "E premte", "E shtunë"];
+    return (
+      <div className="theme-arch">
+        <div className="arch-invitation">
+          <img src={archFloral} alt="" width={768} height={1024} className="arch-frame" />
+          <div className="arch-content text-center text-card-foreground">
+            <p className="arch-kicker">Së bashku me familjet tona</p>
+            <h2 className="arch-names text-primary">
+              {inv.partner_one || "Emri"}
+              <span className="arch-amp">&</span>
+              {inv.partner_two || "Emri"}
+            </h2>
+            <p className="arch-kicker">ju ftojnë të festoni dasmën</p>
+            <div className="arch-date">
+              <span>{d ? days[d.getDay()] : "Dita"}</span>
+              <strong>{d ? d.getDate() : "--"}</strong>
+              <span>{inv.event_time || "Ora"}</span>
+            </div>
+            <p className="arch-month">{d ? `${months[d.getMonth()]} ${d.getFullYear()}` : "Muaji"}</p>
+            <p className="arch-venue">{inv.venue || "Vendi"}</p>
+            {inv.address ? <p className="text-xs text-muted-foreground">{inv.address}</p> : null}
+            {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
+            {directions}
+            {inv.message ? <p className="font-display mx-auto mt-6 max-w-xs text-lg italic text-muted-foreground">“{inv.message}”</p> : null}
+          </div>
+        </div>
+      </div>
+    );
   }
   return (
     <div className={`theme-${inv.theme}`}>
