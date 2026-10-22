@@ -46,6 +46,7 @@ function InvitePage() {
   const [name, setName] = useState("");
   const [attending, setAttending] = useState<boolean | null>(null);
   const [count, setCount] = useState(1);
+  const [countText, setCountText] = useState("1");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<boolean | null>(null);
@@ -100,10 +101,10 @@ function InvitePage() {
                 <Input id="n" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} />
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Button type="button" variant={attending === true ? "default" : "outline"} onClick={() => setAttending(true)}>
+                <Button type="button" variant="outline" aria-pressed={attending === true} className="rsvp-choice min-h-11" onClick={() => setAttending(true)}>
                   Do të vij
                 </Button>
-                <Button type="button" variant={attending === false ? "default" : "outline"} onClick={() => setAttending(false)}>
+                <Button type="button" variant="outline" aria-pressed={attending === false} className="rsvp-choice min-h-11" onClick={() => setAttending(false)}>
                   Nuk mund të vij
                 </Button>
               </div>
@@ -112,11 +113,17 @@ function InvitePage() {
                   <Label htmlFor="c">Sa persona (përfshirë ju)?</Label>
                   <Input
                     id="c"
-                    type="number"
-                    min={1}
-                    max={10}
-                    value={count}
-                    onChange={(e) => setCount(Math.min(10, Math.max(1, Number(e.target.value) || 1)))}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="Shkruani numrin"
+                    value={countText}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                      setCountText(v);
+                      if (v) setCount(Math.min(20, Math.max(1, Number(v))));
+                    }}
+                    onBlur={() => { if (!countText) setCountText(String(count)); else setCountText(String(Math.min(20, Math.max(1, Number(countText))))); }}
                   />
                 </div>
               ) : null}
