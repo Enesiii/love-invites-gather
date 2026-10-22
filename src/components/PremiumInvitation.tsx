@@ -1,6 +1,7 @@
 import { Camera, Heart } from "lucide-react";
 import { Countdown } from "@/components/Countdown";
 import { MapsButton } from "@/components/MapsButton";
+import { InvitationLocation } from "@/components/InvitationLocation";
 import type { InvitationView } from "@/components/InvitationCard";
 import botanical from "@/assets/wedding-botanical.png";
 
@@ -78,8 +79,7 @@ export function PremiumInvitation({ inv, showDirections }: { inv: InvitationView
             <span>{inv.event_time || "Ora"}</span>
           </div>
           <p className="premium-month">{d ? `${MONTHS[d.getMonth()]} ${d.getFullYear()}` : "Muaji"}</p>
-          <p className="premium-venue">{inv.venue || "Vendi"}</p>
-          {inv.address ? <p className="premium-address">{inv.address}</p> : null}
+          <InvitationLocation venue={inv.venue} address={inv.address} />
           {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
           {showDirections ? <MapsButton venue={inv.venue} address={inv.address} /> : null}
           {inv.message ? <p className="premium-message">“{inv.message}”</p> : null}

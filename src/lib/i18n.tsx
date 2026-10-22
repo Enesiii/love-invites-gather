@@ -10,6 +10,7 @@ export type Lang = (typeof LANGUAGES)[number]["code"];
 
 type StyleText = { category: string; description: string };
 export type Dict = {
+  location: { heading: string; open: string };
   nav: { collection: string; how: string; pricing: string; faq: string; create: string; open: string; close: string; main: string; mobile: string; language: string; skip: string };
   hero: { eyebrow: string; title: string; line: string; lineEm: string; desc: string; cta: string; see: string; note: string; alt: string; invite: string; date: string };
   promise: [string, string, string, string];
@@ -25,6 +26,7 @@ export type Dict = {
 };
 
 const sq: Dict = {
+  location: { heading: "Vendi", open: "Hap vendndodhjen në Google Maps" },
   nav: { collection: "Koleksioni", how: "Si funksionon", pricing: "Çmimet", faq: "Pyetje të shpeshta", create: "Krijo ftesën", open: "Hap menynë", close: "Mbyll menynë", main: "Navigimi kryesor", mobile: "Navigimi në telefon", language: "Gjuha", skip: "Kalo te përmbajtja" },
   hero: { eyebrow: "PËR MOMENTET QË MBETEN", title: "Ftesa Dasme", line: "Dixhitale.", lineEm: "Me dashuri.", desc: "Dita juaj meriton një fillim të bukur. Ftoni njerëzit tuaj me një ftesë elegante, personale dhe të lehtë për t’u ndarë.", cta: "Krijo ftesën tënde", see: "Shiko një ftesë", note: "Një lidhje. Një kujtim. Të gjithë pranë.", alt: "Zarf elegant me vulë zemre dhe ftesë të bardhë", invite: "ME GËZIM JU FTOJMË", date: "19 QERSHOR 2027 · PRISHTINË" },
   promise: ["Zarf që hapet me dashuri", "Përgjigjet në një vend", "Muzikë për momentin", "E bukur në çdo telefon"],
@@ -55,6 +57,7 @@ const sq: Dict = {
 };
 
 const sr: Dict = {
+  location: { heading: "Lokacija", open: "Otvori lokaciju u Google Maps" },
   nav: { collection: "Kolekcija", how: "Kako funkcioniše", pricing: "Cene", faq: "Česta pitanja", create: "Napravi pozivnicu", open: "Otvori meni", close: "Zatvori meni", main: "Glavna navigacija", mobile: "Navigacija na telefonu", language: "Jezik", skip: "Pređi na sadržaj" },
   hero: { eyebrow: "ZA TRENUTKE KOJI OSTAJU", title: "Pozivnice za venčanje", line: "Digitalne.", lineEm: "Sa ljubavlju.", desc: "Vaš dan zaslužuje lep početak. Pozovite svoje drage elegantnom, ličnom pozivnicom koju je lako podeliti.", cta: "Napravi svoju pozivnicu", see: "Pogledaj pozivnicu", note: "Jedan link. Jedna uspomena. Svi zajedno.", alt: "Elegantna koverta sa pečatom u obliku srca i belom pozivnicom", invite: "SA RADOŠĆU VAS POZIVAMO", date: "19. JUN 2027 · PRIŠTINA" },
   promise: ["Koverta koja se otvara s ljubavlju", "Odgovori na jednom mestu", "Muzika za trenutak", "Lepa na svakom telefonu"],
@@ -85,6 +88,7 @@ const sr: Dict = {
 };
 
 const tr: Dict = {
+  location: { heading: "Mekân", open: "Konumu Google Maps'te aç" },
   nav: { collection: "Koleksiyon", how: "Nasıl çalışır", pricing: "Fiyatlar", faq: "Sık sorulanlar", create: "Davetiye oluştur", open: "Menüyü aç", close: "Menüyü kapat", main: "Ana menü", mobile: "Mobil menü", language: "Dil", skip: "İçeriğe geç" },
   hero: { eyebrow: "KALICI ANLAR İÇİN", title: "Düğün Davetiyesi", line: "Dijital.", lineEm: "Sevgiyle.", desc: "Gününüz güzel bir başlangıcı hak ediyor. Sevdiklerinizi zarif, kişisel ve kolay paylaşılan bir davetiyeyle davet edin.", cta: "Davetiyeni oluştur", see: "Bir davetiye gör", note: "Tek bağlantı. Tek anı. Herkes yanınızda.", alt: "Kalp mühürlü zarif zarf ve beyaz davetiye", invite: "SİZİ SEVİNÇLE DAVET EDİYORUZ", date: "19 HAZİRAN 2027 · PRİŞTİNE" },
   promise: ["Sevgiyle açılan zarf", "Yanıtlar tek yerde", "Ana özel müzik", "Her telefonda şık"],
@@ -115,6 +119,7 @@ const tr: Dict = {
 };
 
 const en: Dict = {
+  location: { heading: "Location", open: "Open location in Google Maps" },
   nav: { collection: "Collection", how: "How it works", pricing: "Pricing", faq: "FAQ", create: "Create invitation", open: "Open menu", close: "Close menu", main: "Main navigation", mobile: "Mobile navigation", language: "Language", skip: "Skip to content" },
   hero: { eyebrow: "FOR MOMENTS THAT STAY", title: "Wedding Invitations", line: "Digital.", lineEm: "With love.", desc: "Your day deserves a beautiful beginning. Invite your loved ones with an elegant, personal invitation that is easy to share.", cta: "Create your invitation", see: "See an invitation", note: "One link. One memory. Everyone close.", alt: "Elegant envelope with a heart seal and a white invitation", invite: "WITH JOY WE INVITE YOU", date: "19 JUNE 2027 · PRISHTINA" },
   promise: ["An envelope that opens with love", "All replies in one place", "Music for the moment", "Beautiful on every phone"],

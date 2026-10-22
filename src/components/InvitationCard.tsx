@@ -1,4 +1,5 @@
-import { CalendarDays, Clock, Heart, MapPin } from "lucide-react";
+import { CalendarDays, Clock, Heart } from "lucide-react";
+import { InvitationLocation } from "@/components/InvitationLocation";
 import { Countdown } from "@/components/Countdown";
 import { formatDate } from "@/lib/format-date";
 import { MapsButton } from "@/components/MapsButton";
@@ -50,8 +51,7 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
               <span>{inv.event_time || "Ora"}</span>
             </div>
             <p className="arch-month">{d ? `${months[d.getMonth()]} ${d.getFullYear()}` : "Muaji"}</p>
-            <p className="arch-venue">{inv.venue || "Vendi"}</p>
-            {inv.address ? <p className="text-xs text-muted-foreground">{inv.address}</p> : null}
+            <InvitationLocation venue={inv.venue} address={inv.address} />
             {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
             {directions}
             {inv.message ? <p className="font-display mx-auto mt-6 max-w-xs text-lg italic text-muted-foreground">“{inv.message}”</p> : null}
@@ -85,11 +85,7 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
               <Clock className="h-4 w-4 text-primary" />
               {inv.event_time}
             </p>
-            <p className="flex flex-wrap items-center justify-center gap-2">
-              <MapPin className="h-4 w-4 text-primary" />
-              {inv.venue || "Vendi"}
-              {inv.address ? <span className="text-muted-foreground">· {inv.address}</span> : null}
-            </p>
+            <InvitationLocation venue={inv.venue} address={inv.address} />
           </div>
           {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
           {directions}
