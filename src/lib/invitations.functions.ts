@@ -71,7 +71,7 @@ const rsvpSchema = z.object({
   invitation_id: z.string().uuid(),
   guest_name: z.string().trim().min(1, "Shkruani emrin tuaj").max(80),
   attending: z.boolean(),
-  guest_count: z.number().int().min(1).max(10),
+  guest_count: z.number().int().min(1).max(20),
   note: z.string().trim().max(300).optional().default(""),
 });
 
