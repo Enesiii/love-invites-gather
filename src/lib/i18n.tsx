@@ -134,9 +134,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const saved = window.localStorage.getItem(KEY) as Lang | null;
     if (saved && saved in dictionaries) setLangState(saved);
   }, []);
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
   const setLang = (l: Lang) => {
     setLangState(l);
     window.localStorage.setItem(KEY, l);
