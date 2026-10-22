@@ -13,5 +13,8 @@ export const PRICING = {
   currency: "€",
   // Sa ditë mbetet aktive ftesa pas datës së dasmës.
   activeDaysAfterEvent: 30,
-  packages: [{ id: "classic", price: 20, featured: true }],
+  packages: [
+    { id: "premium", price: 15, featured: true },
+    { id: "classic", price: 20, featured: false },
+  ],
 } as const;

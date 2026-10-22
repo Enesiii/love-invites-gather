@@ -45,11 +45,14 @@ import {
   setApproval,
   setExpectedGuests,
   setInvitationClosed,
+  setPhotoInGallery,
   uploadPhoto,
 } from "@/lib/invitations.functions";
 import { GuestDialog } from "@/components/GuestDialog";
 import { EditEventDialog } from "@/components/EditEventDialog";
 import { SaveToAccount } from "@/components/SaveToAccount";
+import { PremiumCoverPanel } from "@/components/PremiumCoverPanel";
+import { isPremiumTheme, type ThemeId } from "@/lib/themes";
 
 export const Route = createFileRoute("/menaxho/$token")({
   loader: async ({ params }) => {
@@ -131,6 +134,7 @@ function Manage() {
   const approve = useServerFn(setApproval);
   const upload = useServerFn(uploadPhoto);
   const removePhoto = useServerFn(deletePhoto);
+  const toggleGallery = useServerFn(setPhotoInGallery);
   const saveExpected = useServerFn(setExpectedGuests);
   const toggleClosed = useServerFn(setInvitationClosed);
   const isClosed = !!inv.closed_at;
@@ -721,6 +725,15 @@ function Manage() {
             </section>
 
             <aside className="space-y-5">
+              {isPremiumTheme(inv.theme) ? (
+                <PremiumCoverPanel
+                  key={inv.cover_url ?? "none"}
+                  token={token}
+                  theme={inv.theme as ThemeId}
+                  coverUrl={inv.cover_url}
+                  initial={{ pos_x: inv.cover_pos_x, pos_y: inv.cover_pos_y, zoom: inv.cover_zoom }}
+                />
+              ) : null}
               <section className="rounded-xl border border-border bg-card p-4 sm:p-5">
                 <h2 className="flex items-center gap-2 text-sm font-semibold">
                   <Camera className="h-4 w-4" /> Foto & Video
@@ -767,6 +780,22 @@ function Manage() {
                         >
                           <Trash2 className="h-3 w-3 text-destructive" />
                         </button>
+                        {p.kind === "image" ? (
+                          <button
+                            aria-pressed={p.inGallery}
+                            onClick={async () => {
+                              try {
+                                await toggleGallery({ data: { token, id: p.id, show: !p.inGallery } });
+                                refresh();
+                              } catch {
+                                toast.error("Galeria nuk u përditësua.");
+                              }
+                            }}
+                            className={`absolute bottom-1 left-1 right-1 rounded px-1 py-0.5 text-[10px] ${p.inGallery ? "bg-primary text-primary-foreground" : "bg-background/90"}`}
+                          >
+                            {p.inGallery ? "Në ftesë ✓" : "Shfaq në ftesë"}
+                          </button>
+                        ) : null}
                       </div>
                     ))}
                   </div>

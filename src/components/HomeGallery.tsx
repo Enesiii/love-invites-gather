@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { invitationCollection } from "@/lib/invitation-collection";
 import { useI18n } from "@/lib/i18n";
 
-export function HomeGallery() {
+export function HomeGallery({ premium = false }: { premium?: boolean }) {
   const { t } = useI18n();
   return (
     <div className="home-gallery">
-      {invitationCollection.map((item, i) => {
+      {invitationCollection.filter((item) => ("premium" in item) === premium).map((item, i) => {
         const text = t.collection.styles[item.id];
         return (
           <article key={item.id} className="collection-card">

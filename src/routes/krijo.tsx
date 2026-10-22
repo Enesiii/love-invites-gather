@@ -11,11 +11,16 @@ import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
 import { claimInvitation } from "@/lib/account.functions";
 import { useSession } from "@/hooks/use-session";
+import { uploadCover } from "@/lib/invitations.functions";
+import { CLASSIC_THEMES, PREMIUM_THEMES, THEME_LABELS, isPremiumTheme, isThemeId, type ThemeId } from "@/lib/themes";
+import { CoverPhotoEditor, checkCoverFile, fileToBase64, type CoverPosition } from "@/components/CoverPhotoEditor";
+import { PRICING } from "@/lib/site-config";
+import { Crown } from "lucide-react";
 
 export const Route = createFileRoute("/krijo")({
   validateSearch: (search: Record<string, unknown>): { theme?: string } => {
     const theme = search["theme"];
-    return typeof theme === "string" && ["rose", "sage", "night", "gold", "ivory", "blush", "arch"].includes(theme) ? { theme } : {};
+    return isThemeId(theme) ? { theme } : {};
   },
   head: () => ({
     meta: [
@@ -33,15 +38,8 @@ export const Route = createFileRoute("/krijo")({
   component: Create,
 });
 
-const themes = [
-  { id: "rose", label: "Trëndafil" },
-  { id: "sage", label: "Sherbelë" },
-  { id: "night", label: "Natë" },
-  { id: "gold", label: "Ar" },
-  { id: "ivory", label: "Fildiş" },
-  { id: "blush", label: "Rozë" },
-  { id: "arch", label: "Harku" },
-];
+const classicThemes = CLASSIC_THEMES.map((id) => ({ id, label: THEME_LABELS[id] }));
+const premiumThemes = PREMIUM_THEMES.map((id) => ({ id, label: THEME_LABELS[id] }));
 
 function Create() {
   const { theme } = Route.useSearch();
@@ -49,6 +47,11 @@ function Create() {
   const create = useServerFn(createInvitation);
   const claim = useServerFn(claimInvitation);
   const session = useSession();
+  const sendCover = useServerFn(uploadCover);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverUrl, setCoverUrl] = useState<string | null>(null);
+  const [coverError, setCoverError] = useState<string | null>(null);
+  const [pos, setPos] = useState<CoverPosition>({ pos_x: 50, pos_y: 50, zoom: 100 });
   const [busy, setBusy] = useState(false);
   const [f, setF] = useState({
     partner_one: "",
@@ -58,11 +61,26 @@ function Create() {
     venue: "",
     address: "",
     message: "",
-    theme: theme ?? "rose",
+    theme: (theme ?? "rose") as ThemeId,
   });
   const set =
     (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setF((p) => ({ ...p, [k]: e.target.value }));
+
+  const isPremium = isPremiumTheme(f.theme);
+  const premiumPrice = PRICING.packages.find((p) => p.id === "premium")?.price;
+  function pickTheme(id: ThemeId) {
+    setF((p) => ({ ...p, theme: id }));
+  }
+  function onCoverFile(file: File) {
+    const err = checkCoverFile(file);
+    if (err) return setCoverError(err);
+    setCoverError(null);
+    if (coverUrl) URL.revokeObjectURL(coverUrl);
+    setCoverFile(file);
+    setCoverUrl(URL.createObjectURL(file));
+    setPos({ pos_x: 50, pos_y: 50, zoom: 100 });
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -73,6 +91,15 @@ function Create() {
     setBusy(true);
     try {
       const res = await create({ data: f });
+      if (isPremium && coverFile) {
+        try {
+          await sendCover({ data: { token: res.token, base64: await fileToBase64(coverFile), ...pos } });
+        } catch (err) {
+          toast.error(
+            `Ftesa u ruajt, por fotoja jo: ${err instanceof Error ? err.message : "gabim"}. Mund ta ngarkoni nga paneli.`,
+          );
+        }
+      }
       if (session) {
         try {
           await claim({ data: { token: res.token } });
@@ -133,29 +160,56 @@ function Create() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Stili</Label>
+            <Label>Stili klasik</Label>
             <div className="flex flex-wrap gap-2">
-              {themes.map((t) => (
-                <Button
-                  key={t.id}
-                  type="button"
-                  variant={f.theme === t.id ? "default" : "outline"}
-                  onClick={() => setF((p) => ({ ...p, theme: t.id }))}
-                >
+              {classicThemes.map((t) => (
+                <Button key={t.id} type="button" variant={f.theme === t.id ? "default" : "outline"} onClick={() => pickTheme(t.id)} aria-pressed={f.theme === t.id}>
                   {t.label}
                 </Button>
               ))}
             </div>
           </div>
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <Crown className="h-4 w-4 text-primary" /> Koleksioni Premium · me foton tuaj · {PRICING.currency}{premiumPrice} për ftesë
+            </Label>
+            <div className="flex flex-wrap gap-2">
+              {premiumThemes.map((t) => (
+                <Button key={t.id} type="button" variant={f.theme === t.id ? "default" : "outline"} onClick={() => pickTheme(t.id)} aria-pressed={f.theme === t.id}>
+                  {t.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+          {isPremium ? (
+            <div className="space-y-2 rounded-xl border border-border bg-card p-4">
+              <Label>Fotoja e çiftit</Label>
+              <CoverPhotoEditor
+                url={coverUrl}
+                pos={pos}
+                onPos={setPos}
+                onFile={onCoverFile}
+                error={coverError}
+                onRemove={() => {
+                  if (coverUrl) URL.revokeObjectURL(coverUrl);
+                  setCoverUrl(null);
+                  setCoverFile(null);
+                }}
+              />
+              <p className="text-xs text-muted-foreground">
+                Fotoja ruhet kur krijoni ftesën. Pas ruajtjes, nga paneli mund ta ndërroni dhe të vazhdoni me porosinë ({PRICING.currency}{premiumPrice}). Pagesa online nuk është ende aktive.
+              </p>
+            </div>
+          ) : null}
           <Button type="submit" size="lg" disabled={busy}>
-            {busy ? "Duke krijuar…" : "Krijo ftesën"}
+            {busy ? (isPremium && coverFile ? "Duke ruajtur ftesën dhe foton…" : "Duke krijuar…") : isPremium ? "Ruaj ftesën dhe vazhdo" : "Krijo ftesën"}
           </Button>
         </form>
         <div className="lg:sticky lg:top-8 lg:self-start">
           <p className="mb-3 text-xs uppercase tracking-[0.3em] text-muted-foreground">
             Pamje paraprake
           </p>
-          <InvitationCard inv={f} />
+          <InvitationCard inv={{ ...f, cover_url: coverUrl, cover_pos_x: pos.pos_x, cover_pos_y: pos.pos_y, cover_zoom: pos.zoom, photoPlaceholder: true }} />
         </div>
       </main>
     </div>
