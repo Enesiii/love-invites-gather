@@ -52,6 +52,7 @@ import { GuestDialog } from "@/components/GuestDialog";
 import { EditEventDialog } from "@/components/EditEventDialog";
 import { SaveToAccount } from "@/components/SaveToAccount";
 import { PremiumCoverPanel } from "@/components/PremiumCoverPanel";
+import { InvitationQrPanel } from "@/components/InvitationQrPanel";
 import { isPremiumTheme, type ThemeId } from "@/lib/themes";
 
 export const Route = createFileRoute("/menaxho/$token")({
@@ -818,6 +819,7 @@ function Manage() {
                   <Copy className="mr-1.5 h-4 w-4" /> Kopjo lidhjen
                 </Button>
               </section>
+              <InvitationQrPanel url={link} defaultNames={`${inv.partner_one} & ${inv.partner_two}`} />
             </aside>
           </div>
           <p className="text-center text-xs text-muted-foreground">
