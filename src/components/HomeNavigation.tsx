@@ -2,32 +2,35 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, Heart, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useI18n } from "@/lib/i18n";
 
 export function HomeNavigation() {
   const [open, setOpen] = useState(false);
+  const { t } = useI18n();
   const items = [
-    { label: "Koleksioni", id: "koleksioni" },
-    { label: "Si funksionon", id: "si-funksionon" },
-    { label: "Pyetje të shpeshta", id: "pyetje" },
+    { label: t.nav.collection, id: "koleksioni" },
+    { label: t.nav.how, id: "si-funksionon" },
+    { label: t.nav.pricing, id: "cmimet" },
+    { label: t.nav.faq, id: "pyetje" },
   ];
   function go(id: string) {
     setOpen(false);
-    document
-      .getElementById(id)
-      ?.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-      });
+    document.getElementById(id)?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
   }
   return (
     <header className="home-header">
+      <a href="#main" className="skip-link">
+        {t.nav.skip}
+      </a>
       <div className="home-container home-nav">
         <Link to="/" className="home-brand font-display">
-          <Heart className="h-5 w-5 fill-primary text-primary" /> Ftesa Dasme
+          <Heart className="h-5 w-5 fill-primary text-primary" aria-hidden="true" /> Ftesa Dasme
           <span className="brand-period">.</span>
         </Link>
-        <nav className="home-desktop-nav" aria-label="Navigimi kryesor">
+        <nav className="home-desktop-nav" aria-label={t.nav.main}>
           {items.map((item) => (
             <Button key={item.id} variant="ghost" onClick={() => go(item.id)}>
               {item.label}
@@ -35,10 +38,10 @@ export function HomeNavigation() {
           ))}
         </nav>
         <div className="home-nav-actions">
-          <span className="home-locale">SQ / Kosovë</span>
+          <LanguageSelector />
           <Button asChild className="home-cta nav-cta">
             <Link to="/krijo">
-              Krijo ftesën <ArrowUpRight className="h-4 w-4" />
+              {t.nav.create} <ArrowUpRight className="h-4 w-4" />
             </Link>
           </Button>
           <Button
@@ -46,7 +49,8 @@ export function HomeNavigation() {
             size="icon"
             className="home-menu"
             aria-expanded={open}
-            aria-label={open ? "Mbyll menynë" : "Hap menynë"}
+            aria-controls="mobile-nav"
+            aria-label={open ? t.nav.close : t.nav.open}
             onClick={() => setOpen(!open)}
           >
             {open ? <X /> : <Menu />}
@@ -54,7 +58,7 @@ export function HomeNavigation() {
         </div>
       </div>
       {open && (
-        <nav className="home-mobile-nav home-container" aria-label="Navigimi në telefon">
+        <nav id="mobile-nav" className="home-mobile-nav home-container" aria-label={t.nav.mobile}>
           {items.map((item) => (
             <Button key={item.id} variant="ghost" onClick={() => go(item.id)}>
               {item.label}

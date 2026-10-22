@@ -20,3 +20,6 @@
 - [x] Buy Me a Coffee support button (homepage footer + invitation page) — needs the real buymeacoffee.com link from the owner
 - [x] Admin login (/admin) — failed because the database was paused; works after resume
 - [x] Manual close/reopen of an invitation from the dashboard (invitations.closed_at)
+- [x] Pricing section (€20 starting, configurable), demo buttons on all templates, configurable WhatsApp, language selector (SQ/SR/TR/EN on homepage), mobile/accessibility polish
+- [ ] Translate creator, invitation, panel and admin pages (only homepage translated so far)
+- [ ] Online payments (blocked: requires paid Lovable plan)
