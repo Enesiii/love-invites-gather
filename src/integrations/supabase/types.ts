@@ -20,18 +20,21 @@ export type Database = {
           id: string
           invitation_id: string
           path: string
+          show_in_gallery: boolean
         }
         Insert: {
           created_at?: string
           id?: string
           invitation_id: string
           path: string
+          show_in_gallery?: boolean
         }
         Update: {
           created_at?: string
           id?: string
           invitation_id?: string
           path?: string
+          show_in_gallery?: boolean
         }
         Relationships: [
           {
@@ -47,6 +50,10 @@ export type Database = {
         Row: {
           address: string | null
           closed_at: string | null
+          cover_path: string | null
+          cover_pos_x: number
+          cover_pos_y: number
+          cover_zoom: number
           created_at: string
           event_date: string
           event_time: string
@@ -63,6 +70,10 @@ export type Database = {
         Insert: {
           address?: string | null
           closed_at?: string | null
+          cover_path?: string | null
+          cover_pos_x?: number
+          cover_pos_y?: number
+          cover_zoom?: number
           created_at?: string
           event_date: string
           event_time?: string
@@ -79,6 +90,10 @@ export type Database = {
         Update: {
           address?: string | null
           closed_at?: string | null
+          cover_path?: string | null
+          cover_pos_x?: number
+          cover_pos_y?: number
+          cover_zoom?: number
           created_at?: string
           event_date?: string
           event_time?: string
