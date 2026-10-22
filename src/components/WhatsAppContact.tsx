@@ -1,24 +1,24 @@
 import { MessageCircle } from "lucide-react";
 import { openExternal } from "@/lib/open-external";
+import { useI18n } from "@/lib/i18n";
+import { whatsappUrl } from "@/lib/site-config";
 
-// Butoni "Na shkruani" — hap bisedën në WhatsApp me numrin e biznesit.
+// Butoni "Na shkruani" — numri ndryshohet te src/lib/site-config.ts.
 export function WhatsAppContact() {
+  const { t } = useI18n();
+  const href = whatsappUrl();
+  if (!href) return null;
   return (
     <a
-      href="https://wa.me/38349706192"
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={(e) =>
-        openExternal(
-          e,
-          "Shfletuesi bllokoi hapjen e WhatsApp këtu. Linku u kopjua — hapeni në shfletues.",
-        )
-      }
+      onClick={(e) => openExternal(e, t.whatsapp.blocked)}
       className="whatsapp-contact"
-      aria-label="Na shkruani në WhatsApp"
+      aria-label={t.whatsapp.aria}
     >
-      <MessageCircle className="h-5 w-5 shrink-0" />
-      <span>Na shkruani</span>
+      <MessageCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
+      <span>{t.whatsapp.label}</span>
     </a>
   );
 }
