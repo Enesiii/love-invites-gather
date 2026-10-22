@@ -669,3 +669,113 @@
   .home-page .hero-actions a { min-height: 48px; }
 }
 @media (max-width: 420px) { .home-brand { font-size: 19px; } .lang-select svg { display: none; } }
+
+/* ===== Koleksioni Premium ===== */
+.theme-lux-gold {
+  --background: oklch(0.955 0.018 85); --foreground: oklch(0.3 0.03 60);
+  --card: oklch(0.975 0.014 88); --card-foreground: oklch(0.3 0.03 60);
+  --primary: oklch(0.6 0.1 78); --primary-foreground: oklch(0.99 0.01 90);
+  --secondary: oklch(0.93 0.025 85); --secondary-foreground: oklch(0.3 0.03 60);
+  --muted: oklch(0.935 0.02 85); --muted-foreground: oklch(0.5 0.03 70);
+  --accent: oklch(0.72 0.1 82); --accent-foreground: oklch(0.25 0.03 60);
+  --border: oklch(0.85 0.04 85); --input: oklch(0.85 0.04 85); --ring: oklch(0.6 0.1 78);
+}
+.theme-floral {
+  --background: oklch(0.965 0.015 50); --foreground: oklch(0.33 0.04 20);
+  --card: oklch(0.985 0.01 60); --card-foreground: oklch(0.33 0.04 20);
+  --primary: oklch(0.58 0.09 10); --primary-foreground: oklch(0.99 0.01 60);
+  --secondary: oklch(0.93 0.03 145); --secondary-foreground: oklch(0.33 0.04 20);
+  --muted: oklch(0.945 0.02 20); --muted-foreground: oklch(0.5 0.03 30);
+  --accent: oklch(0.62 0.05 145); --accent-foreground: oklch(0.99 0.01 60);
+  --border: oklch(0.88 0.03 20); --input: oklch(0.88 0.03 20); --ring: oklch(0.58 0.09 10);
+}
+.theme-minimal {
+  --background: oklch(0.965 0.008 80); --foreground: oklch(0.24 0.01 60);
+  --card: oklch(0.99 0.004 80); --card-foreground: oklch(0.24 0.01 60);
+  --primary: oklch(0.28 0.01 60); --primary-foreground: oklch(0.98 0.005 80);
+  --secondary: oklch(0.93 0.012 75); --secondary-foreground: oklch(0.24 0.01 60);
+  --muted: oklch(0.94 0.01 75); --muted-foreground: oklch(0.48 0.012 60);
+  --accent: oklch(0.62 0.03 70); --accent-foreground: oklch(0.98 0.005 80);
+  --border: oklch(0.88 0.01 75); --input: oklch(0.88 0.01 75); --ring: oklch(0.28 0.01 60);
+}
+.theme-royal {
+  --background: oklch(0.26 0.05 165); --foreground: oklch(0.95 0.02 90);
+  --card: oklch(0.975 0.012 90); --card-foreground: oklch(0.28 0.05 165);
+  --primary: oklch(0.38 0.07 165); --primary-foreground: oklch(0.97 0.015 90);
+  --secondary: oklch(0.32 0.05 165); --secondary-foreground: oklch(0.95 0.02 90);
+  --muted: oklch(0.94 0.015 90); --muted-foreground: oklch(0.45 0.03 160);
+  --accent: oklch(0.74 0.1 85); --accent-foreground: oklch(0.22 0.04 165);
+  --border: oklch(0.82 0.04 85); --input: oklch(0.82 0.04 85); --ring: oklch(0.74 0.1 85);
+}
+.premium-card { position: relative; overflow: hidden; background: var(--card); color: var(--card-foreground); box-shadow: var(--shadow-soft); text-align: center; }
+.premium-hero { position: relative; padding: 40px 28px 8px; }
+.premium-kicker { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted-foreground); }
+.premium-photo { position: relative; overflow: hidden; margin: 22px auto 0; aspect-ratio: 4 / 5; width: 100%; max-width: 380px; background: var(--muted); }
+.premium-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.premium-photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted-foreground); font-size: 13px; border: 1px dashed var(--border); }
+.premium-names { font-family: "Cormorant Garamond", serif; font-weight: 500; font-size: clamp(2.3rem, 8vw, 3.4rem); line-height: 1.05; color: var(--primary); margin-top: 26px; overflow-wrap: anywhere; }
+.premium-names span { display: block; }
+.premium-names em { display: block; font-family: "Great Vibes", cursive; font-style: normal; font-size: .7em; color: var(--accent); margin: 4px 0; }
+.premium-body { padding: 8px 28px 44px; }
+.premium-ornament { display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--accent); margin: 18px 0 22px; }
+.premium-ornament span { height: 1px; width: 60px; background: var(--accent); }
+.premium-date { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 14px; max-width: 320px; margin: 0 auto; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; }
+.premium-date span { border-block: 1px solid var(--accent); padding: 7px 0; }
+.premium-date strong { font-family: "Cormorant Garamond", serif; font-size: 3.2rem; font-weight: 500; line-height: 1; color: var(--primary); }
+.premium-month { margin-top: 8px; font-size: 12px; letter-spacing: .3em; text-transform: uppercase; }
+.premium-venue { margin-top: 18px; font-family: "Cormorant Garamond", serif; font-size: 1.4rem; font-style: italic; }
+.premium-address { font-size: 12px; color: var(--muted-foreground); }
+.premium-message { font-family: "Cormorant Garamond", serif; font-size: 1.2rem; font-style: italic; color: var(--muted-foreground); max-width: 22rem; margin: 26px auto 0; }
+.premium-gallery { margin-top: 32px; }
+.premium-gallery > div { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.premium-gallery img { aspect-ratio: 1; width: 100%; object-fit: cover; display: block; }
+.premium-sign { margin-top: 30px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted-foreground); }
+/* Ari luksoz: kornizë e dyfishtë e artë */
+.premium-lux-gold .premium-card { border: 1px solid var(--accent); outline: 1px solid var(--accent); outline-offset: -10px; }
+.premium-lux-gold .premium-photo { border: 1px solid var(--accent); outline: 1px solid var(--accent); outline-offset: 6px; max-width: 320px; }
+/* Lule romantike: foto në hark, lule në qoshe */
+.premium-floral .premium-photo { border-radius: 999px 999px 12px 12px; max-width: 300px; box-shadow: 0 0 0 8px var(--card), 0 0 0 9px var(--accent); }
+.premium-floral { position: relative; }
+.premium-floral .premium-card { border-radius: 14px; }
+.premium-floral-top, .premium-floral-bottom { position: absolute; width: 58%; opacity: .55; pointer-events: none; }
+.premium-floral-top { top: -6%; left: -14%; }
+.premium-floral-bottom { bottom: -6%; right: -14%; transform: rotate(180deg); }
+.premium-floral .premium-hero, .premium-floral .premium-body { position: relative; z-index: 1; }
+.premium-floral .premium-names { font-family: "Great Vibes", cursive; font-size: clamp(2.6rem, 9vw, 3.8rem); }
+/* Minimal modern: foto në gjithë gjerësinë me emrat sipër */
+.premium-minimal .premium-hero { padding: 0; }
+.premium-minimal .premium-photo { margin: 0; max-width: none; aspect-ratio: 4 / 5.4; }
+.premium-minimal .premium-photo-empty { aspect-ratio: 4 / 5.4; }
+.premium-minimal .premium-overlay { position: absolute; inset: auto 0 0 0; padding: 80px 24px 28px; background: linear-gradient(to top, color-mix(in oklab, var(--primary) 70%, transparent), transparent); color: var(--primary-foreground); }
+.premium-minimal .premium-overlay .premium-kicker { color: var(--primary-foreground); }
+.premium-minimal .premium-names { color: var(--primary-foreground); margin-top: 8px; font-family: "Cormorant Garamond", serif; letter-spacing: .02em; }
+.premium-minimal .premium-names span { display: inline; }
+.premium-minimal .premium-names em { display: inline; margin: 0 .25em; color: var(--primary-foreground); font-family: inherit; font-style: italic; font-size: .8em; }
+.premium-minimal .premium-date span { border-color: var(--border); }
+/* Mbretërore: pjesë e errët smeraldi me kornizë të artë */
+.premium-royal .premium-hero { background: var(--primary); color: var(--primary-foreground); padding-bottom: 36px; }
+.premium-royal .premium-hero .premium-kicker { color: var(--accent); }
+.premium-royal .premium-names { color: var(--primary-foreground); }
+.premium-royal .premium-photo { max-width: 300px; border: 2px solid var(--accent); padding: 8px; background: transparent; border-radius: 999px 999px 0 0; }
+.premium-royal .premium-photo img { border-radius: 999px 999px 0 0; }
+.premium-royal .premium-card { border: 1px solid var(--accent); }
+/* Animacione hyrëse */
+@keyframes premium-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.premium-hero > *, .premium-body > * { animation: premium-rise .9s cubic-bezier(.2,.7,.2,1) both; }
+.premium-hero > :nth-child(2) { animation-delay: .12s; }
+.premium-hero > :nth-child(3) { animation-delay: .24s; }
+.premium-body > * { animation-delay: .35s; }
+@media (prefers-reduced-motion: reduce) { .premium-hero > *, .premium-body > * { animation: none; } }
+@media (max-width: 420px) { .premium-hero { padding: 30px 18px 6px; } .premium-body { padding: 6px 18px 36px; } }
+/* Redaktori i fotos */
+.cover-frame { position: relative; overflow: hidden; aspect-ratio: 4 / 5; max-width: 320px; border-radius: 10px; background: var(--muted); border: 1px solid var(--border); touch-action: none; }
+.cover-frame.has-photo { cursor: grab; }
+.cover-frame img { width: 100%; height: 100%; object-fit: cover; user-select: none; pointer-events: none; }
+.cover-empty { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted-foreground); font-size: 14px; }
+.cover-empty small { font-size: 11px; }
+.cover-busy { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 8px; background: color-mix(in oklab, var(--background) 75%, transparent); font-size: 13px; }
+/* Faqja kryesore */
+.premium-price-tag { display: inline-block; margin-top: 8px; padding: 4px 12px; border-radius: 999px; background: var(--home-ink); color: var(--home-ink-foreground); font-weight: 500; }
+.pricing-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); max-width: 980px; margin: 0 auto; }
+.pricing-grid .pricing-card { max-width: none; margin: 0; }
+.pricing-card.is-featured { border-color: var(--primary); }

@@ -43,6 +43,13 @@
       "when": 1792071079325,
       "tag": "0005_invitations_closed_at",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792654810777,
+      "tag": "0006_premium_cover_photos",
+      "breakpoints": true
     }
   ]
 }

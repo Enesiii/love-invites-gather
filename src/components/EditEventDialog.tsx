@@ -1,3 +1,4 @@
+import { PREMIUM_THEMES, THEME_LABELS, type ThemeId } from "@/lib/themes";
 import { useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -50,7 +51,7 @@ export function EditEventDialog({
     setBusy(true);
     try {
       await save({
-        data: { ...f, token, theme: f.theme as "rose" | "sage" | "night" | "gold" | "ivory" | "blush" | "arch" },
+        data: { ...f, token, theme: f.theme as ThemeId },
       });
       toast.success("Ngjarja u përditësua.");
       setOpen(false);
@@ -110,6 +111,9 @@ export function EditEventDialog({
               <option value="ivory">Fildiş</option>
               <option value="blush">Rozë</option>
               <option value="arch">Harku i luleve</option>
+              {PREMIUM_THEMES.map((id) => (
+                <option key={id} value={id}>{THEME_LABELS[id]} (Premium)</option>
+              ))}
             </select>
           </label>
           <Button type="submit" className="w-full" disabled={busy}>

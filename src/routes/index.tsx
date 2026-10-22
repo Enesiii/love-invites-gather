@@ -17,6 +17,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { HomePricing } from "@/components/HomePricing";
 import { useI18n } from "@/lib/i18n";
+import { PRICING } from "@/lib/site-config";
 import { SupportButton } from "@/components/SupportButton";
 import {
   Accordion,
@@ -145,6 +146,20 @@ function Index() {
                 {t.collection.find} <ArrowUpRight className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+        </section>
+        <section id="premium" className="home-section premium-section">
+          <div className="home-container">
+            <div className="section-heading">
+              <p className="home-eyebrow">{t.premium.eyebrow}</p>
+              <h2 className="font-display">
+                {t.premium.title} <em>{t.premium.em}</em>
+              </h2>
+              <p>
+                {t.premium.desc} <strong className="premium-price-tag">{PRICING.currency}{PRICING.packages.find((p) => p.id === "premium")?.price} {t.premium.per}</strong>
+              </p>
+            </div>
+            <HomeGallery premium />
           </div>
         </section>
         <section id="si-funksionon" className="home-section how-section">

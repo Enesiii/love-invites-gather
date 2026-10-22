@@ -1,8 +1,9 @@
-import { CalendarDays, Clock, Heart, MapPin, Navigation } from "lucide-react";
+import { CalendarDays, Clock, Heart, MapPin } from "lucide-react";
 import { Countdown } from "@/components/Countdown";
-import { toast } from "sonner";
 import { formatDate } from "@/lib/format-date";
-import { Button } from "@/components/ui/button";
+import { MapsButton } from "@/components/MapsButton";
+import { PremiumInvitation } from "@/components/PremiumInvitation";
+import { isPremiumTheme } from "@/lib/themes";
 import botanical from "@/assets/wedding-botanical.png";
 import archFloral from "@/assets/arch-floral.webp";
 
@@ -15,38 +16,18 @@ export type InvitationView = {
   address?: string | null;
   message?: string | null;
   theme: string;
+  // Vetëm për dizajnet Premium.
+  cover_url?: string | null;
+  cover_pos_x?: number;
+  cover_pos_y?: number;
+  cover_zoom?: number;
+  gallery?: string[];
+  photoPlaceholder?: boolean;
 };
 
 export function InvitationCard({ inv, showDirections = false }: { inv: InvitationView; showDirections?: boolean }) {
-  const mapsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    [inv.venue, inv.address].filter(Boolean).join(", "),
-  )}`;
-  // Brenda parapmjes (iframe), shfletuesi mund ta bllokojë hapjen e faqeve të jashtme.
-  // Ndalojmë gjithmonë navigimin e vetë fremit dhe provojmë tab të ri; nëse bllokohet,
-  // e kopjojmë linkun dhe e shpjegojmë përdoruesit.
-  function handleMapsClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    e.preventDefault();
-    try {
-      const opened = window.open(e.currentTarget.href, "_blank", "noopener,noreferrer");
-      if (!opened) {
-        navigator.clipboard?.writeText(e.currentTarget.href).catch(() => undefined);
-        toast.info(
-          "Shfletuesi bllokoi hapjen e Google Maps këtu. Linku u kopjua — hapeni në shfletues ose hapni ftesën me linkun e ndarë.",
-        );
-      }
-    } catch {
-      navigator.clipboard?.writeText(e.currentTarget.href).catch(() => undefined);
-      toast.info("Linku i Google Maps u kopjua — hapeni në shfletues.");
-    }
-  }
-  const directions =
-    showDirections && inv.venue.trim() ? (
-      <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
-        <a href={mapsHref} target="_blank" rel="noopener noreferrer" onClick={handleMapsClick}>
-          <Navigation className="h-4 w-4 shrink-0" /> <span>Navigo në Google Maps</span>
-        </a>
-      </Button>
-    ) : null;
+  if (isPremiumTheme(inv.theme)) return <PremiumInvitation inv={inv} showDirections={showDirections} />;
+  const directions = showDirections ? <MapsButton venue={inv.venue} address={inv.address} /> : null;
   if (inv.theme === "arch") {
     const d = inv.event_date ? new Date(`${inv.event_date}T12:00:00`) : null;
     const months = ["Janar", "Shkurt", "Mars", "Prill", "Maj", "Qershor", "Korrik", "Gusht", "Shtator", "Tetor", "Nëntor", "Dhjetor"];
@@ -111,13 +92,7 @@ export function InvitationCard({ inv, showDirections = false }: { inv: Invitatio
             </p>
           </div>
           {inv.event_date ? <Countdown eventDate={inv.event_date} eventTime={inv.event_time} /> : null}
-          {showDirections && inv.venue.trim() ? (
-            <Button asChild variant="outline" className="maps-control mt-6 max-w-full border-accent bg-card/80">
-              <a href={mapsHref} target="_blank" rel="noopener noreferrer" onClick={handleMapsClick}>
-                <Navigation className="h-4 w-4 shrink-0" /> <span>Navigo në Google Maps</span>
-              </a>
-            </Button>
-          ) : null}
+          {directions}
           {inv.message ? (
             <p className="font-display invitation-message mx-auto mt-8 max-w-sm text-xl italic text-muted-foreground">
               “{inv.message}”

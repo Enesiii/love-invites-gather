@@ -1,3 +1,4 @@
+import { THEME_IDS } from "@/lib/themes";
 import { z } from "zod";
 
 export const ORDER_STATUSES = ["new", "contacted", "confirmed", "cancelled"] as const;
@@ -14,7 +15,7 @@ function todayIso() {
 }
 
 export const orderSchema = z.object({
-  style: z.enum(["rose", "sage", "night", "gold", "ivory", "blush", "arch"]),
+  style: z.enum(THEME_IDS),
   partner_one: z.string().trim().min(1, "Shkruani emrin e parë").max(60),
   partner_two: z.string().trim().min(1, "Shkruani emrin e dytë").max(60),
   wedding_date: z

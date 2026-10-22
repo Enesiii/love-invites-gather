@@ -23,3 +23,4 @@
 - [x] Pricing section (€20 starting, configurable), demo buttons on all templates, configurable WhatsApp, language selector (SQ/SR/TR/EN on homepage), mobile/accessibility polish
 - [ ] Translate creator, invitation, panel and admin pages (only homepage translated so far)
 - [ ] Online payments (blocked: requires paid Lovable plan)
+- [x] Premium Collection: 4 photo designs, couple photo upload/crop/replace/remove, gallery selection, €15 package, order request from dashboard

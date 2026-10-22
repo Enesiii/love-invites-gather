@@ -17,10 +17,11 @@ export function HomePricing() {
           </h2>
           <p>{t.pricing.desc}</p>
         </div>
+        <div className="pricing-grid">
         {PRICING.packages.map((pkg) => (
-          <article key={pkg.id} className="pricing-card">
+          <article key={pkg.id} className={`pricing-card ${pkg.featured ? "is-featured" : ""}`}>
             <div className="pricing-head">
-              <h3 className="font-display">{t.pricing.name}</h3>
+              <h3 className="font-display">{pkg.id === "premium" ? t.pricing.premiumName : t.pricing.name}</h3>
               <p className="pricing-price">
                 <span>{t.pricing.from}</span>
                 <strong className="font-display">
@@ -31,7 +32,7 @@ export function HomePricing() {
               </p>
             </div>
             <ul>
-              {t.pricing.features.map((f) => (
+              {(pkg.id === "premium" ? t.pricing.premiumFeatures : t.pricing.features).map((f) => (
                 <li key={f}>
                   <Check className="h-4 w-4" aria-hidden="true" /> {f}
                 </li>
@@ -43,7 +44,7 @@ export function HomePricing() {
             </p>
             <div className="pricing-actions">
               <Button asChild size="lg" className="home-cta">
-                <Link to="/krijo">
+                <Link to="/krijo" search={pkg.id === "premium" ? { theme: "lux-gold" } : {}}>
                   {t.pricing.cta} <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -58,6 +59,7 @@ export function HomePricing() {
             <p className="pricing-note">{t.pricing.note}</p>
           </article>
         ))}
+        </div>
       </div>
     </section>
   );

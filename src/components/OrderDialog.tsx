@@ -1,3 +1,4 @@
+import type { ThemeId } from "@/lib/themes";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, ShoppingBag } from "lucide-react";
@@ -17,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { submitOrderRequest } from "@/lib/orders.functions";
 import { orderSchema } from "@/lib/order-validation";
 
-type Style = "rose" | "sage" | "night" | "gold" | "ivory" | "blush" | "arch";
+type Style = ThemeId;
 
 const empty = {
   partner_one: "",

@@ -1,3 +1,4 @@
+import { COVER_MAX_BYTES, THEME_IDS, sniffImageType } from "@/lib/themes";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -9,7 +10,7 @@ const createSchema = z.object({
   venue: z.string().trim().min(1, "Shkruani vendin").max(120),
   address: z.string().trim().max(200).optional().default(""),
   message: z.string().trim().max(500).optional().default(""),
-  theme: z.enum(["rose", "sage", "night", "gold", "ivory", "blush", "arch"]),
+  theme: z.enum(THEME_IDS),
 });
 
 export const createInvitation = createServerFn({ method: "POST" })
@@ -41,11 +42,29 @@ export const getInvitation = createServerFn({ method: "GET" })
     const { data: row } = await supabaseAdmin
       .from("invitations")
       .select(
-        "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, closed_at",
+        "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, closed_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom",
       )
       .eq("id", data.id)
       .maybeSingle();
-    return row;
+    if (!row) return null;
+    const { cover_path, ...rest } = row;
+    // Lidhje të përkohshme të nënshkruara: skedarët mbeten privatë në hapësirën e ruajtjes.
+    const bucket = supabaseAdmin.storage.from("event-photos");
+    const cover_url = cover_path ? (await bucket.createSignedUrl(cover_path, 21600)).data?.signedUrl ?? null : null;
+    const { data: galleryRows } = await supabaseAdmin
+      .from("event_photos")
+      .select("path")
+      .eq("invitation_id", row.id)
+      .eq("show_in_gallery", true)
+      .order("created_at", { ascending: true })
+      .limit(24);
+    const gallery: string[] = [];
+    for (const g of galleryRows ?? []) {
+      if (/\.(mp4|webm|mov)$/i.test(g.path)) continue;
+      const { data: sg } = await bucket.createSignedUrl(g.path, 21600);
+      if (sg?.signedUrl) gallery.push(sg.signedUrl);
+    }
+    return { ...rest, cover_url, gallery };
   });
 
 const rsvpSchema = z.object({
@@ -91,10 +110,13 @@ export const getManageData = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at")
+      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
       .eq("manage_token", data.token)
       .maybeSingle();
     if (!inv) return null;
+    const cover_url = inv.cover_path
+      ? (await supabaseAdmin.storage.from("event-photos").createSignedUrl(inv.cover_path, 3600)).data?.signedUrl ?? null
+      : null;
     const { data: rsvps } = await supabaseAdmin
       .from("rsvps")
       .select("id, guest_name, attending, guest_count, note, created_at, approval")
@@ -103,19 +125,20 @@ export const getManageData = createServerFn({ method: "GET" })
     const list = rsvps ?? [];
     const { data: photoRows } = await supabaseAdmin
       .from("event_photos")
-      .select("id, path, created_at")
+      .select("id, path, created_at, show_in_gallery")
       .eq("invitation_id", inv.id)
       .order("created_at", { ascending: false });
-    const photos: { id: string; url: string; kind: "image" | "video" }[] = [];
+    const photos: { id: string; url: string; kind: "image" | "video"; inGallery: boolean }[] = [];
     for (const p of photoRows ?? []) {
       const { data: s } = await supabaseAdmin.storage
         .from("event-photos")
         .createSignedUrl(p.path, 3600);
       const kind = /\.(mp4|webm|mov)$/i.test(p.path) ? "video" : "image";
-      if (s?.signedUrl) photos.push({ id: p.id, url: s.signedUrl, kind });
+      if (s?.signedUrl) photos.push({ id: p.id, url: s.signedUrl, kind, inGallery: p.show_in_gallery });
     }
+    const { cover_path: _cp, ...invitation } = inv;
     return {
-      invitation: inv,
+      invitation: { ...invitation, cover_url },
       rsvps: list,
       photos,
       attendingGuests: list.filter((r) => r.attending).reduce((s, r) => s + r.guest_count, 0),
@@ -274,6 +297,7 @@ export const uploadPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
     const bin = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    if (sniffImageType(bin) !== data.type) throw new Error("Lejohen vetëm foto JPEG, PNG ose WebP.");
     const ext = data.type.split("/")[1];
     const path = `${invitationId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabaseAdmin.storage
@@ -342,5 +366,90 @@ export const deletePhoto = createServerFn({ method: "POST" })
     if (!row) throw new Error("Fotoja nuk u gjet.");
     await supabaseAdmin.storage.from("event-photos").remove([row.path]);
     await supabaseAdmin.from("event_photos").delete().eq("id", data.id);
+    return { ok: true };
+  });
+
+const positionSchema = {
+  pos_x: z.number().int().min(0).max(100),
+  pos_y: z.number().int().min(0).max(100),
+  zoom: z.number().int().min(100).max(300),
+};
+
+// Fotoja kryesore e çiftit (dizajnet Premium). Autorizimi: tokeni privat i panelit.
+export const uploadCover = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z
+      .object({
+        token: z.string().uuid(),
+        base64: z.string().min(10).max(Math.ceil((COVER_MAX_BYTES * 4) / 3) + 8),
+        ...positionSchema,
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    let bin: Uint8Array;
+    try {
+      bin = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    } catch {
+      throw new Error("Skedari nuk është i vlefshëm.");
+    }
+    if (bin.byteLength > COVER_MAX_BYTES) throw new Error("Fotoja është më e madhe se 6 MB.");
+    const type = sniffImageType(bin);
+    if (!type) throw new Error("Lejohen vetëm foto JPEG, PNG ose WebP.");
+    const { data: current } = await supabaseAdmin
+      .from("invitations")
+      .select("cover_path")
+      .eq("id", invitationId)
+      .single();
+    const path = `${invitationId}/cover-${crypto.randomUUID()}.${type.split("/")[1]}`;
+    const { error } = await supabaseAdmin.storage.from("event-photos").upload(path, bin, { contentType: type });
+    if (error) {
+      console.error("uploadCover failed", error);
+      throw new Error("Fotoja nuk u ngarkua. Provoni përsëri.");
+    }
+    await supabaseAdmin
+      .from("invitations")
+      .update({ cover_path: path, cover_pos_x: data.pos_x, cover_pos_y: data.pos_y, cover_zoom: data.zoom })
+      .eq("id", invitationId);
+    if (current?.cover_path) await supabaseAdmin.storage.from("event-photos").remove([current.cover_path]);
+    return { ok: true };
+  });
+
+export const setCoverPosition = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => z.object({ token: z.string().uuid(), ...positionSchema }).parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { error } = await supabaseAdmin
+      .from("invitations")
+      .update({ cover_pos_x: data.pos_x, cover_pos_y: data.pos_y, cover_zoom: data.zoom })
+      .eq("id", invitationId);
+    if (error) throw new Error("Pozicioni nuk u ruajt.");
+    return { ok: true };
+  });
+
+export const removeCover = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => tokenSchema.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { data: current } = await supabaseAdmin.from("invitations").select("cover_path").eq("id", invitationId).single();
+    await supabaseAdmin.from("invitations").update({ cover_path: null }).eq("id", invitationId);
+    if (current?.cover_path) await supabaseAdmin.storage.from("event-photos").remove([current.cover_path]);
+    return { ok: true };
+  });
+
+// Çifti zgjedh cilat foto shfaqen në galerinë publike të ftesës (parazgjedhja: asnjë).
+export const setPhotoInGallery = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) =>
+    z.object({ token: z.string().uuid(), id: z.string().uuid(), show: z.boolean() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
+    const { error } = await supabaseAdmin
+      .from("event_photos")
+      .update({ show_in_gallery: data.show })
+      .eq("id", data.id)
+      .eq("invitation_id", invitationId);
+    if (error) throw new Error("Galeria nuk u përditësua.");
     return { ok: true };
   });
