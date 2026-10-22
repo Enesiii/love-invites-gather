@@ -9,8 +9,8 @@ export function LanguageSelector() {
       <span className="sr-only">{t.nav.language}</span>
       <select value={lang} onChange={(e) => setLang(e.target.value as Lang)} aria-label={t.nav.language}>
         {LANGUAGES.map((l) => (
-          <option key={l.code} value={l.code}>
-            {l.short} · {l.label}
+          <option key={l.code} value={l.code} title={l.label}>
+            {l.short}
           </option>
         ))}
       </select>
