@@ -120,7 +120,7 @@ function Index() {
         <div className="home-promise">
           <div className="home-container">
             {t.promise.map((text, i) => {
-              const Icon = promiseIcons[i];
+              const Icon = promiseIcons[i] ?? Mail;
               return (
                 <span key={text}>
                   <Icon aria-hidden="true" /> {text}
@@ -158,7 +158,7 @@ function Index() {
             </div>
             <div className="home-steps">
               {t.how.steps.map(([title, text], i) => {
-                const Icon = stepIcons[i];
+                const Icon = stepIcons[i] ?? Palette;
                 return (
                   <div key={title} className="home-step">
                     <div className="step-top">
