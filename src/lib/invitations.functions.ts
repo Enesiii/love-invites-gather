@@ -297,6 +297,7 @@ export const uploadPhoto = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
     const bin = Uint8Array.from(atob(data.base64), (c) => c.charCodeAt(0));
+    if (sniffImageType(bin) !== data.type) throw new Error("Lejohen vetëm foto JPEG, PNG ose WebP.");
     const ext = data.type.split("/")[1];
     const path = `${invitationId}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabaseAdmin.storage

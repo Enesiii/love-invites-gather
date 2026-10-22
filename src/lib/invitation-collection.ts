@@ -12,6 +12,14 @@ import blush from "@/assets/gallery-blush.webp";
 import blushSmall from "@/assets/gallery-blush-small.webp";
 import arch from "@/assets/arch-floral.webp";
 import archSmall from "@/assets/arch-floral-small.webp";
+import pgold from "@/assets/premium-gold.webp";
+import pgoldSmall from "@/assets/premium-gold-small.webp";
+import pfloral from "@/assets/premium-floral.webp";
+import pfloralSmall from "@/assets/premium-floral-small.webp";
+import pminimal from "@/assets/premium-minimal.webp";
+import pminimalSmall from "@/assets/premium-minimal-small.webp";
+import proyal from "@/assets/premium-royal.webp";
+import proyalSmall from "@/assets/premium-royal-small.webp";
 
 export const invitationCollection = [
   {
@@ -70,6 +78,10 @@ export const invitationCollection = [
     small: archSmall,
     description: "Model krejt ndryshe: hark me lule akvarel, emra me shkrim dore dhe data në rresht.",
   },
+  { id: "lux-gold", premium: true, name: "Ari Luksoz", category: "PREMIUM", image: pgold, small: pgoldSmall, description: "Fildish dhe shampanjë, korniza të arta dhe fotoja juaj në qendër." },
+  { id: "floral", premium: true, name: "Lule Romantike", category: "PREMIUM", image: pfloral, small: pfloralSmall, description: "Krem, rozë e butë dhe sherbelë, me lule rreth fotos suaj." },
+  { id: "minimal", premium: true, name: "Minimal Modern", category: "PREMIUM", image: pminimal, small: pminimalSmall, description: "Foto në gjithë gjerësinë, tipografi moderne dhe pamje editoriale." },
+  { id: "royal", premium: true, name: "Dasmë Mbretërore", category: "PREMIUM", image: proyal, small: proyalSmall, description: "Smerald i thellë, fildish dhe ar, me portretin tuaj në kornizë." },
 ] as const;
 
 export function findInvitationStyle(id: string) {
@@ -77,7 +89,9 @@ export function findInvitationStyle(id: string) {
 }
 
 export function previewInvitation(theme: string) {
+  const item = findInvitationStyle(theme);
   return {
+    cover_url: item && "premium" in item ? item.image : null,
     partner_one: "Arta",
     partner_two: "Besnik",
     event_date: "2027-06-19",
