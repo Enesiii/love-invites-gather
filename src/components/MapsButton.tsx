@@ -26,7 +26,7 @@ export function handleMapsClick(e: React.MouseEvent<HTMLAnchorElement>) {
   }
 }
 
-export function MapsButton({ venue, address, className = "" }: { venue: string; address?: string | null; className?: string }) {
+export function MapsButton({ venue, address, className = "" }: { venue: string; address?: string | null | undefined; className?: string }) {
   if (!venue.trim()) return null;
   return (
     <Button asChild variant="outline" className={`maps-control mt-6 max-w-full border-accent bg-card/80 ${className}`}>
