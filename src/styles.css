@@ -253,7 +253,12 @@
 .invitation-divider { display: flex; align-items: center; justify-content: center; gap: 14px; width: 120px; color: var(--accent); }
 .invitation-divider::before, .invitation-divider::after { content: ""; height: 1px; flex: 1; background: var(--accent); }
 .guest-invitation { background-image: radial-gradient(var(--border) .6px, transparent .6px); background-size: 9px 9px; }
-.rsvp-section { border-top: 1px solid var(--accent); }
+.rsvp-section { border-top: 1px solid var(--accent); background: var(--card); color: var(--card-foreground); border-radius: 12px; }
+.rsvp-section label, .rsvp-section h2 { color: var(--card-foreground); }
+.rsvp-section input, .rsvp-section textarea { background: var(--card); color: var(--card-foreground); border-color: var(--border); }
+.rsvp-section input::placeholder, .rsvp-section textarea::placeholder { color: var(--muted-foreground); }
+.rsvp-section .rsvp-choice { background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); }
+.rsvp-section .rsvp-choice[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
 .countdown { margin-top: 28px; }
 .countdown-label { font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted-foreground); }
 .countdown-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
