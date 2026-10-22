@@ -1,3 +1,4 @@
+import { THEME_IDS } from "@/lib/themes";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -9,7 +10,7 @@ const createSchema = z.object({
   venue: z.string().trim().min(1, "Shkruani vendin").max(120),
   address: z.string().trim().max(200).optional().default(""),
   message: z.string().trim().max(500).optional().default(""),
-  theme: z.enum(["rose", "sage", "night", "gold", "ivory", "blush", "arch"]),
+  theme: z.enum(THEME_IDS),
 });
 
 export const createInvitation = createServerFn({ method: "POST" })
