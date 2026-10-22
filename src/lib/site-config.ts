@@ -15,6 +15,6 @@ export const PRICING = {
   activeDaysAfterEvent: 30,
   packages: [
     { id: "premium", price: 15, featured: true },
-    { id: "classic", price: 20, featured: false },
+    { id: "classic", price: 10, featured: false },
   ],
 } as const;
