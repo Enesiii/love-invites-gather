@@ -2,7 +2,7 @@ import { MapPin } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { locationHref } from "@/lib/invitation-location";
 
-export function InvitationLocation({ venue, address }: { venue?: string | null; address?: string | null }) {
+export function InvitationLocation({ venue, address }: { venue?: string | null | undefined; address?: string | null | undefined }) {
   const { t, lang } = useI18n();
   const href = locationHref(venue, address);
   if (!href) return null;
