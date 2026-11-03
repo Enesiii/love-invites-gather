@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Shared clickable venue/address across all invitation styles, translated location labels; verify example and desktop/mobile links without live Google Maps calls.
+- [x] Shared clickable venue/address across all 11 invitation styles, translated labels and directions; example verified in SQ/SR/TR/EN on desktop/mobile, with saved Maps URL preserved. Live Google Maps destination remains for owner verification on published site.
 - [x] Admin: list all client invitations, open invitation/panel and copy recovery links; verify authenticated flow.
 - [x] Database: invitations + rsvps tables
 - [x] Homepage (/)

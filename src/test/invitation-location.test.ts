@@ -18,7 +18,7 @@ describe("invitation location links", () => {
     expect(locationHref("Salla A", "Prishtinë")).not.toBe(locationHref("Salla B", "Prizren"));
   });
   it("prefers the precise shared Maps link already saved in the example venue", () => {
-    const url = "https://maps.app.goo.gl/5UNAXPDqQks6hk7u8";
+    const url = "https://maps.app.goo.gl/5UNAXPDaQks6hk7u8";
     expect(locationHref(url, "Mushnikovë")).toBe(url);
     expect(directionsHref(url, "Mushnikovë")).toBe(url);
   });
