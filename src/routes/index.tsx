@@ -110,14 +110,6 @@ function Index() {
               <Check className="h-3.5 w-3.5" aria-hidden="true" /> {t.hero.note}
             </p>
           </div>
-          <div className="hero-invitation-copy" aria-hidden="true">
-            <Heart className="h-5 w-5 fill-primary text-primary" />
-            <span>{t.hero.invite}</span>
-            <p className="font-display">
-              Enes{"\u00a0"}<em>&</em>{"\u00a0"}Selma
-            </p>
-            <span>{t.hero.date}</span>
-          </div>
         </section>
         <div className="home-promise">
           <div className="home-container">
