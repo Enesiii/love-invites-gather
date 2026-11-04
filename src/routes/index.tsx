@@ -273,7 +273,6 @@ function Index() {
           <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Ftesa Dasme.
         </Link>
         <span>{t.footer.tagline}</span>
-        <SupportButton variant="ghost" className="home-support" />
         <Button
           variant="ghost"
           onClick={() =>

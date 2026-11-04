@@ -149,7 +149,6 @@ function InvitePage() {
         </section>
         <div className="invitation-support">
           <p>Ftesa u krijua me dashuri nga Ftesa Dasme.</p>
-          <SupportButton variant="ghost" className="support-control" />
         </div>
       </main>
       )}
