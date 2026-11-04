@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { ClosedInvitation } from "@/components/ClosedInvitation";
-import { SupportButton } from "@/components/SupportButton";
 import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpening";
 import { Camera, Heart } from "lucide-react";
 import { getInvitation, submitRsvp } from "@/lib/invitations.functions";
@@ -149,7 +148,6 @@ function InvitePage() {
         </section>
         <div className="invitation-support">
           <p>Ftesa u krijua me dashuri nga Ftesa Dasme.</p>
-          <SupportButton variant="ghost" className="support-control" />
         </div>
       </main>
       )}

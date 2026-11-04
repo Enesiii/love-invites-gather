@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { HomePricing } from "@/components/HomePricing";
 import { useI18n } from "@/lib/i18n";
 import { PRICING } from "@/lib/site-config";
-import { SupportButton } from "@/components/SupportButton";
 import {
   Accordion,
   AccordionContent,
@@ -273,7 +272,6 @@ function Index() {
           <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Ftesa Dasme.
         </Link>
         <span>{t.footer.tagline}</span>
-        <SupportButton variant="ghost" className="home-support" />
         <Button
           variant="ghost"
           onClick={() =>
