@@ -21,6 +21,7 @@ export function HomePricing() {
         {PRICING.packages.map((pkg) => (
           <article key={pkg.id} className={`pricing-card ${pkg.featured ? "is-featured" : ""}`}>
             <div className="pricing-head">
+              {pkg.featured && <p className="pricing-badge">{t.pricing.recommended}</p>}
               <h3 className="font-display">{pkg.id === "premium" ? t.pricing.premiumName : t.pricing.name}</h3>
               <p className="pricing-price">
                 <span>{t.pricing.from}</span>
@@ -31,6 +32,11 @@ export function HomePricing() {
                 <span>{t.pricing.per}</span>
               </p>
             </div>
+            {pkg.id === "premium" && (
+              <p className="pricing-includes">
+                <Check className="h-4 w-4" aria-hidden="true" /> {t.pricing.premiumIncludes}
+              </p>
+            )}
             <ul>
               {(pkg.id === "premium" ? t.pricing.premiumFeatures : t.pricing.features).map((f) => (
                 <li key={f}>
