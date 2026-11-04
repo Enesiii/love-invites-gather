@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BellRing, Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-react";
 import { deleteAdminInvitation, deleteAdminOrderRequest, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
+import { listKanaPackagesAdmin, saveKanaPackage } from "@/lib/kanagjegji.functions";
+import type { KanaPackageRow } from "@/lib/kanagjegji";
+import { KANAGJEGJI_THEMES, THEME_LABELS } from "@/lib/themes";
 import { deleteAdminReminder, getReminderStats, setPushEnabled } from "@/lib/reminders.functions";
 import {
   confirmPayment,
@@ -17,7 +20,7 @@ import {
   savePaymentSettings,
   setPaymentOrderStatus,
 } from "@/lib/payments.functions";
-import { PACKAGE_LABELS, PAYMENT_STATUS_LABELS, type PaymentOrderStatus } from "@/lib/payment-shared";
+import { CATEGORY_LABELS, PAYMENT_STATUS_LABELS, packageLabel, type InvitationCategory, type PaymentOrderStatus } from "@/lib/payment-shared";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { ORDER_STATUSES, ORDER_STATUS_LABELS } from "@/lib/order-validation";
 import {
@@ -56,8 +59,9 @@ type PaymentSettings = Awaited<ReturnType<typeof getPaymentSettingsAdmin>>;
 type ReminderStats = Awaited<ReturnType<typeof getReminderStats>>;
 
 function invitationOf(o: PaymentOrder) {
-  const inv = o.invitations as { partner_one: string; partner_two: string; event_date: string } | null;
-  return inv ? `${inv.partner_one} & ${inv.partner_two}` : "—";
+  const inv = o.invitations as { category?: string; partner_one: string; partner_two: string; event_date: string } | null;
+  if (!inv) return "—";
+  return inv.category === "kanagjegji" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
 }
 
 function DeleteRecordButton({ description, disabled, onDelete }: { description: string; disabled: boolean; onDelete: () => void }) {
@@ -96,6 +100,8 @@ function AdminPage() {
   const saveSettings = useServerFn(savePaymentSettings);
   const loadReminders = useServerFn(getReminderStats);
   const togglePush = useServerFn(setPushEnabled);
+  const loadKana = useServerFn(listKanaPackagesAdmin);
+  const saveKana = useServerFn(saveKanaPackage);
   const [key, setKey] = useState("");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -103,12 +109,14 @@ function AdminPage() {
   const [paymentStats, setPaymentStats] = useState<PaymentStats | null>(null);
   const [settings, setSettings] = useState<PaymentSettings | null>(null);
   const [reminders, setReminders] = useState<ReminderStats | null>(null);
-  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders">("invitations");
+  const [kana, setKana] = useState<KanaPackageRow[] | null>(null);
+  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders" | "kana">("invitations");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
   const [payFilter, setPayFilter] = useState<PaymentOrderStatus | "all">("all");
   const [paySearch, setPaySearch] = useState("");
+  const [invFilter, setInvFilter] = useState<"all" | "wedding" | "kanagjegji">("all");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -134,12 +142,13 @@ function AdminPage() {
     setBusy(true);
     setLoginError(null);
     try {
-      const [orderRows, invitationRows, paymentData, settingsData, reminderData] = await Promise.all([
+      const [orderRows, invitationRows, paymentData, settingsData, reminderData, kanaRows] = await Promise.all([
         list({ data: { key: key.trim() } }),
         listInvitations({ data: { key: key.trim() } }),
         listPayments({ data: { key: key.trim() } }),
         loadSettings({ data: { key: key.trim() } }),
         loadReminders({ data: { key: key.trim() } }),
+        loadKana({ data: { key: key.trim() } }),
       ]);
       setOrders(orderRows);
       setInvitations(invitationRows);
@@ -147,6 +156,7 @@ function AdminPage() {
       setPaymentStats(paymentData.stats);
       setSettings(settingsData);
       setReminders(reminderData);
+      setKana(kanaRows);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gabim.";
       setLoginError(msg);
@@ -197,6 +207,21 @@ function AdminPage() {
     }
   }
 
+  async function onSaveKana(pkg: "classic" | "premium") {
+    if (!kana) return;
+    const row = kana.find((r) => r.package === pkg);
+    if (!row) return;
+    setBusy(true);
+    try {
+      await saveKana({ data: { key: key.trim(), package: pkg, price: row.price, features: row.features, templates: row.templates } });
+      toast.success("Paketa Kanagjegji u ruajt.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onSaveSettings(e: React.FormEvent) {
     e.preventDefault();
     if (!settings) return;
@@ -219,10 +244,15 @@ function AdminPage() {
   }
 
   const shown = orders?.filter((o) => filter === "all" || o.status === filter) ?? [];
-  const matchingInvitations = invitations.filter((inv) =>
-    `${inv.partner_one} ${inv.partner_two} ${inv.venue} ${inv.event_date}`
-      .toLocaleLowerCase("sq").includes(search.trim().toLocaleLowerCase("sq")),
-  );
+  const matchingInvitations = invitations
+    .filter((inv) => invFilter === "all" || (inv.category ?? "wedding") === invFilter)
+    .filter((inv) =>
+      `${inv.partner_one} ${inv.partner_two} ${inv.venue} ${inv.event_date}`
+        .toLocaleLowerCase("sq").includes(search.trim().toLocaleLowerCase("sq")),
+    );
+
+  const coupleName = (inv: Invitation) =>
+    (inv.category ?? "wedding") === "kanagjegji" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
 
   async function copyInvitation(inv: Invitation, privateLink: boolean) {
     const path = privateLink ? `/menaxho/${inv.manage_token}` : `/ftesa/${inv.id}`;
@@ -296,13 +326,22 @@ function AdminPage() {
             <Button variant={view === "orders" ? "default" : "outline"} onClick={() => setView("orders")}>Kërkesat ({orders.length})</Button>
             <Button variant={view === "settings" ? "default" : "outline"} onClick={() => setView("settings")}>Cilësimet e pagesës</Button>
             <Button variant={view === "reminders" ? "default" : "outline"} onClick={() => setView("reminders")}><BellRing className="h-4 w-4" />Wedding Reminders</Button>
+            <Button variant={view === "kana" ? "default" : "outline"} onClick={() => setView("kana")}>Paketat Kanagjegji</Button>
             <Button variant="ghost" disabled={busy} onClick={() => load()}><RefreshCw className="h-4 w-4" />{busy ? "Duke ngarkuar…" : "Rifresko"}</Button>
-            <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); }}><LogOut className="h-4 w-4" />Dil</Button>
+            <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); setInvFilter("all"); }}><LogOut className="h-4 w-4" />Dil</Button>
           </div>
           {loginError && <p role="alert" className="mt-3 text-sm text-destructive">{loginError}</p>}
           {view === "invitations" && (
             <section className="mt-6">
               <h2 className="font-display text-2xl">Ftesat e klientëve</h2>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {(["all", "wedding", "kanagjegji"] as const).map((c) => (
+                  <Button key={c} size="sm" variant={invFilter === c ? "default" : "outline"} onClick={() => setInvFilter(c)}>
+                    {c === "all" ? "Të gjitha" : c === "wedding" ? "Dasmë" : "Kanagjegji"} (
+                    {c === "all" ? invitations.length : invitations.filter((i) => (i.category ?? "wedding") === c).length})
+                  </Button>
+                ))}
+              </div>
               <Label htmlFor="invitation-search" className="mt-4 mb-2 block">Kërko çiftin, sallën ose datën</Label>
               <Input id="invitation-search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Emrat e çiftit…" className="max-w-md" />
               <div className="mt-5 space-y-3">
@@ -311,7 +350,12 @@ function AdminPage() {
                   <article key={inv.id} className="rounded-lg border border-border bg-card p-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <Link to="/ftesa/$id" params={{ id: inv.id }} target="_blank" rel="noopener noreferrer" className="font-display text-2xl break-words underline-offset-4 hover:underline">{inv.partner_one} & {inv.partner_two}</Link>
+                        <p className="mb-1 flex items-center gap-2 text-xs">
+                          <span className="rounded-full border border-border px-2 py-0.5 uppercase tracking-wider text-muted-foreground">
+                            {CATEGORY_LABELS[(inv.category ?? "wedding") as InvitationCategory]}
+                          </span>
+                        </p>
+                        <Link to="/ftesa/$id" params={{ id: inv.id }} target="_blank" rel="noopener noreferrer" className="font-display text-2xl break-words underline-offset-4 hover:underline">{coupleName(inv)}</Link>
                         <p className="mt-1 text-sm text-muted-foreground">{formatDate(inv.event_date)} · {inv.event_time} · {inv.venue}</p>
                         <p className="mt-1 text-xs text-muted-foreground">Krijuar: {formatDateTime(inv.created_at)} · {inv.closed_at ? "Ndërprerë" : "Aktive"}</p>
                       </div>
@@ -328,7 +372,7 @@ function AdminPage() {
                             <AlertDialogHeader>
                               <AlertDialogTitle>Të fshihet ftesa përgjithmonë?</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Ftesa "{inv.partner_one} & {inv.partner_two}" do të fshihet përfundimisht së bashku me RSVP-të, fotot e mysafirëve dhe porosinë e pagesës. Kjo nuk mund të zhbëhet.
+                                Ftesa "{coupleName(inv)}" do të fshihet përfundimisht së bashku me RSVP-të, fotot e mysafirëve dhe porosinë e pagesës. Kjo nuk mund të zhbëhet.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -366,8 +410,9 @@ function AdminPage() {
               <article key={o.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-2xl">{o.partner_one} & {o.partner_two}</h2>
+                    <h2 className="font-display text-2xl">{o.category === "kanagjegji" ? o.partner_one : `${o.partner_one} & ${o.partner_two}`}</h2>
                     <p className="text-sm text-muted-foreground">
+                      <span className="mr-2 rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wider">{CATEGORY_LABELS[(o.category ?? "wedding") as InvitationCategory]}</span>
                       Dasma: {o.wedding_date} · Stili: {o.style} · Dërguar: {new Date(o.created_at).toLocaleString("sq")}
                     </p>
                     <p className="mt-2 text-sm">
@@ -440,7 +485,7 @@ function AdminPage() {
                         <div className="min-w-0">
                           <p className="font-mono font-semibold">{o.order_number}</p>
                           <p className="mt-1 text-sm">
-                            {invitationOf(o)} · {PACKAGE_LABELS[o.package as keyof typeof PACKAGE_LABELS]} · €{Number(o.amount)}
+                            {invitationOf(o)} · {packageLabel(o.category, o.package)} · €{Number(o.amount)}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
                             {o.customer_name ?? "Pa të dhëna kontakti"}
@@ -538,6 +583,84 @@ function AdminPage() {
                   </article>
                 ))}
               </div>
+            </section>
+          )}
+          {view === "kana" && kana && (
+            <section className="mt-6 max-w-2xl">
+              <h2 className="font-display text-2xl">Paketat Kanagjegji</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Çmimet, përfshirjet dhe dizajnet aktive për kategorinë Kanagjegji — të veçanta nga çmimet e dasmës. Çmimet dhe përfshirjet shfaqen vetëm në gjuhën shqipe.
+              </p>
+              {(["classic", "premium"] as const).map((p) => {
+                const row = kana.find((r) => r.package === p);
+                if (!row) return null;
+                const allowed = p === "premium" ? (["k-burgundy", "k-ottoman"] as const) : (["k-traditional", "k-modern"] as const);
+                return (
+                  <article key={p} className="mt-4 rounded-lg border border-border bg-card p-4">
+                    <h3 className="font-display text-xl">{p === "classic" ? "Klasike" : "Premium"}</h3>
+                    <div className="mt-3 flex items-center gap-3">
+                      <Label htmlFor={`kana-price-${p}`} className="whitespace-nowrap">Çmimi (€)</Label>
+                      <Input
+                        id={`kana-price-${p}`}
+                        type="number"
+                        min={0}
+                        max={10000}
+                        value={row.price}
+                        onChange={(e) =>
+                          setKana((rows) =>
+                            rows?.map((r) =>
+                              r.package === p ? { ...r, price: Math.max(0, Math.min(10000, Number(e.target.value) || 0)) } : r,
+                            ) ?? rows,
+                          )
+                        }
+                        className="w-28"
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <Label htmlFor={`kana-features-${p}`}>Përfshirjet (një për rresht)</Label>
+                      <textarea
+                        id={`kana-features-${p}`}
+                        rows={6}
+                        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        value={row.features.join("\n")}
+                        onChange={(e) =>
+                          setKana((rows) =>
+                            rows?.map((r) =>
+                              r.package === p
+                                ? { ...r, features: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) }
+                                : r,
+                            ) ?? rows,
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <Label>Dizajnet aktive</Label>
+                      <div className="mt-1 flex flex-wrap gap-4">
+                        {allowed.map((id) => (
+                          <label key={id} className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={row.templates.includes(id)}
+                              onChange={(e) =>
+                                setKana((rows) =>
+                                  rows?.map((r) =>
+                                    r.package === p
+                                      ? { ...r, templates: e.target.checked ? [...r.templates, id] : r.templates.filter((t) => t !== id) }
+                                      : r,
+                                  ) ?? rows,
+                                )
+                              }
+                            />
+                            {THEME_LABELS[id]}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <Button className="mt-4" onClick={() => onSaveKana(p)} disabled={busy}>Ruaj paketën</Button>
+                  </article>
+                );
+              })}
             </section>
           )}
           {view === "settings" && settings && (

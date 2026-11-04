@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight, Check, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageSelector } from "@/components/LanguageSelector";
@@ -37,6 +37,8 @@ export const Route = createFileRoute("/kanagjegji/")({
 function KanaLanding() {
   const pkgs = Route.useLoaderData();
   const { k, lang } = useKanaText();
+  const navigate = useNavigate();
+  const openPreview = (id: string) => navigate({ to: "/kanagjegji/preview/$template", params: { template: id } });
   const price = (p: "classic" | "premium") => pkgs?.find((r) => r.package === p)?.price ?? KANAGJEGJI_DEFAULT_PRICES[p];
   const active = (id: string) => {
     const row = pkgs?.find((r) => r.package === kanaPackageOf(id));
@@ -81,11 +83,18 @@ function KanaLanding() {
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {KANAGJEGJI_THEMES.filter(active).map((id) => (
               <article key={id} className="kana-panel flex flex-col">
-                <Link to="/kanagjegji/preview/$template" params={{ template: id }} className="block h-72 overflow-hidden" aria-label={`${k.landing.preview}: ${k.templates[id].name}`}>
+                <div
+                  role="link"
+                  tabIndex={0}
+                  className="block h-72 cursor-pointer overflow-hidden"
+                  aria-label={`${k.landing.preview}: ${k.templates[id].name}`}
+                  onClick={() => openPreview(id)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openPreview(id); } }}
+                >
                   <div className="pointer-events-none origin-top scale-[.62]" style={{ width: "161%", marginLeft: "-30.5%" }}>
                     <KanagjegjiInvitation inv={kanaSampleInvitation(id)} showDirections={false} />
                   </div>
-                </Link>
+                </div>
                 <div className="flex flex-1 flex-col gap-2 p-4">
                   <p className="kana-eyebrow">{kanaPackageOf(id) === "premium" ? k.landing.premiumTag : k.landing.classicTag}</p>
                   <h3 className="font-display text-lg">{k.templates[id].name}</h3>

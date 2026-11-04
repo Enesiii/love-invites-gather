@@ -57,7 +57,7 @@ function KanaPreview() {
       <PhonePreview>
         {opened ? (
           <main className="kana kana-guest invitation-reveal mx-auto max-w-xl px-3 py-6">
-            <div className="mb-4 flex justify-center"><KanaMusic music={inv.music} /></div>
+            <div className="mb-4 flex justify-center"><KanaMusic music={inv.music ?? null} /></div>
             <KanagjegjiInvitation inv={inv} showDirections />
           </main>
         ) : (

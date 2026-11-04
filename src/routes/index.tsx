@@ -27,6 +27,7 @@ import {
 import { HomeNavigation } from "@/components/HomeNavigation";
 import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { HomeGallery } from "@/components/HomeGallery";
+import { useKanaText } from "@/lib/kanagjegji-i18n";
 import stationery from "@/assets/home-stationery.webp";
 import heroBackground from "@/assets/golden-roses-hero.png.asset.json";
 
@@ -57,6 +58,7 @@ const promiseIcons = [Mail, Users, Music2, Smartphone];
 
 function Index() {
   const { t, lang } = useI18n();
+  const { k } = useKanaText();
   useEffect(() => {
     document.documentElement.lang = lang;
     return () => {
@@ -140,6 +142,43 @@ function Index() {
             })}
           </div>
         </div>
+        <section id="kategorite" className="home-section categories-section" aria-labelledby="categories-title">
+          <div className="home-container">
+            <div className="section-heading">
+              <p className="home-eyebrow">{k.home.eyebrow}</p>
+              <h2 id="categories-title" className="font-display">
+                {k.home.title}
+              </h2>
+              <p>{k.home.desc}</p>
+            </div>
+            <div className="category-grid">
+              <a
+                href="#koleksioni"
+                className="category-card"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToCollection();
+                }}
+              >
+                <Heart className="category-icon" aria-hidden="true" />
+                <h3 className="font-display">{k.home.weddingTitle}</h3>
+                <p>{k.home.weddingDesc}</p>
+                <span className="category-cta">
+                  {k.home.weddingCta} <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </a>
+              <Link to="/kanagjegji" className="category-card category-card-kana">
+                <span className="category-badge">{k.home.badge}</span>
+                <Sparkles className="category-icon" aria-hidden="true" />
+                <h3 className="font-display">{k.home.kanaTitle}</h3>
+                <p>{k.home.kanaDesc}</p>
+                <span className="category-cta">
+                  {k.home.kanaCta} <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </Link>
+            </div>
+          </div>
+        </section>
         <section id="koleksioni" className="home-section collection-section">
           <div className="home-container">
             <div className="section-heading">
