@@ -71,7 +71,7 @@ function PaymentPage() {
       .then((d) => {
         if (!alive) return;
         setData(d);
-        if (d?.customer_email) setContactSaved(true);
+        if (d?.order.customer_email) setContactSaved(true);
       })
       .catch(() => alive && setData(null));
     return () => {
