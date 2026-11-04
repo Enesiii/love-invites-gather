@@ -69,7 +69,7 @@ function KanaCreate() {
   };
   const [theme, setTheme] = useState<KanagjegjiThemeId>(search.template ?? activeThemes(initialPkg)[0] ?? kanaThemesFor(initialPkg)[0]!);
   const price = pkgs?.find((r) => r.package === pkg)?.price ?? KANAGJEGJI_DEFAULT_PRICES[pkg];
-  const [f, setF] = useState({ bride: "", parents: "", event_date: "", event_time: "19:00", venue: "", address: "", maps_url: "", message: k.invite.title, music: "henna" as KanagjegjiMusic });
+  const [f, setF] = useState({ bride: "", parents: "", event_date: "", event_time: "19:00", venue: "", address: "", maps_url: "", message: "", music: "henna" as KanagjegjiMusic });
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [coverError, setCoverError] = useState<string | null>(null);
@@ -215,7 +215,7 @@ function KanaCreate() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="kmsg">{k.creator.message}</Label>
-              <Textarea id="kmsg" value={f.message} onChange={set("message")} maxLength={500} rows={3} />
+              <Textarea id="kmsg" placeholder={k.invite.title} value={f.message} onChange={set("message")} maxLength={500} rows={3} />
               <p className="text-xs text-muted-foreground">{k.creator.messageHint}</p>
             </div>
             <div className="space-y-2">
