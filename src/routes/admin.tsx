@@ -70,13 +70,16 @@ function AdminPage() {
   const resendEmail = useServerFn(resendPaymentEmail);
   const loadSettings = useServerFn(getPaymentSettingsAdmin);
   const saveSettings = useServerFn(savePaymentSettings);
+  const loadReminders = useServerFn(getReminderStats);
+  const togglePush = useServerFn(setPushEnabled);
   const [key, setKey] = useState("");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [paymentOrders, setPaymentOrders] = useState<PaymentOrder[]>([]);
   const [paymentStats, setPaymentStats] = useState<PaymentStats | null>(null);
   const [settings, setSettings] = useState<PaymentSettings | null>(null);
-  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings">("invitations");
+  const [reminders, setReminders] = useState<ReminderStats | null>(null);
+  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders">("invitations");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
@@ -89,17 +92,19 @@ function AdminPage() {
     setBusy(true);
     setLoginError(null);
     try {
-      const [orderRows, invitationRows, paymentData, settingsData] = await Promise.all([
+      const [orderRows, invitationRows, paymentData, settingsData, reminderData] = await Promise.all([
         list({ data: { key: key.trim() } }),
         listInvitations({ data: { key: key.trim() } }),
         listPayments({ data: { key: key.trim() } }),
         loadSettings({ data: { key: key.trim() } }),
+        loadReminders({ data: { key: key.trim() } }),
       ]);
       setOrders(orderRows);
       setInvitations(invitationRows);
       setPaymentOrders(paymentData.orders);
       setPaymentStats(paymentData.stats);
       setSettings(settingsData);
+      setReminders(reminderData);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gabim.";
       setLoginError(msg);
