@@ -476,6 +476,9 @@
   .home-promise .home-container { grid-template-columns: 1fr 1fr; gap: 18px 12px; padding-block: 20px; }
   .home-promise span { justify-content: flex-start; font-size: 10px; gap: 8px; }
   .home-section { padding-block: 60px; scroll-margin-top: 78px; }
+  .category-grid { grid-template-columns: 1fr; gap: 18px; }
+  .category-card { padding: 28px 24px; }
+  .category-card h3 { font-size: 22px; }
   .home-section h2, .home-final h2 { font-size: 36px; }
   .section-heading { margin-bottom: 30px; }
   .section-heading > p:last-child { font-size: 13px; }
