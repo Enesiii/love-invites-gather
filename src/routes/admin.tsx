@@ -432,6 +432,64 @@ function AdminPage() {
               </div>
             </section>
           )}
+          {view === "reminders" && reminders && (
+            <section className="mt-6">
+              <h2 className="font-display text-2xl">Wedding Reminders</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Kujtesat e kalendarit dhe njoftimet push për mysafirët që konfirmuan pjesëmarrjen.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {[
+                  ["Mysafirë të konfirmuar", reminders.confirmedGuests],
+                  ["Shtuan në kalendar", reminders.calendarAdds],
+                  ["Abonime push", reminders.pushSubscriptions],
+                  ["Refuzuan njoftimet", reminders.pushDeclined],
+                  ["Njoftime të dërguara", reminders.sent],
+                  ["Dështime", reminders.failed],
+                  ["Të anashkaluara", reminders.skipped],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-border bg-card p-4 text-center">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+                    <p className="mt-1 font-display text-2xl">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">Njoftimet push</p>
+                  <p className="text-sm text-muted-foreground">
+                    Kalendarët (Google/Apple/.ics) mbeten gjithmonë aktivë — ky cilësim prek vetëm njoftimet automatike.
+                  </p>
+                </div>
+                <Button
+                  variant={reminders.pushEnabled ? "default" : "outline"}
+                  onClick={() => onTogglePush(!reminders.pushEnabled)}
+                >
+                  {reminders.pushEnabled ? "Aktive — çaktivizo" : "Jo aktive — aktivizo"}
+                </Button>
+              </div>
+              <h3 className="mt-6 font-display text-xl">Historiku i njoftimeve</h3>
+              <div className="mt-3 space-y-2">
+                {reminders.recent.length === 0 && (
+                  <p className="text-muted-foreground">Nuk është dërguar ende asnjë njoftim.</p>
+                )}
+                {reminders.recent.map((n) => (
+                  <article key={n.id} className="rounded-lg border border-border bg-card p-3 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-medium">
+                        {n.couple} · kujtesa {n.kind === "10d" ? "10 ditë" : "3 ditë"} para
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatDateTime(n.created_at)}</p>
+                    </div>
+                    <p className="mt-1 text-muted-foreground">
+                      Statusi: {n.status === "sent" ? "dërguar" : n.status === "failed" ? "dështoi" : "anashkaluar"}
+                      {n.error && n.error !== "pending" && <> · {n.error}</>}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
           {view === "settings" && settings && (
             <section className="mt-6 max-w-xl">
               <h2 className="font-display text-2xl">Cilësimet e pagesës bankare</h2>
