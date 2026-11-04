@@ -45,7 +45,7 @@ export const listAdminInvitations = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const fetchPage = (start: number) => supabaseAdmin
       .from("invitations")
-      .select("id, manage_token, partner_one, partner_two, event_date, event_time, venue, theme, closed_at, created_at")
+      .select("id, manage_token, category, partner_one, partner_two, event_date, event_time, venue, theme, closed_at, created_at")
       .order("created_at", { ascending: false })
       .order("id", { ascending: false })
       .range(start, start + 499);

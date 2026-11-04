@@ -20,7 +20,7 @@ import {
   savePaymentSettings,
   setPaymentOrderStatus,
 } from "@/lib/payments.functions";
-import { PACKAGE_LABELS, PAYMENT_STATUS_LABELS, type PaymentOrderStatus } from "@/lib/payment-shared";
+import { CATEGORY_LABELS, PACKAGE_LABELS, PAYMENT_STATUS_LABELS, packageLabel, type PaymentOrderStatus } from "@/lib/payment-shared";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { ORDER_STATUSES, ORDER_STATUS_LABELS } from "@/lib/order-validation";
 import {
@@ -485,7 +485,7 @@ function AdminPage() {
                         <div className="min-w-0">
                           <p className="font-mono font-semibold">{o.order_number}</p>
                           <p className="mt-1 text-sm">
-                            {invitationOf(o)} · {o.package_label ?? PACKAGE_LABELS[o.package as keyof typeof PACKAGE_LABELS]} · €{Number(o.amount)}
+                            {invitationOf(o)} · {packageLabel(o.category, o.package)} · €{Number(o.amount)}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
                             {o.customer_name ?? "Pa të dhëna kontakti"}
