@@ -74,14 +74,15 @@ function Index() {
       <main id="main" tabIndex={-1}>
         <section className="home-hero">
           <img
-            src={stationery}
-            width={1536}
-            height={1024}
+            src={heroBackground.url}
+            width={1683}
+            height={931}
             fetchPriority="high"
             decoding="async"
             alt={t.hero.alt}
             className="home-hero-image"
           />
+          <div className="home-hero-overlay" aria-hidden="true" />
           <div className="home-container hero-content">
             <p className="home-eyebrow hero-eyebrow">
               <span /> {t.hero.eyebrow}
