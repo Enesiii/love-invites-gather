@@ -28,6 +28,7 @@ import {
 import { HomeNavigation } from "@/components/HomeNavigation";
 import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { HomeGallery } from "@/components/HomeGallery";
+import stationery from "@/assets/home-stationery.webp";
 import heroBackground from "@/assets/golden-roses-hero.png.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -70,19 +71,28 @@ function Index() {
   }
   return (
     <div className="home-page">
+      <img
+        src={heroBackground.url}
+        width={1683}
+        height={931}
+        fetchPriority="high"
+        decoding="async"
+        alt=""
+        aria-hidden="true"
+        className="home-page-background"
+      />
       <HomeNavigation />
       <main id="main" tabIndex={-1}>
         <section className="home-hero">
           <img
-            src={heroBackground.url}
-            width={1683}
-            height={931}
+            src={stationery}
+            width={1536}
+            height={1024}
             fetchPriority="high"
             decoding="async"
             alt={t.hero.alt}
             className="home-hero-image"
           />
-          <div className="home-hero-overlay" aria-hidden="true" />
           <div className="home-container hero-content">
             <p className="home-eyebrow hero-eyebrow">
               <span /> {t.hero.eyebrow}
@@ -109,6 +119,14 @@ function Index() {
             <p className="hero-note">
               <Check className="h-3.5 w-3.5" aria-hidden="true" /> {t.hero.note}
             </p>
+          </div>
+          <div className="hero-invitation-copy" aria-hidden="true">
+            <Heart className="h-5 w-5 fill-primary text-primary" />
+            <span>{t.hero.invite}</span>
+            <p className="font-display">
+              Enes{"\u00a0"}<em>&</em>{"\u00a0"}Selma
+            </p>
+            <span>{t.hero.date}</span>
           </div>
         </section>
         <div className="home-promise">
