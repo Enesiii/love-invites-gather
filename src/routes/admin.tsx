@@ -99,6 +99,8 @@ function AdminPage() {
   const saveSettings = useServerFn(savePaymentSettings);
   const loadReminders = useServerFn(getReminderStats);
   const togglePush = useServerFn(setPushEnabled);
+  const loadKana = useServerFn(listKanaPackagesAdmin);
+  const saveKana = useServerFn(saveKanaPackage);
   const [key, setKey] = useState("");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -106,12 +108,14 @@ function AdminPage() {
   const [paymentStats, setPaymentStats] = useState<PaymentStats | null>(null);
   const [settings, setSettings] = useState<PaymentSettings | null>(null);
   const [reminders, setReminders] = useState<ReminderStats | null>(null);
-  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders">("invitations");
+  const [kana, setKana] = useState<KanaPackageRow[] | null>(null);
+  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders" | "kana">("invitations");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
   const [payFilter, setPayFilter] = useState<PaymentOrderStatus | "all">("all");
   const [paySearch, setPaySearch] = useState("");
+  const [invFilter, setInvFilter] = useState<"all" | "wedding" | "kanagjegji">("all");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -137,12 +141,13 @@ function AdminPage() {
     setBusy(true);
     setLoginError(null);
     try {
-      const [orderRows, invitationRows, paymentData, settingsData, reminderData] = await Promise.all([
+      const [orderRows, invitationRows, paymentData, settingsData, reminderData, kanaRows] = await Promise.all([
         list({ data: { key: key.trim() } }),
         listInvitations({ data: { key: key.trim() } }),
         listPayments({ data: { key: key.trim() } }),
         loadSettings({ data: { key: key.trim() } }),
         loadReminders({ data: { key: key.trim() } }),
+        loadKana({ data: { key: key.trim() } }),
       ]);
       setOrders(orderRows);
       setInvitations(invitationRows);
@@ -150,6 +155,7 @@ function AdminPage() {
       setPaymentStats(paymentData.stats);
       setSettings(settingsData);
       setReminders(reminderData);
+      setKana(kanaRows);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gabim.";
       setLoginError(msg);
