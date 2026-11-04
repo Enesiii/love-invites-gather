@@ -31,7 +31,7 @@ export function amountForPackage(pkg: PaymentPackage): number {
 
 export type InvitationCategory = "wedding" | "kanagjegji";
 export const CATEGORY_LABELS: Record<InvitationCategory, string> = {
-  wedding: "Ftesa Dasme",
+  wedding: "Ftesa Jonë",
   kanagjegji: "Ftesa Kanagjegji",
 };
 export function categoryOf(v: unknown): InvitationCategory {

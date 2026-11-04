@@ -5,7 +5,7 @@ export type EmailResult = { ok: boolean; status: "sent" | "not_configured" | "fa
 
 export async function sendEmail(opts: { to: string; subject: string; html: string }): Promise<EmailResult> {
   const key = process.env["RESEND_API_KEY"]?.trim();
-  const from = process.env["RESEND_FROM"]?.trim() || "Ftesa Dasme <porosite@ftesa-jone.com>";
+  const from = process.env["RESEND_FROM"]?.trim() || "Ftesa Jonë <porosite@ftesa-jone.com>";
   if (!key) {
     return { ok: false, status: "not_configured", error: "RESEND_API_KEY nuk është konfiguruar" };
   }
@@ -35,14 +35,14 @@ function layout(title: string, body: string) {
 <body style="margin:0;padding:0;background:#faf7f2;font-family:Georgia,'Times New Roman',serif;color:#2b2620">
   <div style="max-width:560px;margin:0 auto;padding:32px 16px">
     <div style="text-align:center;padding:24px 0;border-bottom:2px solid #b08d3e">
-      <div style="font-size:26px;letter-spacing:2px;color:#7a5c1e">Ftesa Dasme</div>
+      <div style="font-size:26px;letter-spacing:2px;color:#7a5c1e">Ftesa Jonë</div>
       <div style="font-size:12px;letter-spacing:4px;text-transform:uppercase;color:#9a8a6a;margin-top:6px">Ftesa digjitale të dasmës</div>
     </div>
     <div style="background:#ffffff;border:1px solid #e8ddc8;border-radius:12px;padding:28px 24px;margin-top:24px;font-size:15px;line-height:1.7">
       ${body}
     </div>
     <p style="text-align:center;font-size:12px;color:#9a8a6a;margin-top:24px">
-      Ftesa Dasme · Ftesa digjitale të dasmës<br>Ky email u dërgua automatikisht — ju lutem mos i përgjigjeni.
+      Ftesa Jonë · Ftesa digjitale të dasmës<br>Ky email u dërgua automatikisht — ju lutem mos i përgjigjeni.
     </p>
   </div>
 </body></html>`;

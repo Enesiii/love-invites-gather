@@ -38,9 +38,9 @@ import {
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Administrimi i ftesave dhe porosive — Ftesa Dasme" },
+      { title: "Administrimi i ftesave dhe porosive — Ftesa Jonë" },
       { name: "description", content: "Paneli privat për ftesat e klientëve dhe kërkesat e porosive." },
-      { property: "og:title", content: "Administrimi i ftesave dhe porosive — Ftesa Dasme" },
+      { property: "og:title", content: "Administrimi i ftesave dhe porosive — Ftesa Jonë" },
       { property: "og:description", content: "Administroni ftesat dhe rikuperoni lidhjet e klientëve." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

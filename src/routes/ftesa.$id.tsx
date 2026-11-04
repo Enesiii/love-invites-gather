@@ -73,7 +73,7 @@ function InvitePage() {
   // Dasma ruan tekstet ekzistuese; Kanagjegji përdor përkthimet e veta.
   const tx = kana
     ? k.invite
-    : { rsvpTitle: "A do të jeni me ne?", name: "Emri juaj", yes: "Do të vij", no: "Nuk mund të vij", count: "Sa persona (përfshirë ju)?", note: "Mesazh (opsional)", send: "Dërgo përgjigjen", sending: "Duke dërguar…", thanks: "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim.", sorry: "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj.", enterName: "Shkruani emrin tuaj.", chooseAttend: "Zgjidhni nëse do të vini.", memories: "Ndani kujtimet", memoriesDesc: "Bëtë një foto ose video të bukur? Dërgojani çiftit.", upload: "Ngarko foto ose video", footer: "Ftesa u krijua me dashuri nga Ftesa Dasme." };
+    : { rsvpTitle: "A do të jeni me ne?", name: "Emri juaj", yes: "Do të vij", no: "Nuk mund të vij", count: "Sa persona (përfshirë ju)?", note: "Mesazh (opsional)", send: "Dërgo përgjigjen", sending: "Duke dërguar…", thanks: "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim.", sorry: "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj.", enterName: "Shkruani emrin tuaj.", chooseAttend: "Zgjidhni nëse do të vini.", memories: "Ndani kujtimet", memoriesDesc: "Bëtë një foto ose video të bukur? Dërgojani çiftit.", upload: "Ngarko foto ose video", footer: "Ftesa u krijua me dashuri nga Ftesa Jonë." };
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

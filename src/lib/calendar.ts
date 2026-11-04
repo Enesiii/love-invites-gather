@@ -111,7 +111,7 @@ export function buildIcs(ev: WeddingEvent): string {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Ftesa Dasme//Wedding Reminders//SQ",
+    "PRODID:-//Ftesa Jonë//Wedding Reminders//SQ",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VTIMEZONE",

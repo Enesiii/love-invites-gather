@@ -27,7 +27,7 @@ export function HomeNavigation() {
       </a>
       <div className="home-container home-nav">
         <Link to="/" className="home-brand font-display">
-          <Heart className="h-5 w-5 fill-primary text-primary" aria-hidden="true" /> Ftesa Dasme
+          <Heart className="h-5 w-5 fill-primary text-primary" aria-hidden="true" /> Ftesa Jonë
           <span className="brand-period">.</span>
         </Link>
         <nav className="home-desktop-nav" aria-label={t.nav.main}>

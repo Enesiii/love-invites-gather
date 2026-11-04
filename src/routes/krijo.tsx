@@ -25,7 +25,7 @@ export const Route = createFileRoute("/krijo")({
   },
   head: () => ({
     meta: [
-      { title: "Krijo ftesën e dasmës — Ftesa Dasme" },
+      { title: "Krijo ftesën e dasmës — Ftesa Jonë" },
       {
         name: "description",
         content: "Plotësoni emrat, datën dhe vendin dhe krijoni ftesën tuaj të dasmës.",
@@ -123,7 +123,7 @@ function Create() {
     <div className="min-h-screen">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <Link to="/" className="font-display text-2xl text-primary">
-          Ftesa Dasme
+          Ftesa Jonë
         </Link>
       </header>
       <main className="mx-auto grid max-w-6xl gap-12 px-6 pb-24 lg:grid-cols-2">
