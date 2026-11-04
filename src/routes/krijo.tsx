@@ -150,6 +150,7 @@ function Create() {
           <div className="space-y-2">
             <Label htmlFor="v">Vendi</Label>
             <Input id="v" value={f.venue} onChange={set("venue")} maxLength={120} />
+            <p className="text-xs text-muted-foreground">Emri i sallës ose i vendit. Mund të ngjash edhe një link nga Google Maps — ftesa e shfaq si lokacion, jo si tekst me numra.</p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="a">Adresa (opsionale)</Label>
