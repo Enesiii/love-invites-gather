@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Restore original homepage/right-side invitation and apply exact uploaded background continuously; verified desktop/tablet/mobile and preview navigation.
 - [x] Shared clickable venue/address across all 11 invitation styles, translated labels and directions; example verified in SQ/SR/TR/EN on desktop/mobile, with saved Maps URL preserved. Live Google Maps destination remains for owner verification on published site.
 - [x] Admin: list all client invitations, open invitation/panel and copy recovery links; verify authenticated flow.
 - [x] Database: invitations + rsvps tables
