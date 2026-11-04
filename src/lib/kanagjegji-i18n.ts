@@ -31,7 +31,7 @@ export type KanaDict = {
 };
 
 const sq: KanaDict = {
-  home: { eyebrow: "ZGJIDHNI KATEGORINË", title: "Çfarë po festoni?", desc: "Dy produkte të veçanta, e njëjta kujdesje për çdo detaj.", weddingTitle: "Ftesa Jonë", weddingDesc: "Ftesa elegante për ditën tuaj të madhe — zarf, muzikë, RSVP dhe galeri.", weddingCta: "Shiko ftesat e dasmës", kanaTitle: "Ftesa Kanagjegji", kanaDesc: "Ftesa luksoze në të kuqe dhe ar për natën e kanagjegjit.", kanaCta: "Zbulo Kanagjegjin", badge: "E RE" },
+  home: { eyebrow: "ZGJIDHNI KATEGORINË", title: "Çfarë po festoni?", desc: "Dy produkte të veçanta, e njëjta kujdesje për çdo detaj.", weddingTitle: "Ftesa Dasma", weddingDesc: "Ftesa elegante për ditën tuaj të madhe — zarf, muzikë, RSVP dhe galeri.", weddingCta: "Shiko ftesat e dasmës", kanaTitle: "Ftesa Kanagjegji", kanaDesc: "Ftesa luksoze në të kuqe dhe ar për natën e kanagjegjit.", kanaCta: "Zbulo Kanagjegjin", badge: "E RE" },
   landing: {
     eyebrow: "NATA E KANAGJEGJIT", title: "Ftesa Kanagjegji", titleEm: "në të kuqe dhe ar.", desc: "Ftesa dixhitale luksoze për natën më të ngrohtë para dasmës. Zarf që hapet, muzikë, RSVP dhe kujtime nga mysafirët — të gjitha në një lidhje.", create: "Krijo ftesën e Kanagjegjit", see: "Shiko dizajnet", note: "Kadife e kuqe, filigran i artë, tulipanë dhe trëndafila.",
     galleryEyebrow: "KOLEKSIONI KANAGJEGJI", galleryTitle: "Katër dizajne, katër atmosfera.", galleryDesc: "Çdo dizajn ka strukturën, ornamentet, animacionin dhe tipografinë e vet.", preview: "Hap parapamjen", use: "Përdor këtë dizajn", classicTag: "KLASIKE", premiumTag: "PREMIUM · ME FOTO",
