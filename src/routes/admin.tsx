@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BellRing, Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-react";
-import { deleteAdminInvitation, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
-import { getReminderStats, setPushEnabled } from "@/lib/reminders.functions";
+import { deleteAdminInvitation, deleteAdminOrderRequest, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
+import { deleteAdminReminder, getReminderStats, setPushEnabled } from "@/lib/reminders.functions";
 import {
   confirmPayment,
+  deleteAdminPaymentOrder,
   getPaymentSettingsAdmin,
   listPaymentOrders,
   resendPaymentEmail,
@@ -59,10 +60,33 @@ function invitationOf(o: PaymentOrder) {
   return inv ? `${inv.partner_one} & ${inv.partner_two}` : "—";
 }
 
+function DeleteRecordButton({ description, disabled, onDelete }: { description: string; disabled: boolean; onDelete: () => void }) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="sm" variant="outline" disabled={disabled} className="text-destructive hover:text-destructive"><Trash2 className="h-4 w-4" />Fshij</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Të fshihet përgjithmonë?</AlertDialogTitle>
+          <AlertDialogDescription>{description} Kjo nuk mund të zhbëhet.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Anulo</AlertDialogCancel>
+          <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={onDelete}>Fshij përgjithmonë</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 function AdminPage() {
   const list = useServerFn(listOrderRequests);
   const listInvitations = useServerFn(listAdminInvitations);
   const removeInvitation = useServerFn(deleteAdminInvitation);
+  const removeRequest = useServerFn(deleteAdminOrderRequest);
+  const removePayment = useServerFn(deleteAdminPaymentOrder);
+  const removeReminder = useServerFn(deleteAdminReminder);
   const update = useServerFn(updateOrderStatus);
   const listPayments = useServerFn(listPaymentOrders);
   const confirm = useServerFn(confirmPayment);
@@ -86,6 +110,24 @@ function AdminPage() {
   const [payFilter, setPayFilter] = useState<PaymentOrderStatus | "all">("all");
   const [paySearch, setPaySearch] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  async function deleteRecord(kind: "request" | "payment" | "reminder", id: string) {
+    setDeleting(true);
+    try {
+      const remove = kind === "request" ? removeRequest : kind === "payment" ? removePayment : removeReminder;
+      await remove({ data: { key: key.trim(), id } });
+      if (kind === "request") setOrders((rows) => rows?.filter((r) => r.id !== id) ?? null);
+      if (kind === "payment") setPaymentOrders((rows) => rows.filter((r) => r.id !== id));
+      if (kind === "reminder") setReminders((r) => r ? { ...r, recent: r.recent.filter((n) => n.id !== id) } : r);
+      toast.success("E dhëna u fshi përgjithmonë.");
+      await load();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Fshirja dështoi.");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   async function load(e?: React.FormEvent) {
     e?.preventDefault();
@@ -197,6 +239,7 @@ function AdminPage() {
       await removeInvitation({ data: { key: key.trim(), id } });
       setInvitations((list) => list.filter((i) => i.id !== id));
       toast.success("Ftesa u fshi përgjithmonë.");
+      await load();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gabim.");
     }
@@ -333,6 +376,7 @@ function AdminPage() {
                     </p>
                     {o.notes && <p className="mt-2 text-sm text-muted-foreground">{o.notes}</p>}
                   </div>
+                  <div className="flex flex-wrap items-center gap-2">
                   <select
                     aria-label="Statusi"
                     className="h-10 rounded-md border border-input bg-background px-3 text-sm"
@@ -343,6 +387,8 @@ function AdminPage() {
                       <option key={s} value={s}>{ORDER_STATUS_LABELS[s]}</option>
                     ))}
                   </select>
+                  <DeleteRecordButton disabled={deleting || busy} description={`Kërkesa e çiftit "${o.partner_one} & ${o.partner_two}" do të fshihet. Ftesat dhe pagesat nuk ndryshojnë.`} onDelete={() => { void deleteRecord("request", o.id); }} />
+                  </div>
                 </div>
               </article>
             ))}
@@ -424,6 +470,7 @@ function AdminPage() {
                           {(o.status === "cancelled" || o.status === "expired") && (
                             <Button size="sm" variant="outline" onClick={() => onOrderAction(o.id, "reactivate")}>Riaktivizo</Button>
                           )}
+                          <DeleteRecordButton disabled={deleting || busy} description={`Porosia ${o.order_number}, përfshirë regjistrin e pagesës, do të fshihet edhe nëse është e paguar. Shuma €${Number(o.amount)} nuk do të llogaritet më në statistika. Ftesa ruhet, por kyçet deri në një pagesë të re; kjo nuk është rimbursim.`} onDelete={() => { void deleteRecord("payment", o.id); }} />
                         </div>
                       </div>
                     </article>
@@ -479,7 +526,10 @@ function AdminPage() {
                       <p className="font-medium">
                         {n.couple} · kujtesa {n.kind === "10d" ? "10 ditë" : "3 ditë"} para
                       </p>
-                      <p className="text-xs text-muted-foreground">{formatDateTime(n.created_at)}</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="text-xs text-muted-foreground">{formatDateTime(n.created_at)}</p>
+                        <DeleteRecordButton disabled={deleting || busy} description={`Abonimi push dhe historiku i tij për "${n.couple}" do të fshihen. Ky mysafir nuk do të marrë më njoftime push; RSVP dhe kalendari ruhen.`} onDelete={() => { void deleteRecord("reminder", n.id); }} />
+                      </div>
                     </div>
                     <p className="mt-1 text-muted-foreground">
                       Statusi: {n.status === "sent" ? "dërguar" : n.status === "failed" ? "dështoi" : "anashkaluar"}
