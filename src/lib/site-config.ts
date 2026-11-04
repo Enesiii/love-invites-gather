@@ -18,3 +18,8 @@ export const PRICING = {
     { id: "classic", price: 10, featured: false },
   ],
 } as const;
+
+// Çelësi publik VAPID për njoftimet push të dasmës (i sigurt për shfletuesin;
+// çelësi privat ruhet si sekret në server).
+export const VAPID_PUBLIC_KEY =
+  "BA0mTF5JV5dJoaGAmzpm19m63p6cPVKIZJmwhQYTnnHABBGXql3OPCxCmMNXjXQMDC-TrCWD60BueMjq-94NxYM";
