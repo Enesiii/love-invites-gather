@@ -28,7 +28,7 @@ import {
 import { HomeNavigation } from "@/components/HomeNavigation";
 import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { HomeGallery } from "@/components/HomeGallery";
-import stationery from "@/assets/home-stationery.webp";
+import heroBackground from "@/assets/golden-roses-hero.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
