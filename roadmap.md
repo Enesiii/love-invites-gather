@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Kanagjegji: fix preview build (music prop), homepage category cards, admin category labels + Kanagjegji package editor, category-aware couple edit dialog; then verify wedding + Kanagjegji flows on mobile and desktop.
 - [x] Admin deletion: requests, paid/unpaid payment orders and reminder history; confirmation, server-side admin validation and refreshed totals. Verified paid test order and request deletion in signed-in admin UI; fixtures cleaned up.
 - [x] Wedding Reminders: calendar options (Google/Apple/.ics) after RSVP confirmation, push notification opt-in, daily scheduled sending (10d/3d before, Europe/Belgrade), admin "Wedding Reminders" stats + push toggle; verified RSVP→confirmation flow in browser.
 - [x] Bank transfer payment & order system: payment_orders + payment_settings + payment_audit_log tables, FD-YYYY-NNNNNN order numbers, payment page /pagesa/$token, admin order management + bank settings, invitation locked until payment (invitations.activated_at), email via Resend when RESEND_API_KEY is configured.
