@@ -33,7 +33,16 @@ export function InvitationOpening({ inv, onOpen }: { inv: InvitationView; onOpen
 }
 
 // An original, quiet piano-like waltz. Audio starts only after a guest chooses play.
-export function InvitationMusic() {
+type MusicVariant = "waltz" | "henna" | "romantic";
+const MELODIES: Record<MusicVariant, { notes: number[]; bass: number[]; step: number; wave: OscillatorType }> = {
+  waltz: { notes: [72, 76, 79, 76, 74, 72, 71, 74, 77, 74, 72, 71, 69, 72, 76, 72, 71, 69, 67, 71, 74, 71, 69, 67], bass: [48, 47, 45, 43], step: 550, wave: "sine" },
+  // Melodi origjinale e qetë në modalitet hixhaz, e frymëzuar nga këngët e kanagjegjit.
+  henna: { notes: [69, 70, 73, 74, 76, 74, 73, 70, 69, 70, 73, 70, 69, 67, 69, 70, 73, 74, 73, 70, 69, 67, 65, 69], bass: [45, 45, 43, 45], step: 480, wave: "triangle" },
+  romantic: { notes: [67, 71, 74, 79, 78, 74, 71, 72, 76, 79, 76, 72, 71, 74, 78, 74, 71, 67, 69, 72, 76, 72, 69, 67], bass: [43, 48, 47, 43], step: 620, wave: "sine" },
+};
+
+export function InvitationMusic({ variant = "waltz", labels }: { variant?: MusicVariant; labels?: { play: string; stop: string; failed: string } } = {}) {
+  const l = labels ?? { play: "Luaj muzikën", stop: "Ndalo muzikën", failed: "Muzika nuk u hap — provo sërish" };
   const [playing, setPlaying] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
   const audio = useRef<AudioContext | null>(null);
@@ -55,11 +64,12 @@ export function InvitationMusic() {
       const context = new AudioContext();
       audio.current = context;
       await context.resume();
-      const melody = [72, 76, 79, 76, 74, 72, 71, 74, 77, 74, 72, 71, 69, 72, 76, 72, 71, 69, 67, 71, 74, 71, 69, 67];
+      const tune = MELODIES[variant];
+      const melody = tune.notes;
       function note(midi: number, time: number, volume: number) {
         const oscillator = context.createOscillator();
         const gain = context.createGain();
-        oscillator.type = "sine";
+        oscillator.type = tune.wave;
         oscillator.frequency.value = 440 * Math.pow(2, (midi - 69) / 12);
         gain.gain.setValueAtTime(0, time);
         gain.gain.linearRampToValueAtTime(volume, time + 0.025);
@@ -71,20 +81,20 @@ export function InvitationMusic() {
         const i = position.current % melody.length;
         const time = context.currentTime + 0.04;
         note(melody[i] ?? 72, time, 0.085);
-        if (i % 3 === 0) note([48, 47, 45, 43][Math.floor(i / 6)] ?? 48, time, 0.06);
+        if (i % 3 === 0) note(tune.bass[Math.floor(i / 6)] ?? 48, time, 0.06);
         position.current += 1;
       }
       tick();
-      interval.current = setInterval(tick, 550);
+      interval.current = setInterval(tick, tune.step);
       setPlaying(true);
       setUnavailable(false);
     } catch { stop(); setPlaying(false); setUnavailable(true); }
   }
 
   return (
-    <Button variant="outline" onClick={toggle} aria-pressed={playing} aria-label={playing ? "Ndalo muzikën" : "Luaj muzikën"} title={playing ? "Ndalo muzikën" : "Luaj muzikën"} className="music-control">
+    <Button variant="outline" onClick={toggle} aria-pressed={playing} aria-label={playing ? l.stop : l.play} title={playing ? l.stop : l.play} className="music-control">
       {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-      <span>{unavailable ? "Muzika nuk u hap — provo sërish" : playing ? "Ndalo muzikën" : "Luaj muzikën"}</span>
+      <span>{unavailable ? l.failed : playing ? l.stop : l.play}</span>
     </Button>
   );
 }
