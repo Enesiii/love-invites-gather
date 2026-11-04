@@ -20,7 +20,7 @@ import {
   savePaymentSettings,
   setPaymentOrderStatus,
 } from "@/lib/payments.functions";
-import { CATEGORY_LABELS, PACKAGE_LABELS, PAYMENT_STATUS_LABELS, packageLabel, type PaymentOrderStatus } from "@/lib/payment-shared";
+import { CATEGORY_LABELS, PAYMENT_STATUS_LABELS, packageLabel, type InvitationCategory, type PaymentOrderStatus } from "@/lib/payment-shared";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { ORDER_STATUSES, ORDER_STATUS_LABELS } from "@/lib/order-validation";
 import {
@@ -352,7 +352,7 @@ function AdminPage() {
                       <div className="min-w-0">
                         <p className="mb-1 flex items-center gap-2 text-xs">
                           <span className="rounded-full border border-border px-2 py-0.5 uppercase tracking-wider text-muted-foreground">
-                            {(inv.category ?? "wedding") === "kanagjegji" ? "Kanagjegji" : "Dasmë"}
+                            {CATEGORY_LABELS[(inv.category ?? "wedding") as InvitationCategory]}
                           </span>
                         </p>
                         <Link to="/ftesa/$id" params={{ id: inv.id }} target="_blank" rel="noopener noreferrer" className="font-display text-2xl break-words underline-offset-4 hover:underline">{coupleName(inv)}</Link>
@@ -412,7 +412,7 @@ function AdminPage() {
                   <div>
                     <h2 className="font-display text-2xl">{o.category === "kanagjegji" ? o.partner_one : `${o.partner_one} & ${o.partner_two}`}</h2>
                     <p className="text-sm text-muted-foreground">
-                      <span className="mr-2 rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wider">{o.category === "kanagjegji" ? "Kanagjegji" : "Dasmë"}</span>
+                      <span className="mr-2 rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wider">{CATEGORY_LABELS[(o.category ?? "wedding") as InvitationCategory]}</span>
                       Dasma: {o.wedding_date} · Stili: {o.style} · Dërguar: {new Date(o.created_at).toLocaleString("sq")}
                     </p>
                     <p className="mt-2 text-sm">
