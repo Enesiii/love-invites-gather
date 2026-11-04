@@ -7,6 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, ExternalLink, LogOut, RefreshCw } from "lucide-react";
 import { listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
+import {
+  confirmPayment,
+  getPaymentSettingsAdmin,
+  listPaymentOrders,
+  resendPaymentEmail,
+  savePaymentSettings,
+  setPaymentOrderStatus,
+} from "@/lib/payments.functions";
+import { PACKAGE_LABELS, PAYMENT_STATUS_LABELS, type PaymentOrderStatus } from "@/lib/payment-shared";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { ORDER_STATUSES, ORDER_STATUS_LABELS } from "@/lib/order-validation";
 
@@ -28,6 +37,14 @@ export const Route = createFileRoute("/admin")({
 type Order = Awaited<ReturnType<typeof listOrderRequests>>[number];
 type Invitation = Awaited<ReturnType<typeof listAdminInvitations>>[number];
 type Status = (typeof ORDER_STATUSES)[number];
+type PaymentOrder = Awaited<ReturnType<typeof listPaymentOrders>>["orders"][number];
+type PaymentStats = Awaited<ReturnType<typeof listPaymentOrders>>["stats"];
+type PaymentSettings = Awaited<ReturnType<typeof getPaymentSettingsAdmin>>;
+
+function invitationOf(o: PaymentOrder) {
+  const inv = o.invitations as { partner_one: string; partner_two: string; event_date: string } | null;
+  return inv ? `${inv.partner_one} & ${inv.partner_two}` : "—";
+}
 
 function AdminPage() {
   const list = useServerFn(listOrderRequests);
