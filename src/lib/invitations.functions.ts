@@ -45,6 +45,8 @@ export const getInvitation = createServerFn({ method: "GET" })
         "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, closed_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom",
       )
       .eq("id", data.id)
+      // Ftesat e papaguara (activated_at NULL) nuk janë publikisht të arritshme.
+      .not("activated_at", "is", null)
       .maybeSingle();
     if (!row) return null;
     const { cover_path, ...rest } = row;
@@ -81,10 +83,10 @@ export const submitRsvp = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, closed_at")
+      .select("id, closed_at, activated_at")
       .eq("id", data.invitation_id)
       .maybeSingle();
-    if (!inv) throw new Error("Ftesa nuk u gjet.");
+    if (!inv || !inv.activated_at) throw new Error("Ftesa nuk u gjet.");
     if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
     const { error } = await supabaseAdmin.from("rsvps").insert({
       invitation_id: data.invitation_id,
@@ -110,10 +112,11 @@ export const getManageData = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
+      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at, activated_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
       .eq("manage_token", data.token)
       .maybeSingle();
-    if (!inv) return null;
+    // Paneli i mysafirëve çkyçet vetëm pasi pagesa të konfirmohet.
+    if (!inv || !inv.activated_at) return null;
     const cover_url = inv.cover_path
       ? (await supabaseAdmin.storage.from("event-photos").createSignedUrl(inv.cover_path, 3600)).data?.signedUrl ?? null
       : null;
@@ -331,10 +334,10 @@ export const uploadGuestMedia = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, closed_at")
+      .select("id, closed_at, activated_at")
       .eq("id", data.invitation_id)
       .maybeSingle();
-    if (!inv) throw new Error("Ftesa nuk u gjet.");
+    if (!inv || !inv.activated_at) throw new Error("Ftesa nuk u gjet.");
     if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
     const { count } = await supabaseAdmin
       .from("event_photos")

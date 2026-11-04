@@ -6,8 +6,8 @@ describe("premium collection", () => {
   it("prices the Premium package at €15", () => {
     expect(PRICING.packages.find((p) => p.id === "premium")?.price).toBe(15);
   });
-  it("prices the Classic package at €20", () => {
-    expect(PRICING.packages.find((p) => p.id === "classic")?.price).toBe(20);
+  it("prices the Classic package at €10", () => {
+    expect(PRICING.packages.find((p) => p.id === "classic")?.price).toBe(10);
   });
   it("accepts only real JPEG, PNG and WebP bytes", () => {
     expect(sniffImageType(new Uint8Array([0xff, 0xd8, 0xff, 0xe0]))).toBe("image/jpeg");

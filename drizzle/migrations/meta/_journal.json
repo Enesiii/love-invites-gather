@@ -50,6 +50,13 @@
       "when": 1792654810777,
       "tag": "0006_premium_cover_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793794203484,
+      "tag": "0007_bank_transfer_payment_orders",
+      "breakpoints": true
     }
   ]
 }

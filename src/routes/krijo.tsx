@@ -9,6 +9,7 @@ import { AiWriter } from "@/components/AiWriter";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
+import { createPaymentOrder } from "@/lib/payments.functions";
 import { claimInvitation } from "@/lib/account.functions";
 import { useSession } from "@/hooks/use-session";
 import { uploadCover } from "@/lib/invitations.functions";
@@ -45,6 +46,7 @@ function Create() {
   const { theme } = Route.useSearch();
   const navigate = useNavigate();
   const create = useServerFn(createInvitation);
+  const createOrder = useServerFn(createPaymentOrder);
   const claim = useServerFn(claimInvitation);
   const session = useSession();
   const sendCover = useServerFn(uploadCover);
@@ -107,7 +109,9 @@ function Create() {
           /* the panel offers saving again */
         }
       }
-      navigate({ to: "/menaxho/$token", params: { token: res.token } });
+      // Çdo ftesë e re kalon në porosi me pagesë bankare para aktivizimit publik.
+      const order = await createOrder({ data: { token: res.token } });
+      navigate({ to: "/pagesa/$token", params: { token: order.orderToken } });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gabim gjatë ruajtjes.");
     } finally {
@@ -197,7 +201,7 @@ function Create() {
                 }}
               />
               <p className="text-xs text-muted-foreground">
-                Fotoja ruhet kur krijoni ftesën. Pas ruajtjes, nga paneli mund ta ndërroni dhe të vazhdoni me porosinë ({PRICING.currency}{premiumPrice}). Pagesa online nuk është ende aktive.
+                Fotoja ruhet kur krijoni ftesën. Pas ruajtjes vazhdoni te faqja e pagesës ({PRICING.currency}{premiumPrice}) — ftesa aktivizohet pasi pagesa të konfirmohet.
               </p>
             </div>
           ) : null}

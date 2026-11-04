@@ -48,6 +48,7 @@ export type Database = {
       }
       invitations: {
         Row: {
+          activated_at: string | null
           address: string | null
           closed_at: string | null
           cover_path: string | null
@@ -68,6 +69,7 @@ export type Database = {
           venue: string
         }
         Insert: {
+          activated_at?: string | null
           address?: string | null
           closed_at?: string | null
           cover_path?: string | null
@@ -88,6 +90,7 @@ export type Database = {
           venue: string
         }
         Update: {
+          activated_at?: string | null
           address?: string | null
           closed_at?: string | null
           cover_path?: string | null
@@ -148,6 +151,154 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_audit_log: {
+        Row: {
+          actor: string
+          created_at: string
+          id: number
+          new_status: string
+          note: string | null
+          old_status: string | null
+          order_id: string
+        }
+        Insert: {
+          actor: string
+          created_at?: string
+          id?: never
+          new_status: string
+          note?: string | null
+          old_status?: string | null
+          order_id: string
+        }
+        Update: {
+          actor?: string
+          created_at?: string
+          id?: never
+          new_status?: string
+          note?: string | null
+          old_status?: string | null
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_audit_log_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "payment_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_orders: {
+        Row: {
+          access_token: string
+          amount: number
+          confirmation_email_sent_at: string | null
+          confirmation_email_status: string | null
+          confirmed_by: string | null
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          expires_at: string | null
+          id: string
+          invitation_id: string
+          order_number: string
+          package: string
+          paid_at: string | null
+          payment_email_sent_at: string | null
+          payment_email_status: string | null
+          status: string
+        }
+        Insert: {
+          access_token?: string
+          amount: number
+          confirmation_email_sent_at?: string | null
+          confirmation_email_status?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          expires_at?: string | null
+          id?: string
+          invitation_id: string
+          order_number: string
+          package: string
+          paid_at?: string | null
+          payment_email_sent_at?: string | null
+          payment_email_status?: string | null
+          status?: string
+        }
+        Update: {
+          access_token?: string
+          amount?: number
+          confirmation_email_sent_at?: string | null
+          confirmation_email_status?: string | null
+          confirmed_by?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          expires_at?: string | null
+          id?: string
+          invitation_id?: string
+          order_number?: string
+          package?: string
+          paid_at?: string | null
+          payment_email_sent_at?: string | null
+          payment_email_status?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_orders_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_settings: {
+        Row: {
+          bank_name: string
+          beneficiary: string
+          iban: string
+          id: boolean
+          instructions: string
+          order_expiration_days: number
+          support_email: string
+          updated_at: string
+          whatsapp_number: string
+        }
+        Insert: {
+          bank_name?: string
+          beneficiary?: string
+          iban?: string
+          id?: boolean
+          instructions?: string
+          order_expiration_days?: number
+          support_email?: string
+          updated_at?: string
+          whatsapp_number?: string
+        }
+        Update: {
+          bank_name?: string
+          beneficiary?: string
+          iban?: string
+          id?: boolean
+          instructions?: string
+          order_expiration_days?: number
+          support_email?: string
+          updated_at?: string
+          whatsapp_number?: string
+        }
+        Relationships: []
+      }
       rsvps: {
         Row: {
           approval: string
@@ -194,7 +345,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      next_order_number: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never

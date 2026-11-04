@@ -1,4 +1,7 @@
 # Roadmap
+- [x] Bank transfer payment & order system: payment_orders + payment_settings + payment_audit_log tables, FD-YYYY-NNNNNN order numbers, payment page /pagesa/$token, admin order management + bank settings, invitation locked until payment (invitations.activated_at), email via Resend when RESEND_API_KEY is configured.
+- [ ] Email delivery: needs RESEND_API_KEY secret + verified sending domain (user action).
+- [ ] Bank details (bank name, beneficiary, IBAN) must be entered by the owner in /admin → Cilësimet e pagesës.
 - [x] Restore original homepage/right-side invitation and apply exact uploaded background continuously; verified desktop/tablet/mobile and preview navigation.
 - [x] Shared clickable venue/address across all 11 invitation styles, translated labels and directions; example verified in SQ/SR/TR/EN on desktop/mobile, with saved Maps URL preserved. Live Google Maps destination remains for owner verification on published site.
 - [x] Admin: list all client invitations, open invitation/panel and copy recovery links; verify authenticated flow.
