@@ -210,12 +210,14 @@ function AdminPage() {
         <>
           <div className="mt-6 flex flex-wrap items-center gap-2">
             <Button variant={view === "invitations" ? "default" : "outline"} onClick={() => setView("invitations")}>Ftesat ({invitations.length})</Button>
-            <Button variant={view === "orders" ? "default" : "outline"} onClick={() => setView("orders")}>Porositë ({orders.length})</Button>
+            <Button variant={view === "payments" ? "default" : "outline"} onClick={() => setView("payments")}>Porositë e pagesave ({paymentOrders.length})</Button>
+            <Button variant={view === "orders" ? "default" : "outline"} onClick={() => setView("orders")}>Kërkesat ({orders.length})</Button>
+            <Button variant={view === "settings" ? "default" : "outline"} onClick={() => setView("settings")}>Cilësimet e pagesës</Button>
             <Button variant="ghost" disabled={busy} onClick={() => load()}><RefreshCw className="h-4 w-4" />{busy ? "Duke ngarkuar…" : "Rifresko"}</Button>
             <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); }}><LogOut className="h-4 w-4" />Dil</Button>
           </div>
           {loginError && <p role="alert" className="mt-3 text-sm text-destructive">{loginError}</p>}
-          {view === "invitations" ? (
+          {view === "invitations" && (
             <section className="mt-6">
               <h2 className="font-display text-2xl">Ftesat e klientëve</h2>
               <Label htmlFor="invitation-search" className="mt-4 mb-2 block">Kërko çiftin, sallën ose datën</Label>
@@ -241,7 +243,8 @@ function AdminPage() {
                 ))}
               </div>
             </section>
-          ) : (
+          )}
+          {view === "orders" && (
           <>
           <h2 className="mt-6 font-display text-2xl">Kërkesat e porosive</h2>
           <div className="mt-6 flex flex-wrap gap-2">
