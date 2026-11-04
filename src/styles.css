@@ -444,7 +444,6 @@
   .home-hero h1 { font-size: 58px; }
   .home-hero h1 span { font-size: 42px; }
   .hero-description { max-width: 370px; }
-  .hero-invitation-copy { left: 66%; width: 27%; }
   .comparison-layout, .faq-layout { gap: 40px; }
 }
 @media (max-width: 767px) {
@@ -457,9 +456,10 @@
   .home-menu { display: inline-flex; min-width: 44px; height: 44px; }
   .home-mobile-nav { display: flex; flex-direction: column; padding-bottom: 14px; }
   .home-mobile-nav button { justify-content: flex-start; height: 44px; }
-  .home-hero { height: 700px; }
-  .home-hero-image { height: 345px; top: auto; object-fit: cover; object-position: right; }
-  .hero-content { justify-content: flex-start; padding-top: 34px; }
+  .home-hero { min-height: 100svh; }
+  .home-hero-image { object-position: 62% center; }
+  .home-hero-overlay { background: linear-gradient(to bottom, oklch(0.12 0.01 60 / 62%) 0%, oklch(0.12 0.01 60 / 38%) 50%, oklch(0.1 0.01 60 / 68%) 100%); }
+  .hero-content { min-height: 100svh; justify-content: center; padding-block: 96px 56px; }
   .hero-eyebrow { margin-bottom: 18px; }
   .home-hero h1 { font-size: 48px; }
   .home-hero h1 span { font-size: 34px; margin-top: 6px; }
