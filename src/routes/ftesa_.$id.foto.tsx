@@ -6,6 +6,20 @@ import { Camera, CheckCircle2, Heart } from "lucide-react";
 import { ClosedInvitation } from "@/components/ClosedInvitation";
 import { Button } from "@/components/ui/button";
 import { getInvitation, uploadGuestMedia } from "@/lib/invitations.functions";
+import { useKanaText } from "@/lib/kanagjegji-i18n";
+import { KANAGJEGJI_UPLOAD_LIMITS } from "@/lib/kanagjegji";
+
+// Kohëzgjatja lexohet në shfletues para ngarkimit (serveri kontrollon numrin e skedarëve).
+function videoSeconds(file: File) {
+  return new Promise<number>((resolve) => {
+    const url = URL.createObjectURL(file);
+    const v = document.createElement("video");
+    v.preload = "metadata";
+    v.onloadedmetadata = () => { URL.revokeObjectURL(url); resolve(v.duration); };
+    v.onerror = () => { URL.revokeObjectURL(url); resolve(Number.NaN); };
+    v.src = url;
+  });
+}
 
 const MAX = 6 * 1024 * 1024;
 
@@ -48,6 +62,8 @@ function GuestUploadPage() {
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(0);
+  const { k } = useKanaText();
+  const kana = inv.category === "kanagjegji";
 
   async function onFiles(files: FileList | null) {
     if (!files?.length) return;
@@ -55,14 +71,24 @@ function GuestUploadPage() {
     let ok = 0;
     for (const f of Array.from(files)) {
       if (f.size > MAX) {
-        toast.error(`${f.name} është më i madh se 6 MB.`);
+        toast.error(kana ? `${f.name} ${k.upload.tooLarge}` : `${f.name} është më i madh se 6 MB.`);
         continue;
+      }
+      if (kana && f.type.startsWith("video/")) {
+        const secs = await videoSeconds(f);
+        if (!(secs <= KANAGJEGJI_UPLOAD_LIMITS.videoSeconds)) {
+          toast.error(`${f.name}: ${k.upload.tooLong}`);
+          continue;
+        }
       }
       try {
         await upload({ data: { invitation_id: inv.id, type: f.type as "image/jpeg", base64: await toBase64(f) } });
         ok++;
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : `${f.name} nuk u ngarkua.`);
+        const msg = e instanceof Error ? e.message : "";
+        if (msg.includes("KANA_PHOTO_LIMIT")) toast.error(k.upload.photoLimit);
+        else if (msg.includes("KANA_VIDEO_LIMIT")) toast.error(k.upload.videoLimit);
+        else toast.error(msg || `${f.name} nuk u ngarkua.`);
       }
     }
     setBusy(false);
@@ -78,15 +104,15 @@ function GuestUploadPage() {
   }
 
   return (
-    <div className={`theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
+    <div className={kana ? "kana kana-page kana-guest guest-invitation" : `theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
       <main className="mx-auto max-w-xl px-4 py-12 text-center sm:px-6">
         <Heart className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
-        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Albumi i dasmës</p>
-        <h1 className="font-display mt-2 text-4xl sm:text-5xl">
-          {inv.partner_one} & {inv.partner_two}
+        <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{kana ? k.upload.eyebrow : "Albumi i dasmës"}</p>
+        <h1 className={kana ? "kana-bride mt-2" : "font-display mt-2 text-4xl sm:text-5xl"}>
+          {kana ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`}
         </h1>
         <p className="mt-4 text-muted-foreground">
-          Keni bërë një foto ose video të bukur? Dërgojani çiftit — vetëm ata e shohin.
+          {kana ? k.upload.desc : "Keni bërë një foto ose video të bukur? Dërgojani çiftit — vetëm ata e shohin."}
         </p>
         <section className="rsvp-section mt-8 px-4 py-8">
           <input
@@ -98,17 +124,17 @@ function GuestUploadPage() {
             onChange={(e) => onFiles(e.target.files)}
           />
           <Button size="lg" className="min-h-12 w-full" disabled={busy} onClick={() => input.current?.click()}>
-            <Camera className="h-5 w-5" /> {busy ? "Duke dërguar…" : "Zgjidh foto ose video"}
+            <Camera className="h-5 w-5" /> {busy ? (kana ? k.upload.busy : "Duke dërguar…") : kana ? k.upload.pick : "Zgjidh foto ose video"}
           </Button>
-          <p className="mt-3 text-xs text-muted-foreground">JPG, PNG, WEBP, MP4 ose MOV · deri në 6 MB secili</p>
+          <p className="mt-3 text-xs text-muted-foreground">{kana ? `JPG, PNG, WEBP, MP4, MOV · ${k.upload.limits}` : "JPG, PNG, WEBP, MP4 ose MOV · deri në 6 MB secili"}</p>
           {sent ? (
             <p className="mt-4 flex items-center justify-center gap-2 text-sm">
-              <CheckCircle2 className="h-4 w-4 text-success" /> Faleminderit! {sent} u dërguan.
+              <CheckCircle2 className="h-4 w-4 text-success" /> {kana ? `${k.upload.sent} ${sent}` : `Faleminderit! ${sent} u dërguan.`}
             </p>
           ) : null}
         </section>
         <Link to="/ftesa/$id" params={{ id: inv.id }} className="mt-8 inline-block text-sm underline">
-          Kthehu te ftesa
+          {kana ? k.upload.back : "Kthehu te ftesa"}
         </Link>
       </main>
     </div>
