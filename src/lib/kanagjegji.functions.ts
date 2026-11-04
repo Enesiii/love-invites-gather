@@ -1,8 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { KANAGJEGJI_THEMES } from "@/lib/themes";
-import { KANAGJEGJI_DEFAULT_PRICES, KANAGJEGJI_MUSIC, kanaPackageOf } from "@/lib/kanagjegji";
+import { KANAGJEGJI_MUSIC, kanaPackageOf } from "@/lib/kanagjegji";
 import { savedMapsHref } from "@/lib/invitation-location";
+import { readKanaPackages } from "@/lib/kanagjegji.server";
+export type { KanaPackageRow } from "@/lib/kanagjegji.server";
 
 async function getAdmin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -14,27 +16,6 @@ function checkKey(key: string) {
   if (!expected || expected.length < 8 || key.trim() !== expected) {
     throw new Error("Kodi i administrimit nuk është i saktë.");
   }
-}
-
-export type KanaPackageRow = { package: "classic" | "premium"; price: number; features: string[]; templates: string[] };
-
-export async function readKanaPackages(supabase: Awaited<ReturnType<typeof getAdmin>>): Promise<KanaPackageRow[]> {
-  const { data } = await supabase
-    .from("category_packages")
-    .select("package, price, features, templates")
-    .eq("category", "kanagjegji");
-  const rows = (data ?? []).map((r) => ({
-    package: r.package as "classic" | "premium",
-    price: Number(r.price),
-    features: r.features ?? [],
-    templates: r.templates ?? [],
-  }));
-  for (const pkg of ["classic", "premium"] as const) {
-    if (!rows.find((r) => r.package === pkg)) {
-      rows.push({ package: pkg, price: KANAGJEGJI_DEFAULT_PRICES[pkg], features: [], templates: pkg === "premium" ? ["k-burgundy", "k-ottoman"] : ["k-traditional", "k-modern"] });
-    }
-  }
-  return rows.sort((a) => (a.package === "classic" ? -1 : 1));
 }
 
 // Publike: vetëm çmimet, përfshirjet dhe dizajnet aktive — asnjë e dhënë private.

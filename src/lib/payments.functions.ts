@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
-  PACKAGE_LABELS,
   amountForPackage,
   packageForTheme,
   type PaymentOrderStatus,
@@ -119,7 +118,7 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
     let amount = amountForPackage(pkg);
     if (category === "kanagjegji") {
       // Çmimet e Kanagjegjit ruhen veçmas dhe ndryshohen nga administratori.
-      const { readKanaPackages } = await import("@/lib/kanagjegji.functions");
+      const { readKanaPackages } = await import("@/lib/kanagjegji.server");
       amount = (await readKanaPackages(supabase)).find((p) => p.package === pkg)?.price ?? amount;
     }
     const days = Math.min(Math.max(settings.order_expiration_days, 1), 90);
@@ -418,7 +417,7 @@ export const resendPaymentEmail = createServerFn({ method: "POST" })
     const supabase = await getAdmin();
     const { data: order } = await supabase
       .from("payment_orders")
-      .select("id, order_number, package, amount, currency, customer_name, customer_email, status")
+      .select("id, order_number, package, category, amount, currency, customer_name, customer_email, status")
       .eq("id", data.id)
       .maybeSingle();
     if (!order) throw new Error("Porosia nuk u gjet.");
