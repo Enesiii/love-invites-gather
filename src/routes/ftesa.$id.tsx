@@ -12,6 +12,8 @@ import { RsvpConfirmation } from "@/components/RsvpConfirmation";
 import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpening";
 import { Camera, Heart } from "lucide-react";
 import { getInvitation, submitRsvp } from "@/lib/invitations.functions";
+import { KanaMusic, KanaOpening } from "@/components/KanaOpening";
+import { useKanaText } from "@/lib/kanagjegji-i18n";
 
 export const Route = createFileRoute("/ftesa/$id")({
   loader: async ({ params }) => {
@@ -20,6 +22,20 @@ export const Route = createFileRoute("/ftesa/$id")({
     return inv;
   },
   head: ({ loaderData }) => {
+    if (loaderData?.category === "kanagjegji") {
+      const title = `${loaderData.partner_one} — Ftesë Kanagjegji`;
+      const desc = `Jeni të ftuar në kanagjegjin e ${loaderData.partner_one}. Konfirmoni pjesëmarrjen tuaj.`;
+      return {
+        meta: [
+          { title },
+          { name: "description", content: desc },
+          { property: "og:title", content: title },
+          { property: "og:description", content: desc },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary" },
+        ],
+      };
+    }
     const title = loaderData
       ? `${loaderData.partner_one} & ${loaderData.partner_two} — Ftesë dasme`
       : "Ftesë dasme";
@@ -52,15 +68,21 @@ function InvitePage() {
   const [done, setDone] = useState<boolean | null>(null);
   const [rsvpId, setRsvpId] = useState<string | null>(null);
   const [opened, setOpened] = useState(false);
+  const { k } = useKanaText();
+  const kana = inv.category === "kanagjegji";
+  // Dasma ruan tekstet ekzistuese; Kanagjegji përdor përkthimet e veta.
+  const tx = kana
+    ? k.invite
+    : { rsvpTitle: "A do të jeni me ne?", name: "Emri juaj", yes: "Do të vij", no: "Nuk mund të vij", count: "Sa persona (përfshirë ju)?", note: "Mesazh (opsional)", send: "Dërgo përgjigjen", sending: "Duke dërguar…", thanks: "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim.", sorry: "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj.", enterName: "Shkruani emrin tuaj.", chooseAttend: "Zgjidhni nëse do të vini.", memories: "Ndani kujtimet", memoriesDesc: "Bëtë një foto ose video të bukur? Dërgojani çiftit.", upload: "Ngarko foto ose video", footer: "Ftesa u krijua me dashuri nga Ftesa Dasme." };
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) {
-      toast.error("Shkruani emrin tuaj.");
+      toast.error(tx.enterName);
       return;
     }
     if (attending === null) {
-      toast.error("Zgjidhni nëse do të vini.");
+      toast.error(tx.chooseAttend);
       return;
     }
     setBusy(true);
@@ -82,41 +104,39 @@ function InvitePage() {
   }
 
   return (
-    <div className={`theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
-      {!opened ? <InvitationOpening inv={inv} onOpen={() => setOpened(true)} /> : (
+    <div className={kana ? "kana kana-page kana-guest guest-invitation" : `theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
+      {!opened ? (kana ? <KanaOpening inv={inv} onOpen={() => setOpened(true)} /> : <InvitationOpening inv={inv} onOpen={() => setOpened(true)} />) : (
       <main className="invitation-reveal mx-auto max-w-xl space-y-8 px-4 pb-14 pt-6 sm:px-6">
-        <div className="flex justify-center"><InvitationMusic /></div>
+        <div className="flex justify-center">{kana ? <KanaMusic music={inv.music} /> : <InvitationMusic />}</div>
         <InvitationCard inv={inv} showDirections />
         <section className="rsvp-section px-3 py-8 text-card-foreground sm:px-6">
           <Heart className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
-          <h2 className="font-display text-center text-4xl">A do të jeni me ne?</h2>
+          <h2 className="font-display text-center text-4xl">{tx.rsvpTitle}</h2>
           {done !== null ? (
             done && rsvpId ? (
               <RsvpConfirmation inv={inv} rsvpId={rsvpId} onClose={() => setRsvpId(null)} />
             ) : (
               <p className="mt-4 text-muted-foreground">
-                {done
-                  ? "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim."
-                  : "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj."}
+                {done ? tx.thanks : tx.sorry}
               </p>
             )
           ) : (
             <form onSubmit={onSubmit} className="mt-4 space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="n">Emri juaj</Label>
+                <Label htmlFor="n">{tx.name}</Label>
                 <Input id="n" value={name} onChange={(e) => setName(e.target.value)} maxLength={80} />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <Button type="button" variant="outline" aria-pressed={attending === true} className="rsvp-choice min-h-11" onClick={() => setAttending(true)}>
-                  Do të vij
+                  {tx.yes}
                 </Button>
                 <Button type="button" variant="outline" aria-pressed={attending === false} className="rsvp-choice min-h-11" onClick={() => setAttending(false)}>
-                  Nuk mund të vij
+                  {tx.no}
                 </Button>
               </div>
               {attending ? (
                 <div className="space-y-2">
-                  <Label htmlFor="c">Sa persona (përfshirë ju)?</Label>
+                  <Label htmlFor="c">{tx.count}</Label>
                   <Input
                     id="c"
                     type="text"
@@ -134,27 +154,27 @@ function InvitePage() {
                 </div>
               ) : null}
               <div className="space-y-2">
-                <Label htmlFor="note">Mesazh (opsional)</Label>
+                <Label htmlFor="note">{tx.note}</Label>
                 <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} maxLength={300} rows={2} />
               </div>
           <Button type="submit" disabled={busy} className="w-full">
-                {busy ? "Duke dërguar…" : "Dërgo përgjigjen"}
+                {busy ? tx.sending : tx.send}
               </Button>
             </form>
           )}
         </section>
         <section className="rsvp-section px-3 py-8 text-center text-card-foreground sm:px-6">
           <Camera className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
-          <h2 className="font-display text-3xl">Ndani kujtimet</h2>
+          <h2 className="font-display text-3xl">{tx.memories}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Bëtë një foto ose video të bukur? Dërgojani çiftit.
+            {tx.memoriesDesc}
           </p>
           <Button asChild className="mt-4 min-h-11">
-            <Link to="/ftesa/$id/foto" params={{ id: inv.id }}>Ngarko foto ose video</Link>
+            <Link to="/ftesa/$id/foto" params={{ id: inv.id }}>{tx.upload}</Link>
           </Button>
         </section>
         <div className="invitation-support">
-          <p>Ftesa u krijua me dashuri nga Ftesa Dasme.</p>
+          <p>{tx.footer}</p>
         </div>
       </main>
       )}

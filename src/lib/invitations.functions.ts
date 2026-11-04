@@ -1,4 +1,6 @@
-import { COVER_MAX_BYTES, THEME_IDS, sniffImageType } from "@/lib/themes";
+import { ALL_THEME_IDS, COVER_MAX_BYTES, THEME_IDS, isKanagjegjiTheme, sniffImageType } from "@/lib/themes";
+import { KANAGJEGJI_MUSIC, KANAGJEGJI_UPLOAD_LIMITS, kanaPackageOf } from "@/lib/kanagjegji";
+import { savedMapsHref } from "@/lib/invitation-location";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -42,7 +44,7 @@ export const getInvitation = createServerFn({ method: "GET" })
     const { data: row } = await supabaseAdmin
       .from("invitations")
       .select(
-        "id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, closed_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom",
+        "id, category, parents, music, maps_url, partner_one, partner_two, event_date, event_time, venue, address, message, theme, closed_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom",
       )
       .eq("id", data.id)
       // Ftesat e papaguara (activated_at NULL) nuk janë publikisht të arritshme.
@@ -116,7 +118,7 @@ export const getManageData = createServerFn({ method: "GET" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at, activated_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
+      .select("id, category, parents, music, maps_url, partner_one, partner_two, event_date, event_time, venue, address, message, theme, expected_guests, closed_at, activated_at, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
       .eq("manage_token", data.token)
       .maybeSingle();
     // Paneli i mysafirëve çkyçet vetëm pasi pagesa të konfirmohet.
@@ -275,13 +277,49 @@ export const setInvitationClosed = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const updateSchema = createSchema.extend({
+  token: z.string().uuid(),
+  partner_two: z.string().trim().max(60).optional().default(""),
+  theme: z.enum(ALL_THEME_IDS),
+  parents: z.string().trim().max(120).optional(),
+  maps_url: z.string().trim().max(500).optional(),
+  music: z.enum(KANAGJEGJI_MUSIC).optional(),
+});
+
 export const updateInvitation = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    createSchema.extend({ token: z.string().uuid() }).parse(input),
-  )
+  .inputValidator((input: unknown) => updateSchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin, invitationId } = await invitationIdForToken(data.token);
-    const { token: _t, ...rest } = data;
+    const { data: current } = await supabaseAdmin
+      .from("invitations")
+      .select("category, theme")
+      .eq("id", invitationId)
+      .single();
+    const { token: _t, parents, maps_url, music, ...rest } = data;
+    if (current?.category === "kanagjegji") {
+      // Dizajni mbetet brenda Kanagjegjit dhe brenda paketës së paguar.
+      if (!isKanagjegjiTheme(rest.theme) || kanaPackageOf(rest.theme) !== kanaPackageOf(current.theme)) {
+        throw new Error("Zgjidhni një dizajn Kanagjegji të së njëjtës paketë.");
+      }
+      if (maps_url && !savedMapsHref(maps_url)) throw new Error("Linku i Google Maps nuk është i vlefshëm.");
+      const { error } = await supabaseAdmin
+        .from("invitations")
+        .update({
+          ...rest,
+          partner_two: "",
+          address: rest.address || null,
+          message: rest.message || null,
+          ...(parents !== undefined ? { parents: parents || null } : {}),
+          ...(maps_url !== undefined ? { maps_url: maps_url ? savedMapsHref(maps_url) : null } : {}),
+          ...(music !== undefined ? { music } : {}),
+        })
+        .eq("id", invitationId);
+      if (error) throw new Error("Ngjarja nuk u përditësua.");
+      return { ok: true };
+    }
+    // Dasma: rregullat e mëparshme pa ndryshim.
+    if (!rest.partner_two) throw new Error("Shkruani emrin");
+    if (!(THEME_IDS as readonly string[]).includes(rest.theme)) throw new Error("Stili nuk është i vlefshëm.");
     const { error } = await supabaseAdmin
       .from("invitations")
       .update({ ...rest, address: rest.address || null, message: rest.message || null })
@@ -338,11 +376,19 @@ export const uploadGuestMedia = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inv } = await supabaseAdmin
       .from("invitations")
-      .select("id, closed_at, activated_at")
+      .select("id, closed_at, activated_at, category")
       .eq("id", data.invitation_id)
       .maybeSingle();
     if (!inv || !inv.activated_at) throw new Error("Ftesa nuk u gjet.");
     if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
+    if (inv.category === "kanagjegji") {
+      const { data: existing } = await supabaseAdmin.from("event_photos").select("path").eq("invitation_id", inv.id);
+      const videos = (existing ?? []).filter((r) => /\.(mp4|webm|mov)$/i.test(r.path)).length;
+      const photos = (existing ?? []).length - videos;
+      const isVideo = data.type.startsWith("video/");
+      if (isVideo && videos >= KANAGJEGJI_UPLOAD_LIMITS.videos) throw new Error("KANA_VIDEO_LIMIT");
+      if (!isVideo && photos >= KANAGJEGJI_UPLOAD_LIMITS.photos) throw new Error("KANA_PHOTO_LIMIT");
+    }
     const { count } = await supabaseAdmin
       .from("event_photos")
       .select("id", { count: "exact", head: true })

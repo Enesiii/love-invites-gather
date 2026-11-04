@@ -15,10 +15,13 @@ import { Route as HyrRouteImport } from './routes/hyr'
 import { Route as KrijoRouteImport } from './routes/krijo'
 import { Route as NgjarjetRouteImport } from './routes/ngjarjet'
 import { Route as FtesaIdRouteImport } from './routes/ftesa.$id'
+import { Route as KanagjegjiIndexRouteImport } from './routes/kanagjegji.index'
+import { Route as KanagjegjiKrijoRouteImport } from './routes/kanagjegji.krijo'
 import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 import { Route as PagesaTokenRouteImport } from './routes/pagesa.$token'
 import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
 import { Route as FtesaIdFotoRouteImport } from './routes/ftesa_.$id.foto'
+import { Route as KanagjegjiPreviewTemplateRouteImport } from './routes/kanagjegji.preview.$template'
 import { Route as ApiPublicJobsSendWeddingRemindersRouteImport } from './routes/api/public/jobs/send-wedding-reminders'
 
 const IndexRoute = IndexRouteImport.update({
@@ -51,6 +54,16 @@ const FtesaIdRoute = FtesaIdRouteImport.update({
   path: '/ftesa/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KanagjegjiIndexRoute = KanagjegjiIndexRouteImport.update({
+  id: '/kanagjegji/',
+  path: '/kanagjegji/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KanagjegjiKrijoRoute = KanagjegjiKrijoRouteImport.update({
+  id: '/kanagjegji/krijo',
+  path: '/kanagjegji/krijo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MenaxhoTokenRoute = MenaxhoTokenRouteImport.update({
   id: '/menaxho/$token',
   path: '/menaxho/$token',
@@ -71,6 +84,12 @@ const FtesaIdFotoRoute = FtesaIdFotoRouteImport.update({
   path: '/ftesa/$id/foto',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KanagjegjiPreviewTemplateRoute =
+  KanagjegjiPreviewTemplateRouteImport.update({
+    id: '/kanagjegji/preview/$template',
+    path: '/kanagjegji/preview/$template',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicJobsSendWeddingRemindersRoute =
   ApiPublicJobsSendWeddingRemindersRouteImport.update({
     id: '/api/public/jobs/send-wedding-reminders',
@@ -85,10 +104,13 @@ export interface FileRoutesByFullPath {
   '/krijo': typeof KrijoRoute
   '/ngjarjet': typeof NgjarjetRoute
   '/ftesa/$id': typeof FtesaIdRoute
+  '/kanagjegji/krijo': typeof KanagjegjiKrijoRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/kanagjegji/': typeof KanagjegjiIndexRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
+  '/kanagjegji/preview/$template': typeof KanagjegjiPreviewTemplateRoute
   '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 export interface FileRoutesByTo {
@@ -98,10 +120,13 @@ export interface FileRoutesByTo {
   '/krijo': typeof KrijoRoute
   '/ngjarjet': typeof NgjarjetRoute
   '/ftesa/$id': typeof FtesaIdRoute
+  '/kanagjegji/krijo': typeof KanagjegjiKrijoRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/kanagjegji': typeof KanagjegjiIndexRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
+  '/kanagjegji/preview/$template': typeof KanagjegjiPreviewTemplateRoute
   '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 export interface FileRoutesById {
@@ -112,10 +137,13 @@ export interface FileRoutesById {
   '/krijo': typeof KrijoRoute
   '/ngjarjet': typeof NgjarjetRoute
   '/ftesa/$id': typeof FtesaIdRoute
+  '/kanagjegji/krijo': typeof KanagjegjiKrijoRoute
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/kanagjegji/': typeof KanagjegjiIndexRoute
   '/ftesa_/$id/foto': typeof FtesaIdFotoRoute
+  '/kanagjegji/preview/$template': typeof KanagjegjiPreviewTemplateRoute
   '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 export interface FileRouteTypes {
@@ -127,10 +155,13 @@ export interface FileRouteTypes {
     | '/krijo'
     | '/ngjarjet'
     | '/ftesa/$id'
+    | '/kanagjegji/krijo'
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/kanagjegji/'
     | '/ftesa/$id/foto'
+    | '/kanagjegji/preview/$template'
     | '/api/public/jobs/send-wedding-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -140,10 +171,13 @@ export interface FileRouteTypes {
     | '/krijo'
     | '/ngjarjet'
     | '/ftesa/$id'
+    | '/kanagjegji/krijo'
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/kanagjegji'
     | '/ftesa/$id/foto'
+    | '/kanagjegji/preview/$template'
     | '/api/public/jobs/send-wedding-reminders'
   id:
     | '__root__'
@@ -153,10 +187,13 @@ export interface FileRouteTypes {
     | '/krijo'
     | '/ngjarjet'
     | '/ftesa/$id'
+    | '/kanagjegji/krijo'
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/kanagjegji/'
     | '/ftesa_/$id/foto'
+    | '/kanagjegji/preview/$template'
     | '/api/public/jobs/send-wedding-reminders'
   fileRoutesById: FileRoutesById
 }
@@ -167,10 +204,13 @@ export interface RootRouteChildren {
   KrijoRoute: typeof KrijoRoute
   NgjarjetRoute: typeof NgjarjetRoute
   FtesaIdRoute: typeof FtesaIdRoute
+  KanagjegjiKrijoRoute: typeof KanagjegjiKrijoRoute
   MenaxhoTokenRoute: typeof MenaxhoTokenRoute
   PagesaTokenRoute: typeof PagesaTokenRoute
   PreviewStyleRoute: typeof PreviewStyleRoute
+  KanagjegjiIndexRoute: typeof KanagjegjiIndexRoute
   FtesaIdFotoRoute: typeof FtesaIdFotoRoute
+  KanagjegjiPreviewTemplateRoute: typeof KanagjegjiPreviewTemplateRoute
   ApiPublicJobsSendWeddingRemindersRoute: typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 
@@ -218,6 +258,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FtesaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kanagjegji/': {
+      id: '/kanagjegji/'
+      path: '/kanagjegji'
+      fullPath: '/kanagjegji/'
+      preLoaderRoute: typeof KanagjegjiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kanagjegji/krijo': {
+      id: '/kanagjegji/krijo'
+      path: '/kanagjegji/krijo'
+      fullPath: '/kanagjegji/krijo'
+      preLoaderRoute: typeof KanagjegjiKrijoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/menaxho/$token': {
       id: '/menaxho/$token'
       path: '/menaxho/$token'
@@ -246,6 +300,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FtesaIdFotoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kanagjegji/preview/$template': {
+      id: '/kanagjegji/preview/$template'
+      path: '/kanagjegji/preview/$template'
+      fullPath: '/kanagjegji/preview/$template'
+      preLoaderRoute: typeof KanagjegjiPreviewTemplateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/jobs/send-wedding-reminders': {
       id: '/api/public/jobs/send-wedding-reminders'
       path: '/api/public/jobs/send-wedding-reminders'
@@ -263,10 +324,13 @@ const rootRouteChildren: RootRouteChildren = {
   KrijoRoute: KrijoRoute,
   NgjarjetRoute: NgjarjetRoute,
   FtesaIdRoute: FtesaIdRoute,
+  KanagjegjiKrijoRoute: KanagjegjiKrijoRoute,
   MenaxhoTokenRoute: MenaxhoTokenRoute,
   PagesaTokenRoute: PagesaTokenRoute,
   PreviewStyleRoute: PreviewStyleRoute,
+  KanagjegjiIndexRoute: KanagjegjiIndexRoute,
   FtesaIdFotoRoute: FtesaIdFotoRoute,
+  KanagjegjiPreviewTemplateRoute: KanagjegjiPreviewTemplateRoute,
   ApiPublicJobsSendWeddingRemindersRoute:
     ApiPublicJobsSendWeddingRemindersRoute,
 }

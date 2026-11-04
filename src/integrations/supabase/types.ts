@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      category_packages: {
+        Row: {
+          category: string
+          features: string[]
+          package: string
+          price: number
+          templates: string[]
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          features?: string[]
+          package: string
+          price: number
+          templates?: string[]
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          features?: string[]
+          package?: string
+          price?: number
+          templates?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_photos: {
         Row: {
           created_at: string
@@ -50,6 +77,7 @@ export type Database = {
         Row: {
           activated_at: string | null
           address: string | null
+          category: string
           closed_at: string | null
           cover_path: string | null
           cover_pos_x: number
@@ -61,8 +89,11 @@ export type Database = {
           expected_guests: number | null
           id: string
           manage_token: string
+          maps_url: string | null
           message: string | null
+          music: string | null
           owner_id: string | null
+          parents: string | null
           partner_one: string
           partner_two: string
           theme: string
@@ -71,6 +102,7 @@ export type Database = {
         Insert: {
           activated_at?: string | null
           address?: string | null
+          category?: string
           closed_at?: string | null
           cover_path?: string | null
           cover_pos_x?: number
@@ -82,8 +114,11 @@ export type Database = {
           expected_guests?: number | null
           id?: string
           manage_token?: string
+          maps_url?: string | null
           message?: string | null
+          music?: string | null
           owner_id?: string | null
+          parents?: string | null
           partner_one: string
           partner_two: string
           theme?: string
@@ -92,6 +127,7 @@ export type Database = {
         Update: {
           activated_at?: string | null
           address?: string | null
+          category?: string
           closed_at?: string | null
           cover_path?: string | null
           cover_pos_x?: number
@@ -103,8 +139,11 @@ export type Database = {
           expected_guests?: number | null
           id?: string
           manage_token?: string
+          maps_url?: string | null
           message?: string | null
+          music?: string | null
           owner_id?: string | null
+          parents?: string | null
           partner_one?: string
           partner_two?: string
           theme?: string
@@ -114,6 +153,7 @@ export type Database = {
       }
       order_requests: {
         Row: {
+          category: string
           contact_email: string | null
           contact_phone: string
           created_at: string
@@ -126,6 +166,7 @@ export type Database = {
           wedding_date: string
         }
         Insert: {
+          category?: string
           contact_email?: string | null
           contact_phone: string
           created_at?: string
@@ -138,6 +179,7 @@ export type Database = {
           wedding_date: string
         }
         Update: {
+          category?: string
           contact_email?: string | null
           contact_phone?: string
           created_at?: string
@@ -193,6 +235,7 @@ export type Database = {
         Row: {
           access_token: string
           amount: number
+          category: string
           confirmation_email_sent_at: string | null
           confirmation_email_status: string | null
           confirmed_by: string | null
@@ -214,6 +257,7 @@ export type Database = {
         Insert: {
           access_token?: string
           amount: number
+          category?: string
           confirmation_email_sent_at?: string | null
           confirmation_email_status?: string | null
           confirmed_by?: string | null
@@ -235,6 +279,7 @@ export type Database = {
         Update: {
           access_token?: string
           amount?: number
+          category?: string
           confirmation_email_sent_at?: string | null
           confirmation_email_status?: string | null
           confirmed_by?: string | null

@@ -12,7 +12,7 @@ function parts(ms: number) {
   };
 }
 
-export function Countdown({ eventDate, eventTime }: { eventDate: string; eventTime: string }) {
+export function Countdown({ eventDate, eventTime, label = "Deri në dasmën tonë", units = ["Ditë", "Orë", "Minuta", "Sekonda"] }: { eventDate: string; eventTime: string; label?: string; units?: [string, string, string, string] }) {
   const [left, setLeft] = useState<number | null>(null);
 
   useEffect(() => {
@@ -30,14 +30,14 @@ export function Countdown({ eventDate, eventTime }: { eventDate: string; eventTi
   if (left <= 0) return null;
   const { d, h, m, s } = parts(left);
   const cells: Array<[string, string]> = [
-    [String(d), "Ditë"],
-    [pad(h), "Orë"],
-    [pad(m), "Minuta"],
-    [pad(s), "Sekonda"],
+    [String(d), units[0]],
+    [pad(h), units[1]],
+    [pad(m), units[2]],
+    [pad(s), units[3]],
   ];
   return (
-    <div className="countdown" role="timer" aria-label="Koha deri në dasmë">
-      <p className="countdown-label">Deri në dasmën tonë</p>
+    <div className="countdown" role="timer" aria-label={label}>
+      <p className="countdown-label">{label}</p>
       <div className="countdown-grid">
         {cells.map(([value, label]) => (
           <div key={label} className="countdown-cell">

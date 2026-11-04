@@ -4,7 +4,19 @@ export const PREMIUM_THEMES = ["lux-gold", "floral", "minimal", "royal"] as cons
 export const THEME_IDS = [...CLASSIC_THEMES, ...PREMIUM_THEMES] as const;
 export type ThemeId = (typeof THEME_IDS)[number];
 
-export const THEME_LABELS: Record<ThemeId, string> = {
+// Kategoria e veçantë "Kanagjegji" — dizajnet e saj nuk pranohen te krijuesi i dasmës.
+export const KANAGJEGJI_CLASSIC_THEMES = ["k-traditional", "k-modern"] as const;
+export const KANAGJEGJI_PREMIUM_THEMES = ["k-burgundy", "k-ottoman"] as const;
+export const KANAGJEGJI_THEMES = [...KANAGJEGJI_CLASSIC_THEMES, ...KANAGJEGJI_PREMIUM_THEMES] as const;
+export type KanagjegjiThemeId = (typeof KANAGJEGJI_THEMES)[number];
+export const ALL_THEME_IDS = [...THEME_IDS, ...KANAGJEGJI_THEMES] as const;
+export type AnyThemeId = (typeof ALL_THEME_IDS)[number];
+
+export const THEME_LABELS: Record<AnyThemeId, string> = {
+  "k-traditional": "Tradicionale Kuq & Ar",
+  "k-modern": "Moderne Minimal e Kuqe",
+  "k-burgundy": "Burgundy Luksoze",
+  "k-ottoman": "Osmane Mbretërore e Artë",
   rose: "Trëndafil",
   sage: "Sherbelë",
   night: "Natë",
@@ -21,8 +33,12 @@ export const THEME_LABELS: Record<ThemeId, string> = {
 export function isThemeId(v: unknown): v is ThemeId {
   return typeof v === "string" && (THEME_IDS as readonly string[]).includes(v);
 }
+export function isKanagjegjiTheme(v: unknown): v is KanagjegjiThemeId {
+  return typeof v === "string" && (KANAGJEGJI_THEMES as readonly string[]).includes(v);
+}
+// Premium = dizajn me foto personale (dasmë ose Kanagjegji).
 export function isPremiumTheme(v: string) {
-  return (PREMIUM_THEMES as readonly string[]).includes(v);
+  return (PREMIUM_THEMES as readonly string[]).includes(v) || (KANAGJEGJI_PREMIUM_THEMES as readonly string[]).includes(v);
 }
 
 // Kontroll në server: lejon vetëm JPEG, PNG, WebP duke lexuar bajtet e para.
