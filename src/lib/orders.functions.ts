@@ -10,6 +10,7 @@ export const submitOrderRequest = createServerFn({ method: "POST" })
       .from("order_requests")
       .insert({
         style: data.style,
+        category: data.style.startsWith("k-") ? "kanagjegji" : "wedding",
         partner_one: data.partner_one,
         partner_two: data.partner_two,
         wedding_date: data.wedding_date,
