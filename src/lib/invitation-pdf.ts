@@ -1,4 +1,5 @@
 import { formatDate } from "@/lib/format-date";
+import { savedMapsHref } from "@/lib/invitation-location";
 
 export type PdfInvitation = {
   partner_one: string;
@@ -183,11 +184,11 @@ export async function buildInvitationPdf(inv: PdfInvitation): Promise<Blob> {
     center(inv.event_time, y, 14, regular, text);
     y -= 24;
   }
-  if (inv.venue) {
+  if (inv.venue && !savedMapsHref(inv.venue)) {
     center(inv.venue, y, 16, bold, text);
     y -= 19;
   }
-  if (inv.address) {
+  if (inv.address && !savedMapsHref(inv.address)) {
     for (const l of wrap(inv.address, regular, 12, W - 130)) {
       center(l, y, 12, regular, muted);
       y -= 15;

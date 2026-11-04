@@ -17,6 +17,23 @@ export function savedMapsHref(value?: string | null) {
   }
 }
 
+// Raw Maps URLs must never be printed on the invitation itself; callers show a
+// friendly label instead and keep the link only as the click target.
+export function locationDisplay(venue?: string | null, address?: string | null) {
+  const texts: string[] = [];
+  let hasLink = false;
+  for (const value of [venue, address]) {
+    const text = value?.trim();
+    if (!text) continue;
+    if (savedMapsHref(text)) {
+      hasLink = true;
+      continue;
+    }
+    texts.push(text);
+  }
+  return { texts, hasLink };
+}
+
 export function locationHref(venue?: string | null, address?: string | null) {
   const saved = savedMapsHref(venue) ?? savedMapsHref(address);
   if (saved) return saved;

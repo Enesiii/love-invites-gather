@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { directionsHref, locationHref, savedMapsHref } from "@/lib/invitation-location";
+import { directionsHref, locationDisplay, locationHref, savedMapsHref } from "@/lib/invitation-location";
 
 describe("invitation location links", () => {
   it("uses the saved venue and address in the requested Google Maps search format", () => {
@@ -33,5 +33,17 @@ describe("invitation location links", () => {
   it("hides directions without data and supports address-only directions", () => {
     expect(directionsHref(" ", null)).toBeNull();
     expect(directionsHref("", " Mushnikovë ")).toBe("https://www.google.com/maps/dir/?api=1&destination=Mushnikov%C3%AB");
+  });
+  it("never shows a raw Maps URL on the invitation", () => {
+    expect(locationDisplay("https://maps.app.goo.gl/5UNAXPDaQks6hk7u8", null)).toEqual({ texts: [], hasLink: true });
+    expect(locationDisplay("https://maps.app.goo.gl/5UNAXPDaQks6hk7u8", "Mushnikovë")).toEqual({
+      texts: ["Mushnikovë"],
+      hasLink: true,
+    });
+    expect(locationDisplay("Salla Royal", "https://www.google.com/maps/place/Mushnikove")).toEqual({
+      texts: ["Salla Royal"],
+      hasLink: true,
+    });
+    expect(locationDisplay("Salla Royal", "Prishtinë")).toEqual({ texts: ["Salla Royal", "Prishtinë"], hasLink: false });
   });
 });
