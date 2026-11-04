@@ -34,13 +34,13 @@ import heroBackground from "@/assets/golden-roses-hero.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ftesa Dasme — ftesa dixhitale elegante në Kosovë" },
+      { title: "Ftesa Jonë — ftesa dixhitale elegante në Kosovë" },
       {
         name: "description",
         content:
           "Zbuloni ftesa dasme elegante, hapje zarfi me animacion dhe RSVP online. Krijoni ftesën tuaj dhe ndajeni me më të dashurit në Kosovë dhe kudo.",
       },
-      { property: "og:title", content: "Ftesa Dasme — një fillim i bukur për ditën tuaj" },
+      { property: "og:title", content: "Ftesa Jonë — një fillim i bukur për ditën tuaj" },
       {
         property: "og:description",
         content:
@@ -308,7 +308,7 @@ function Index() {
       </main>
       <footer className="home-footer home-container">
         <Link to="/" className="home-brand font-display">
-          <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Ftesa Dasme.
+          <Heart className="h-4 w-4 text-primary" aria-hidden="true" /> Ftesa Jonë.
         </Link>
         <span>{t.footer.tagline}</span>
         <Button

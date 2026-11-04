@@ -20,9 +20,9 @@ export const Route = createFileRoute("/hyr")({
   },
   head: () => ({
     meta: [
-      { title: "Hyr në llogari — Ftesa Dasme" },
+      { title: "Hyr në llogari — Ftesa Jonë" },
       { name: "description", content: "Hyni për të parë të gjitha ftesat tuaja dhe mysafirët." },
-      { property: "og:title", content: "Hyr në llogari — Ftesa Dasme" },
+      { property: "og:title", content: "Hyr në llogari — Ftesa Jonë" },
       { property: "og:description", content: "Ftesat tuaja të ruajtura në një vend." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -98,7 +98,7 @@ function AuthPage() {
       <div className="w-full max-w-sm space-y-6 rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="text-center">
           <Link to="/" className="font-display text-2xl text-primary">
-            Ftesa Dasme
+            Ftesa Jonë
           </Link>
           <h1 className="mt-3 font-display text-3xl">
             {mode === "in" ? "Hyr në llogari" : "Krijo llogari"}

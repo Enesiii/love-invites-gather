@@ -63,7 +63,7 @@ export const Route = createFileRoute("/menaxho/$token")({
   },
   head: () => ({
     meta: [
-      { title: "Paneli i ftesës — Ftesa Dasme" },
+      { title: "Paneli i ftesës — Ftesa Jonë" },
       { name: "description", content: "Menaxhoni RSVP-të, mysafirët dhe fotot e dasmës." },
       { property: "og:title", content: "Paneli i ftesës" },
       { property: "og:description", content: "RSVP-të, mysafirët dhe fotot në një vend." },
@@ -353,7 +353,7 @@ function Manage() {
         <span className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
           <Heart className="h-4 w-4 fill-current" />
         </span>
-        <span className="font-display text-lg">Ftesa Dasme</span>
+        <span className="font-display text-lg">Ftesa Jonë</span>
       </Link>
       <p className="px-4 pb-2 text-xs text-muted-foreground">Platformi</p>
       <ul className="space-y-0.5 px-2 text-sm">

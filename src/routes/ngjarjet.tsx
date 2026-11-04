@@ -11,9 +11,9 @@ import { formatDate } from "@/lib/format-date";
 export const Route = createFileRoute("/ngjarjet")({
   head: () => ({
     meta: [
-      { title: "Ngjarjet e mia — Ftesa Dasme" },
+      { title: "Ngjarjet e mia — Ftesa Jonë" },
       { name: "description", content: "Të gjitha ftesat tuaja dhe panelet e mysafirëve." },
-      { property: "og:title", content: "Ngjarjet e mia — Ftesa Dasme" },
+      { property: "og:title", content: "Ngjarjet e mia — Ftesa Jonë" },
       { property: "og:description", content: "Ftesat tuaja të ruajtura në llogari." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -56,7 +56,7 @@ function MyEvents() {
     <div className="min-h-screen bg-muted/40">
       <header className="flex items-center justify-between border-b border-border bg-card px-4 py-4 sm:px-6">
         <Link to="/" className="font-display text-xl text-primary">
-          Ftesa Dasme
+          Ftesa Jonë
         </Link>
         <div className="flex items-center gap-3 text-sm">
           <span className="hidden text-muted-foreground sm:inline">{session.user.email}</span>

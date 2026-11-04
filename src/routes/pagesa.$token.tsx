@@ -13,9 +13,9 @@ import { Check, Copy, MessageCircle } from "lucide-react";
 export const Route = createFileRoute("/pagesa/$token")({
   head: () => ({
     meta: [
-      { title: "Përfundo pagesën — Ftesa Dasme" },
+      { title: "Përfundo pagesën — Ftesa Jonë" },
       { name: "description", content: "Përfundoni transfertën bankare për të aktivizuar ftesën tuaj." },
-      { property: "og:title", content: "Përfundo pagesën — Ftesa Dasme" },
+      { property: "og:title", content: "Përfundo pagesën — Ftesa Jonë" },
       { property: "og:description", content: "Përfundoni transfertën bankare për të aktivizuar ftesën tuaj." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -134,7 +134,7 @@ function PaymentPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12">
       <header className="mb-8 flex items-center justify-between">
-        <Link to="/" className="font-display text-2xl text-primary">Ftesa Dasme</Link>
+        <Link to="/" className="font-display text-2xl text-primary">Ftesa Jonë</Link>
         <span className="text-sm text-muted-foreground">{order.order_number}</span>
       </header>
 

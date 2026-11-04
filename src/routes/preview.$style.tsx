@@ -17,12 +17,12 @@ export const Route = createFileRoute("/preview/$style")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: `${loaderData?.name ?? "Pamja e ftesës"} — Ftesa Dasme` },
+      { title: `${loaderData?.name ?? "Pamja e ftesës"} — Ftesa Jonë` },
       {
         name: "description",
         content: loaderData?.description ?? "Shikoni një ftesë dasme elegante.",
       },
-      { property: "og:title", content: `${loaderData?.name ?? "Pamja e ftesës"} — Ftesa Dasme` },
+      { property: "og:title", content: `${loaderData?.name ?? "Pamja e ftesës"} — Ftesa Jonë` },
       {
         property: "og:description",
         content: loaderData?.description ?? "Shikoni një ftesë dasme elegante.",

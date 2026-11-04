@@ -80,9 +80,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ftesa Dasme — krijo ftesën tënde dhe mblidh RSVP" },
+      { title: "Ftesa Jonë — krijo ftesën tënde dhe mblidh RSVP" },
       { name: "description", content: "Krijo një ftesë dasme të bukur, ndaje me të ftuarit dhe ndiq përgjigjet RSVP në kohë reale." },
-            { property: "og:title", content: "Ftesa Dasme — krijo ftesën tënde dhe mblidh RSVP" },
+            { property: "og:title", content: "Ftesa Jonë — krijo ftesën tënde dhe mblidh RSVP" },
       { property: "og:description", content: "Krijo një ftesë dasme të bukur, ndaje me të ftuarit dhe ndiq përgjigjet RSVP." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
