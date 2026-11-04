@@ -19,6 +19,7 @@ import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 import { Route as PagesaTokenRouteImport } from './routes/pagesa.$token'
 import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
 import { Route as FtesaIdFotoRouteImport } from './routes/ftesa_.$id.foto'
+import { Route as ApiPublicJobsSendWeddingRemindersRouteImport } from './routes/api/public/jobs/send-wedding-reminders'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +71,12 @@ const FtesaIdFotoRoute = FtesaIdFotoRouteImport.update({
   path: '/ftesa/$id/foto',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicJobsSendWeddingRemindersRoute =
+  ApiPublicJobsSendWeddingRemindersRouteImport.update({
+    id: '/api/public/jobs/send-wedding-reminders',
+    path: '/api/public/jobs/send-wedding-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
+  '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
+  '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +116,7 @@ export interface FileRoutesById {
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
   '/ftesa_/$id/foto': typeof FtesaIdFotoRoute
+  '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/pagesa/$token'
     | '/preview/$style'
     | '/ftesa/$id/foto'
+    | '/api/public/jobs/send-wedding-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/pagesa/$token'
     | '/preview/$style'
     | '/ftesa/$id/foto'
+    | '/api/public/jobs/send-wedding-reminders'
   id:
     | '__root__'
     | '/'
@@ -145,6 +157,7 @@ export interface FileRouteTypes {
     | '/pagesa/$token'
     | '/preview/$style'
     | '/ftesa_/$id/foto'
+    | '/api/public/jobs/send-wedding-reminders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +171,7 @@ export interface RootRouteChildren {
   PagesaTokenRoute: typeof PagesaTokenRoute
   PreviewStyleRoute: typeof PreviewStyleRoute
   FtesaIdFotoRoute: typeof FtesaIdFotoRoute
+  ApiPublicJobsSendWeddingRemindersRoute: typeof ApiPublicJobsSendWeddingRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -232,6 +246,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FtesaIdFotoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/jobs/send-wedding-reminders': {
+      id: '/api/public/jobs/send-wedding-reminders'
+      path: '/api/public/jobs/send-wedding-reminders'
+      fullPath: '/api/public/jobs/send-wedding-reminders'
+      preLoaderRoute: typeof ApiPublicJobsSendWeddingRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -246,6 +267,8 @@ const rootRouteChildren: RootRouteChildren = {
   PagesaTokenRoute: PagesaTokenRoute,
   PreviewStyleRoute: PreviewStyleRoute,
   FtesaIdFotoRoute: FtesaIdFotoRoute,
+  ApiPublicJobsSendWeddingRemindersRoute:
+    ApiPublicJobsSendWeddingRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
