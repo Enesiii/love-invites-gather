@@ -7,7 +7,7 @@ import {
   type PaymentOrderStatus,
 } from "@/lib/payment-shared";
 import { WHATSAPP_NUMBER } from "@/lib/site-config";
-import { isThemeId } from "@/lib/themes";
+import { packageLabel } from "@/lib/payment-shared";
 
 type AdminClient = Awaited<ReturnType<typeof getAdmin>>;
 async function getAdmin() {
@@ -102,7 +102,7 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
     const supabase = await getAdmin();
     const { data: inv } = await supabase
       .from("invitations")
-      .select("id, theme")
+      .select("id, theme, category")
       .eq("manage_token", data.token)
       .maybeSingle();
     if (!inv) throw new Error("Ftesa nuk u gjet.");
@@ -114,7 +114,14 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
       .maybeSingle();
     if (existing) return { orderToken: existing.access_token };
     const settings = await getSettings(supabase);
-    const pkg = packageForTheme(isThemeId(inv.theme) ? inv.theme : "rose");
+    const pkg = packageForTheme(inv.theme);
+    const category = inv.category === "kanagjegji" ? "kanagjegji" : "wedding";
+    let amount = amountForPackage(pkg);
+    if (category === "kanagjegji") {
+      // Çmimet e Kanagjegjit ruhen veçmas dhe ndryshohen nga administratori.
+      const { readKanaPackages } = await import("@/lib/kanagjegji.functions");
+      amount = (await readKanaPackages(supabase)).find((p) => p.package === pkg)?.price ?? amount;
+    }
     const days = Math.min(Math.max(settings.order_expiration_days, 1), 90);
     const { data: numRow, error: numErr } = await supabase.rpc("next_order_number");
     if (numErr || !numRow) {
@@ -127,7 +134,8 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
         order_number: numRow,
         invitation_id: inv.id,
         package: pkg,
-        amount: amountForPackage(pkg),
+        category,
+        amount,
         expires_at: new Date(Date.now() + days * 864e5).toISOString(),
       })
       .select("id, access_token")
@@ -151,7 +159,7 @@ export const getPaymentPage = createServerFn({ method: "GET" })
     await expireOverdue(supabase);
     const { data: order } = await supabase
       .from("payment_orders")
-      .select("id, order_number, package, amount, currency, status, customer_name, customer_email, customer_phone, expires_at, created_at, invitation_id")
+      .select("id, order_number, package, category, amount, currency, status, customer_name, customer_email, customer_phone, expires_at, created_at, invitation_id")
       .eq("access_token", data.token)
       .maybeSingle();
     if (!order) return null;
@@ -167,7 +175,8 @@ export const getPaymentPage = createServerFn({ method: "GET" })
       order: {
         order_number: order.order_number,
         package: order.package as "classic" | "premium",
-        package_label: PACKAGE_LABELS[order.package as "classic" | "premium"],
+        package_label: packageLabel(order.category, order.package),
+        category: order.category,
         amount: Number(order.amount),
         currency: order.currency,
         status: order.status as PaymentOrderStatus,
@@ -210,7 +219,7 @@ export const submitPaymentContact = createServerFn({ method: "POST" })
     const supabase = await getAdmin();
     const { data: order } = await supabase
       .from("payment_orders")
-      .select("id, order_number, package, amount, currency, status, payment_email_sent_at")
+      .select("id, order_number, package, category, amount, currency, status, payment_email_sent_at")
       .eq("access_token", data.token)
       .maybeSingle();
     if (!order) throw new Error("Porosia nuk u gjet.");
@@ -227,7 +236,7 @@ export const submitPaymentContact = createServerFn({ method: "POST" })
       const msg = paymentInstructionsEmail({
         customerName: data.name,
         orderNumber: order.order_number,
-        packageLabel: PACKAGE_LABELS[order.package as "classic" | "premium"],
+        packageLabel: packageLabel(order.category, order.package),
         amount: `${order.amount} ${order.currency}`,
         settings,
       });
@@ -257,7 +266,7 @@ export const getPaymentPreview = createServerFn({ method: "GET" })
     if (!order) return null;
     const { data: row } = await supabase
       .from("invitations")
-      .select("id, partner_one, partner_two, event_date, event_time, venue, address, message, theme, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
+      .select("id, category, parents, music, maps_url, partner_one, partner_two, event_date, event_time, venue, address, message, theme, cover_path, cover_pos_x, cover_pos_y, cover_zoom")
       .eq("id", order.invitation_id)
       .maybeSingle();
     if (!row) return null;
@@ -291,7 +300,7 @@ export const listPaymentOrders = createServerFn({ method: "POST" })
     await expireOverdue(supabase);
     const { data: rows, error } = await supabase
       .from("payment_orders")
-      .select("id, order_number, package, amount, currency, status, customer_name, customer_email, customer_phone, created_at, paid_at, expires_at, payment_email_status, confirmation_email_status, invitation_id, invitations(partner_one, partner_two, event_date)")
+      .select("id, order_number, package, category, amount, currency, status, customer_name, customer_email, customer_phone, created_at, paid_at, expires_at, payment_email_status, confirmation_email_status, invitation_id, invitations(partner_one, partner_two, event_date)")
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) {
@@ -321,7 +330,7 @@ export const confirmPayment = createServerFn({ method: "POST" })
       .update({ status: "paid", paid_at: new Date().toISOString(), confirmed_by: "admin" })
       .eq("id", data.id)
       .eq("status", "pending_payment")
-      .select("id, order_number, package, amount, currency, customer_name, customer_email, invitation_id, confirmation_email_sent_at")
+      .select("id, order_number, package, category, amount, currency, customer_name, customer_email, invitation_id, confirmation_email_sent_at")
       .maybeSingle();
     if (!updated) {
       const { data: current } = await supabase.from("payment_orders").select("status").eq("id", data.id).maybeSingle();
@@ -350,7 +359,7 @@ export const confirmPayment = createServerFn({ method: "POST" })
         const msg = paymentConfirmedEmail({
           customerName: updated.customer_name ?? "",
           orderNumber: updated.order_number,
-          packageLabel: PACKAGE_LABELS[updated.package as "classic" | "premium"],
+          packageLabel: packageLabel(updated.category, updated.package),
           amount: `${updated.amount} ${updated.currency}`,
           invitationUrl: `${origin}/ftesa/${inv.id}`,
           dashboardUrl: `${origin}/menaxho/${inv.manage_token}`,
@@ -419,7 +428,7 @@ export const resendPaymentEmail = createServerFn({ method: "POST" })
     const msg = paymentInstructionsEmail({
       customerName: order.customer_name ?? "",
       orderNumber: order.order_number,
-      packageLabel: PACKAGE_LABELS[order.package as "classic" | "premium"],
+      packageLabel: packageLabel(order.category, order.package),
       amount: `${order.amount} ${order.currency}`,
       settings,
     });
