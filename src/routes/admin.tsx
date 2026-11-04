@@ -228,10 +228,15 @@ function AdminPage() {
   }
 
   const shown = orders?.filter((o) => filter === "all" || o.status === filter) ?? [];
-  const matchingInvitations = invitations.filter((inv) =>
-    `${inv.partner_one} ${inv.partner_two} ${inv.venue} ${inv.event_date}`
-      .toLocaleLowerCase("sq").includes(search.trim().toLocaleLowerCase("sq")),
-  );
+  const matchingInvitations = invitations
+    .filter((inv) => invFilter === "all" || (inv.category ?? "wedding") === invFilter)
+    .filter((inv) =>
+      `${inv.partner_one} ${inv.partner_two} ${inv.venue} ${inv.event_date}`
+        .toLocaleLowerCase("sq").includes(search.trim().toLocaleLowerCase("sq")),
+    );
+
+  const coupleName = (inv: Invitation) =>
+    (inv.category ?? "wedding") === "kanagjegji" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
 
   async function copyInvitation(inv: Invitation, privateLink: boolean) {
     const path = privateLink ? `/menaxho/${inv.manage_token}` : `/ftesa/${inv.id}`;
@@ -305,8 +310,9 @@ function AdminPage() {
             <Button variant={view === "orders" ? "default" : "outline"} onClick={() => setView("orders")}>Kërkesat ({orders.length})</Button>
             <Button variant={view === "settings" ? "default" : "outline"} onClick={() => setView("settings")}>Cilësimet e pagesës</Button>
             <Button variant={view === "reminders" ? "default" : "outline"} onClick={() => setView("reminders")}><BellRing className="h-4 w-4" />Wedding Reminders</Button>
+            <Button variant={view === "kana" ? "default" : "outline"} onClick={() => setView("kana")}>Paketat Kanagjegji</Button>
             <Button variant="ghost" disabled={busy} onClick={() => load()}><RefreshCw className="h-4 w-4" />{busy ? "Duke ngarkuar…" : "Rifresko"}</Button>
-            <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); }}><LogOut className="h-4 w-4" />Dil</Button>
+            <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); setInvFilter("all"); }}><LogOut className="h-4 w-4" />Dil</Button>
           </div>
           {loginError && <p role="alert" className="mt-3 text-sm text-destructive">{loginError}</p>}
           {view === "invitations" && (
