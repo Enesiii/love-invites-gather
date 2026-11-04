@@ -130,13 +130,13 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
         amount: amountForPackage(pkg),
         expires_at: new Date(Date.now() + days * 864e5).toISOString(),
       })
-      .select("access_token")
+      .select("id, access_token")
       .single();
     if (error || !order) {
       console.error("createPaymentOrder failed", error);
       throw new Error("Porosia nuk u krijua. Provoni përsëri.");
     }
-    await audit(supabase, inv.id === "" ? "" : order.access_token, null, "pending_payment", "system", "Porosia u krijua");
+    await audit(supabase, order.id, null, "pending_payment", "system", "Porosia u krijua");
     return { orderToken: order.access_token };
   });
 
