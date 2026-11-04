@@ -65,10 +65,11 @@ function InvitePage() {
     }
     setBusy(true);
     try {
-      await submit({
+      const res = await submit({
         data: { invitation_id: inv.id, guest_name: name, attending, guest_count: count, note },
       });
       setDone(attending);
+      if (attending && res.rsvpId) setRsvpId(res.rsvpId);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gabim gjatë ruajtjes.");
     } finally {
@@ -90,11 +91,15 @@ function InvitePage() {
           <Heart className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
           <h2 className="font-display text-center text-4xl">A do të jeni me ne?</h2>
           {done !== null ? (
-            <p className="mt-4 text-muted-foreground">
-              {done
-                ? "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim."
-                : "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj."}
-            </p>
+            done && rsvpId ? (
+              <RsvpConfirmation inv={inv} rsvpId={rsvpId} onClose={() => setRsvpId(null)} />
+            ) : (
+              <p className="mt-4 text-muted-foreground">
+                {done
+                  ? "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim."
+                  : "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj."}
+              </p>
+            )
           ) : (
             <form onSubmit={onSubmit} className="mt-4 space-y-4">
               <div className="space-y-2">
