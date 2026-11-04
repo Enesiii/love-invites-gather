@@ -207,6 +207,21 @@ function AdminPage() {
     }
   }
 
+  async function onSaveKana(pkg: "classic" | "premium") {
+    if (!kana) return;
+    const row = kana.find((r) => r.package === pkg);
+    if (!row) return;
+    setBusy(true);
+    try {
+      await saveKana({ data: { key: key.trim(), package: pkg, price: row.price, features: row.features, templates: row.templates } });
+      toast.success("Paketa Kanagjegji u ruajt.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onSaveSettings(e: React.FormEvent) {
     e.preventDefault();
     if (!settings) return;
