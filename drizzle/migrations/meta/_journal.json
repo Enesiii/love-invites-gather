@@ -71,6 +71,13 @@
       "when": 1793801295048,
       "tag": "0009_admin_record_deletion",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793803845933,
+      "tag": "0010_kanagjegji_category",
+      "breakpoints": true
     }
   ]
 }
