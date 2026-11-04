@@ -459,6 +459,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_admin_payment_order: { Args: { p_id: string }; Returns: boolean }
+      delete_admin_reminder_subscription: {
+        Args: { p_notification_id: string }
+        Returns: boolean
+      }
       next_order_number: { Args: never; Returns: string }
     }
     Enums: {

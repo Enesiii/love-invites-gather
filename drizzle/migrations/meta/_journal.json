@@ -64,6 +64,13 @@
       "when": 1793800026444,
       "tag": "0008_wedding_reminders",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793801295048,
+      "tag": "0009_admin_record_deletion",
+      "breakpoints": true
     }
   ]
 }
