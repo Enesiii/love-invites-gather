@@ -94,7 +94,7 @@ function KanaLanding() {
                   <div className="pointer-events-none origin-top scale-[.62]" style={{ width: "161%", marginLeft: "-30.5%" }}>
                     <KanagjegjiInvitation inv={kanaSampleInvitation(id)} showDirections={false} />
                   </div>
-                </Link>
+                </div>
                 <div className="flex flex-1 flex-col gap-2 p-4">
                   <p className="kana-eyebrow">{kanaPackageOf(id) === "premium" ? k.landing.premiumTag : k.landing.classicTag}</p>
                   <h3 className="font-display text-lg">{k.templates[id].name}</h3>
