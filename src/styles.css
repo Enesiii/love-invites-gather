@@ -457,7 +457,7 @@
   .home-mobile-nav { display: flex; flex-direction: column; padding-bottom: 14px; }
   .home-mobile-nav button { justify-content: flex-start; height: 44px; }
   .home-hero { min-height: 100svh; }
-  .home-hero-image { object-position: 62% center; }
+  .home-hero-image { object-position: 74% center; }
   .home-hero-overlay { background: linear-gradient(to bottom, oklch(0.12 0.01 60 / 62%) 0%, oklch(0.12 0.01 60 / 38%) 50%, oklch(0.1 0.01 60 / 68%) 100%); }
   .hero-content { min-height: 100svh; justify-content: center; padding-block: 96px 56px; }
   .hero-eyebrow { margin-bottom: 18px; }
