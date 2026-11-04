@@ -145,6 +145,16 @@ function AdminPage() {
     }
   }
 
+  async function onTogglePush(enabled: boolean) {
+    try {
+      await togglePush({ data: { key: key.trim(), enabled } });
+      setReminders((r) => (r ? { ...r, pushEnabled: enabled } : r));
+      toast.success(enabled ? "Njoftimet push u aktivizuan." : "Njoftimet push u çaktivizuan.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    }
+  }
+
   async function onSaveSettings(e: React.FormEvent) {
     e.preventDefault();
     if (!settings) return;
@@ -242,6 +252,7 @@ function AdminPage() {
             <Button variant={view === "payments" ? "default" : "outline"} onClick={() => setView("payments")}>Porositë e pagesave ({paymentOrders.length})</Button>
             <Button variant={view === "orders" ? "default" : "outline"} onClick={() => setView("orders")}>Kërkesat ({orders.length})</Button>
             <Button variant={view === "settings" ? "default" : "outline"} onClick={() => setView("settings")}>Cilësimet e pagesës</Button>
+            <Button variant={view === "reminders" ? "default" : "outline"} onClick={() => setView("reminders")}><BellRing className="h-4 w-4" />Wedding Reminders</Button>
             <Button variant="ghost" disabled={busy} onClick={() => load()}><RefreshCw className="h-4 w-4" />{busy ? "Duke ngarkuar…" : "Rifresko"}</Button>
             <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); }}><LogOut className="h-4 w-4" />Dil</Button>
           </div>
