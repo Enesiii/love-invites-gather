@@ -15,6 +15,7 @@ import { Route as HyrRouteImport } from './routes/hyr'
 import { Route as KrijoRouteImport } from './routes/krijo'
 import { Route as NgjarjetRouteImport } from './routes/ngjarjet'
 import { Route as FtesaIdRouteImport } from './routes/ftesa.$id'
+import { Route as KanagjegjiIndexRouteImport } from './routes/kanagjegji.index'
 import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 import { Route as PagesaTokenRouteImport } from './routes/pagesa.$token'
 import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
@@ -49,6 +50,11 @@ const NgjarjetRoute = NgjarjetRouteImport.update({
 const FtesaIdRoute = FtesaIdRouteImport.update({
   id: '/ftesa/$id',
   path: '/ftesa/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KanagjegjiIndexRoute = KanagjegjiIndexRouteImport.update({
+  id: '/kanagjegji/',
+  path: '/kanagjegji/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MenaxhoTokenRoute = MenaxhoTokenRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/kanagjegji/': typeof KanagjegjiIndexRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
   '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/kanagjegji': typeof KanagjegjiIndexRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
   '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/kanagjegji/': typeof KanagjegjiIndexRoute
   '/ftesa_/$id/foto': typeof FtesaIdFotoRoute
   '/api/public/jobs/send-wedding-reminders': typeof ApiPublicJobsSendWeddingRemindersRoute
 }
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/kanagjegji/'
     | '/ftesa/$id/foto'
     | '/api/public/jobs/send-wedding-reminders'
   fileRoutesByTo: FileRoutesByTo
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/kanagjegji'
     | '/ftesa/$id/foto'
     | '/api/public/jobs/send-wedding-reminders'
   id:
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/kanagjegji/'
     | '/ftesa_/$id/foto'
     | '/api/public/jobs/send-wedding-reminders'
   fileRoutesById: FileRoutesById
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   MenaxhoTokenRoute: typeof MenaxhoTokenRoute
   PagesaTokenRoute: typeof PagesaTokenRoute
   PreviewStyleRoute: typeof PreviewStyleRoute
+  KanagjegjiIndexRoute: typeof KanagjegjiIndexRoute
   FtesaIdFotoRoute: typeof FtesaIdFotoRoute
   ApiPublicJobsSendWeddingRemindersRoute: typeof ApiPublicJobsSendWeddingRemindersRoute
 }
@@ -216,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/ftesa/$id'
       fullPath: '/ftesa/$id'
       preLoaderRoute: typeof FtesaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kanagjegji/': {
+      id: '/kanagjegji/'
+      path: '/kanagjegji'
+      fullPath: '/kanagjegji/'
+      preLoaderRoute: typeof KanagjegjiIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/menaxho/$token': {
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenaxhoTokenRoute: MenaxhoTokenRoute,
   PagesaTokenRoute: PagesaTokenRoute,
   PreviewStyleRoute: PreviewStyleRoute,
+  KanagjegjiIndexRoute: KanagjegjiIndexRoute,
   FtesaIdFotoRoute: FtesaIdFotoRoute,
   ApiPublicJobsSendWeddingRemindersRoute:
     ApiPublicJobsSendWeddingRemindersRoute,
