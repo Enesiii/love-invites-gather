@@ -585,6 +585,84 @@ function AdminPage() {
               </div>
             </section>
           )}
+          {view === "kana" && kana && (
+            <section className="mt-6 max-w-2xl">
+              <h2 className="font-display text-2xl">Paketat Kanagjegji</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Çmimet, përfshirjet dhe dizajnet aktive për kategorinë Kanagjegji — të veçanta nga çmimet e dasmës. Çmimet dhe përfshirjet shfaqen vetëm në gjuhën shqipe.
+              </p>
+              {(["classic", "premium"] as const).map((p) => {
+                const row = kana.find((r) => r.package === p);
+                if (!row) return null;
+                const allowed = p === "premium" ? (["k-burgundy", "k-ottoman"] as const) : (["k-traditional", "k-modern"] as const);
+                return (
+                  <article key={p} className="mt-4 rounded-lg border border-border bg-card p-4">
+                    <h3 className="font-display text-xl">{p === "classic" ? "Klasike" : "Premium"}</h3>
+                    <div className="mt-3 flex items-center gap-3">
+                      <Label htmlFor={`kana-price-${p}`} className="whitespace-nowrap">Çmimi (€)</Label>
+                      <Input
+                        id={`kana-price-${p}`}
+                        type="number"
+                        min={0}
+                        max={10000}
+                        value={row.price}
+                        onChange={(e) =>
+                          setKana((rows) =>
+                            rows?.map((r) =>
+                              r.package === p ? { ...r, price: Math.max(0, Math.min(10000, Number(e.target.value) || 0)) } : r,
+                            ) ?? rows,
+                          )
+                        }
+                        className="w-28"
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <Label htmlFor={`kana-features-${p}`}>Përfshirjet (një për rresht)</Label>
+                      <textarea
+                        id={`kana-features-${p}`}
+                        rows={6}
+                        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        value={row.features.join("\n")}
+                        onChange={(e) =>
+                          setKana((rows) =>
+                            rows?.map((r) =>
+                              r.package === p
+                                ? { ...r, features: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) }
+                                : r,
+                            ) ?? rows,
+                          )
+                        }
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <Label>Dizajnet aktive</Label>
+                      <div className="mt-1 flex flex-wrap gap-4">
+                        {allowed.map((id) => (
+                          <label key={id} className="flex items-center gap-2 text-sm">
+                            <input
+                              type="checkbox"
+                              checked={row.templates.includes(id)}
+                              onChange={(e) =>
+                                setKana((rows) =>
+                                  rows?.map((r) =>
+                                    r.package === p
+                                      ? { ...r, templates: e.target.checked ? [...r.templates, id] : r.templates.filter((t) => t !== id) }
+                                      : r,
+                                  ) ?? rows,
+                                )
+                              }
+                            />
+                            {THEME_LABELS[id]}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <Button className="mt-4" onClick={() => onSaveKana(p)} disabled={busy}>Ruaj paketën</Button>
+                  </article>
+                );
+              })}
+            </section>
+          )}
           {view === "settings" && settings && (
             <section className="mt-6 max-w-xl">
               <h2 className="font-display text-2xl">Cilësimet e pagesës bankare</h2>
