@@ -1,4 +1,4 @@
-import { PREMIUM_THEMES, THEME_LABELS, KANAGJEGJI_THEMES, type ThemeId } from "@/lib/themes";
+import { PREMIUM_THEMES, THEME_LABELS, type ThemeId } from "@/lib/themes";
 import { KANAGJEGJI_MUSIC, kanaPackageOf, kanaThemesFor } from "@/lib/kanagjegji";
 import { useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -174,6 +174,3 @@ export function EditEventDialog({
     </Dialog>
   );
 }
-
-// Referencë që KANAGJEGJI_THEMES të mbetet e eksportuar përmes modulit të temave.
-void KANAGJEGJI_THEMES;
