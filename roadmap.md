@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Wedding Reminders: calendar options (Google/Apple/.ics) after RSVP confirmation, push notification opt-in, daily scheduled sending (10d/3d before, Europe/Belgrade), admin "Wedding Reminders" stats + push toggle; verified RSVP→confirmation flow in browser.
 - [x] Bank transfer payment & order system: payment_orders + payment_settings + payment_audit_log tables, FD-YYYY-NNNNNN order numbers, payment page /pagesa/$token, admin order management + bank settings, invitation locked until payment (invitations.activated_at), email via Resend when RESEND_API_KEY is configured.
 - [ ] Email delivery: needs RESEND_API_KEY secret + verified sending domain (user action).
 - [ ] Bank details (bank name, beneficiary, IBAN) must be entered by the owner in /admin → Cilësimet e pagesës.

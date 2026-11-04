@@ -5,8 +5,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-react";
+import { BellRing, Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-react";
 import { deleteAdminInvitation, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
+import { getReminderStats, setPushEnabled } from "@/lib/reminders.functions";
 import {
   confirmPayment,
   getPaymentSettingsAdmin,
@@ -51,6 +52,7 @@ type Status = (typeof ORDER_STATUSES)[number];
 type PaymentOrder = Awaited<ReturnType<typeof listPaymentOrders>>["orders"][number];
 type PaymentStats = Awaited<ReturnType<typeof listPaymentOrders>>["stats"];
 type PaymentSettings = Awaited<ReturnType<typeof getPaymentSettingsAdmin>>;
+type ReminderStats = Awaited<ReturnType<typeof getReminderStats>>;
 
 function invitationOf(o: PaymentOrder) {
   const inv = o.invitations as { partner_one: string; partner_two: string; event_date: string } | null;
@@ -68,13 +70,16 @@ function AdminPage() {
   const resendEmail = useServerFn(resendPaymentEmail);
   const loadSettings = useServerFn(getPaymentSettingsAdmin);
   const saveSettings = useServerFn(savePaymentSettings);
+  const loadReminders = useServerFn(getReminderStats);
+  const togglePush = useServerFn(setPushEnabled);
   const [key, setKey] = useState("");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [paymentOrders, setPaymentOrders] = useState<PaymentOrder[]>([]);
   const [paymentStats, setPaymentStats] = useState<PaymentStats | null>(null);
   const [settings, setSettings] = useState<PaymentSettings | null>(null);
-  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings">("invitations");
+  const [reminders, setReminders] = useState<ReminderStats | null>(null);
+  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders">("invitations");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
@@ -87,17 +92,19 @@ function AdminPage() {
     setBusy(true);
     setLoginError(null);
     try {
-      const [orderRows, invitationRows, paymentData, settingsData] = await Promise.all([
+      const [orderRows, invitationRows, paymentData, settingsData, reminderData] = await Promise.all([
         list({ data: { key: key.trim() } }),
         listInvitations({ data: { key: key.trim() } }),
         listPayments({ data: { key: key.trim() } }),
         loadSettings({ data: { key: key.trim() } }),
+        loadReminders({ data: { key: key.trim() } }),
       ]);
       setOrders(orderRows);
       setInvitations(invitationRows);
       setPaymentOrders(paymentData.orders);
       setPaymentStats(paymentData.stats);
       setSettings(settingsData);
+      setReminders(reminderData);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gabim.";
       setLoginError(msg);
@@ -133,6 +140,16 @@ function AdminPage() {
     try {
       const res = await resendEmail({ data: { key: key.trim(), id } });
       toast.success(res.email === "sent" ? "Email-i u ridërgua." : "Email-i nuk u dërgua: shërbimi i email-it nuk është konfiguruar ende.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    }
+  }
+
+  async function onTogglePush(enabled: boolean) {
+    try {
+      await togglePush({ data: { key: key.trim(), enabled } });
+      setReminders((r) => (r ? { ...r, pushEnabled: enabled } : r));
+      toast.success(enabled ? "Njoftimet push u aktivizuan." : "Njoftimet push u çaktivizuan.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gabim.");
     }
@@ -235,6 +252,7 @@ function AdminPage() {
             <Button variant={view === "payments" ? "default" : "outline"} onClick={() => setView("payments")}>Porositë e pagesave ({paymentOrders.length})</Button>
             <Button variant={view === "orders" ? "default" : "outline"} onClick={() => setView("orders")}>Kërkesat ({orders.length})</Button>
             <Button variant={view === "settings" ? "default" : "outline"} onClick={() => setView("settings")}>Cilësimet e pagesës</Button>
+            <Button variant={view === "reminders" ? "default" : "outline"} onClick={() => setView("reminders")}><BellRing className="h-4 w-4" />Wedding Reminders</Button>
             <Button variant="ghost" disabled={busy} onClick={() => load()}><RefreshCw className="h-4 w-4" />{busy ? "Duke ngarkuar…" : "Rifresko"}</Button>
             <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); }}><LogOut className="h-4 w-4" />Dil</Button>
           </div>
@@ -411,6 +429,64 @@ function AdminPage() {
                     </article>
                   ))}
                 {paymentOrders.length === 0 && <p className="text-muted-foreground">Nuk ka ende porosi me pagesë.</p>}
+              </div>
+            </section>
+          )}
+          {view === "reminders" && reminders && (
+            <section className="mt-6">
+              <h2 className="font-display text-2xl">Wedding Reminders</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Kujtesat e kalendarit dhe njoftimet push për mysafirët që konfirmuan pjesëmarrjen.
+              </p>
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {[
+                  ["Mysafirë të konfirmuar", reminders.confirmedGuests],
+                  ["Shtuan në kalendar", reminders.calendarAdds],
+                  ["Abonime push", reminders.pushSubscriptions],
+                  ["Refuzuan njoftimet", reminders.pushDeclined],
+                  ["Njoftime të dërguara", reminders.sent],
+                  ["Dështime", reminders.failed],
+                  ["Të anashkaluara", reminders.skipped],
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-border bg-card p-4 text-center">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+                    <p className="mt-1 font-display text-2xl">{value}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">Njoftimet push</p>
+                  <p className="text-sm text-muted-foreground">
+                    Kalendarët (Google/Apple/.ics) mbeten gjithmonë aktivë — ky cilësim prek vetëm njoftimet automatike.
+                  </p>
+                </div>
+                <Button
+                  variant={reminders.pushEnabled ? "default" : "outline"}
+                  onClick={() => onTogglePush(!reminders.pushEnabled)}
+                >
+                  {reminders.pushEnabled ? "Aktive — çaktivizo" : "Jo aktive — aktivizo"}
+                </Button>
+              </div>
+              <h3 className="mt-6 font-display text-xl">Historiku i njoftimeve</h3>
+              <div className="mt-3 space-y-2">
+                {reminders.recent.length === 0 && (
+                  <p className="text-muted-foreground">Nuk është dërguar ende asnjë njoftim.</p>
+                )}
+                {reminders.recent.map((n) => (
+                  <article key={n.id} className="rounded-lg border border-border bg-card p-3 text-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="font-medium">
+                        {n.couple} · kujtesa {n.kind === "10d" ? "10 ditë" : "3 ditë"} para
+                      </p>
+                      <p className="text-xs text-muted-foreground">{formatDateTime(n.created_at)}</p>
+                    </div>
+                    <p className="mt-1 text-muted-foreground">
+                      Statusi: {n.status === "sent" ? "dërguar" : n.status === "failed" ? "dështoi" : "anashkaluar"}
+                      {n.error && n.error !== "pending" && <> · {n.error}</>}
+                    </p>
+                  </article>
+                ))}
               </div>
             </section>
           )}

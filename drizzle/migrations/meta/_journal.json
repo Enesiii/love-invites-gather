@@ -57,6 +57,13 @@
       "when": 1793794203484,
       "tag": "0007_bank_transfer_payment_orders",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793800026444,
+      "tag": "0008_wedding_reminders",
+      "breakpoints": true
     }
   ]
 }
