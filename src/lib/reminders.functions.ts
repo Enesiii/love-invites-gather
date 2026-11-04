@@ -95,6 +95,18 @@ export const declinePush = createServerFn({ method: "POST" })
 
 const keySchema = z.object({ key: z.string().min(1).max(200) });
 
+// Remove the subscription as well, so the daily sender cannot recreate a deleted reminder.
+export const deleteAdminReminder = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => keySchema.extend({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const supabaseAdmin = await getAdmin();
+    const { data: removed, error } = await supabaseAdmin.rpc("delete_admin_reminder_subscription", { p_notification_id: data.id });
+    if (error) throw new Error("Kujtesa nuk u fshi. Provoni përsëri.");
+    if (!removed) throw new Error("Kujtesa nuk u gjet.");
+    return { ok: true };
+  });
+
 // Statistikat e "Wedding Reminders" për panelin e administratorit.
 export const getReminderStats = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => keySchema.parse(input))

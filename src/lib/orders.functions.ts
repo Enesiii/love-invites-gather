@@ -119,3 +119,15 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
     if (error) throw new Error("Statusi nuk u përditësua.");
     return { ok: true };
   });
+
+export const deleteAdminOrderRequest = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => keySchema.extend({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: removed, error } = await supabaseAdmin.from("order_requests")
+      .delete().eq("id", data.id).select("id").maybeSingle();
+    if (error) throw new Error("Kërkesa nuk u fshi. Provoni përsëri.");
+    if (!removed) throw new Error("Kërkesa nuk u gjet.");
+    return { ok: true };
+  });

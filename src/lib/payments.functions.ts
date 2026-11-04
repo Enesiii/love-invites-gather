@@ -270,6 +270,17 @@ export const getPaymentPreview = createServerFn({ method: "GET" })
 
 // --- Administrimi ---
 
+export const deleteAdminPaymentOrder = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => keySchema.extend({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const supabase = await getAdmin();
+    const { data: removed, error } = await supabase.rpc("delete_admin_payment_order", { p_id: data.id });
+    if (error) throw new Error("Porosia nuk u fshi. Provoni përsëri.");
+    if (!removed) throw new Error("Porosia nuk u gjet.");
+    return { ok: true };
+  });
+
 export const listPaymentOrders = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => keySchema.parse(input))
   .handler(async ({ data }) => {
