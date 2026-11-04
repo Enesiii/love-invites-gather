@@ -61,6 +61,36 @@ export const listAdminInvitations = createServerFn({ method: "POST" })
     return rows;
   });
 
+// Admin-only, permanent deletion. Children cascade (rsvps, event_photos,
+// payment_orders, payment_audit_log); storage objects are removed first.
+export const deleteAdminInvitation = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => keySchema.extend({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    checkKey(data.key);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error: fetchError } = await supabaseAdmin
+      .from("invitations")
+      .select("id, cover_path")
+      .eq("id", data.id)
+      .single();
+    if (fetchError || !row) throw new Error("Ftesa nuk u gjet.");
+    const { data: photos } = await supabaseAdmin
+      .from("event_photos")
+      .select("path")
+      .eq("invitation_id", data.id);
+    const paths = [...(row.cover_path ? [row.cover_path] : []), ...(photos ?? []).map((p) => p.path)];
+    if (paths.length) {
+      const { error: storageError } = await supabaseAdmin.storage.from("event-photos").remove(paths);
+      if (storageError) console.error("deleteAdminInvitation storage cleanup failed", storageError);
+    }
+    const { error } = await supabaseAdmin.from("invitations").delete().eq("id", data.id);
+    if (error) {
+      console.error("deleteAdminInvitation failed", error);
+      throw new Error("Ftesa nuk u fshi. Provoni përsëri.");
+    }
+    return { ok: true };
+  });
+
 export const listOrderRequests = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => keySchema.parse(input))
   .handler(async ({ data }) => {

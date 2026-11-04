@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Copy, ExternalLink, LogOut, RefreshCw } from "lucide-react";
-import { listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
+import { Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-react";
+import { deleteAdminInvitation, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
 import {
   confirmPayment,
   getPaymentSettingsAdmin,
@@ -18,6 +18,17 @@ import {
 import { PACKAGE_LABELS, PAYMENT_STATUS_LABELS, type PaymentOrderStatus } from "@/lib/payment-shared";
 import { formatDate, formatDateTime } from "@/lib/format-date";
 import { ORDER_STATUSES, ORDER_STATUS_LABELS } from "@/lib/order-validation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -49,6 +60,7 @@ function invitationOf(o: PaymentOrder) {
 function AdminPage() {
   const list = useServerFn(listOrderRequests);
   const listInvitations = useServerFn(listAdminInvitations);
+  const removeInvitation = useServerFn(deleteAdminInvitation);
   const update = useServerFn(updateOrderStatus);
   const listPayments = useServerFn(listPaymentOrders);
   const confirm = useServerFn(confirmPayment);
@@ -163,6 +175,16 @@ function AdminPage() {
     }
   }
 
+  async function deleteInvitation(id: string) {
+    try {
+      await removeInvitation({ data: { key: key.trim(), id } });
+      setInvitations((list) => list.filter((i) => i.id !== id));
+      toast.success("Ftesa u fshi përgjithmonë.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    }
+  }
+
   function exportCsv() {
     const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
     const header = ["E dërguar", "Partneri 1", "Partneri 2", "Dasma", "Stili", "Telefoni", "Emaili", "Shënime", "Statusi"];
@@ -237,6 +259,25 @@ function AdminPage() {
                         <Button size="sm" variant="outline" onClick={() => copyInvitation(inv, false)}><Copy className="h-4 w-4" />Kopjo linkun e ftesës</Button>
                         <Button size="sm" variant="outline" asChild><Link to="/menaxho/$token" params={{ token: inv.manage_token }} target="_blank" rel="noopener noreferrer">Hap panelin</Link></Button>
                         <Button size="sm" onClick={() => copyInvitation(inv, true)}><Copy className="h-4 w-4" />Kopjo linkun privat të panelit</Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="outline" className="text-destructive hover:text-destructive"><Trash2 className="h-4 w-4" />Fshij</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Të fshihet ftesa përgjithmonë?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Ftesa "{inv.partner_one} & {inv.partner_two}" do të fshihet përfundimisht së bashku me RSVP-të, fotot e mysafirëve dhe porosinë e pagesës. Kjo nuk mund të zhbëhet.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Anulo</AlertDialogCancel>
+                              <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => { void deleteInvitation(inv.id); }}>
+                                Fshij përgjithmonë
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </article>
