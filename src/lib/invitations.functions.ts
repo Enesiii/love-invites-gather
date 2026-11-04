@@ -88,20 +88,24 @@ export const submitRsvp = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!inv || !inv.activated_at) throw new Error("Ftesa nuk u gjet.");
     if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
-    const { error } = await supabaseAdmin.from("rsvps").insert({
-      invitation_id: data.invitation_id,
-      guest_name: data.guest_name,
-      attending: data.attending,
-      guest_count: data.attending ? data.guest_count : 0,
-      note: data.note || null,
-      // Përgjigjet nga ftesa presin gjithmonë aprovimin e menaxherit.
-      approval: "pending",
-    });
-    if (error) {
+    const { data: row, error } = await supabaseAdmin
+      .from("rsvps")
+      .insert({
+        invitation_id: data.invitation_id,
+        guest_name: data.guest_name,
+        attending: data.attending,
+        guest_count: data.attending ? data.guest_count : 0,
+        note: data.note || null,
+        // Përgjigjet nga ftesa presin gjithmonë aprovimin e menaxherit.
+        approval: "pending",
+      })
+      .select("id")
+      .single();
+    if (error || !row) {
       console.error("submitRsvp failed", error);
       throw new Error("Përgjigja nuk u ruajt. Provoni përsëri.");
     }
-    return { ok: true };
+    return { ok: true, rsvpId: row.id };
   });
 
 const tokenSchema = z.object({ token: z.string().uuid() });
