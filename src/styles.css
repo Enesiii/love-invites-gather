@@ -467,10 +467,6 @@
   .hero-actions { margin-top: 22px; gap: 8px; }
   .hero-actions a { padding-inline: 16px; font-size: 12px; }
   .hero-note { margin-top: 16px; font-size: 10px; }
-  .hero-invitation-copy { top: auto; bottom: 172px; left: calc(100% - 210px); width: 140px; height: 118px; gap: 10px; }
-  .hero-invitation-copy p { font-size: 23px; }
-  .hero-invitation-copy > span { font-size: 6px; }
-  .hero-invitation-copy svg { width: 14px; height: 14px; }
   .home-promise .home-container { grid-template-columns: 1fr 1fr; gap: 18px 12px; padding-block: 20px; }
   .home-promise span { justify-content: flex-start; font-size: 10px; gap: 8px; }
   .home-section { padding-block: 60px; scroll-margin-top: 78px; }
@@ -512,7 +508,7 @@
   .hero-description { font-size: 13px; }
   .home-step h3 { font-size: 21px; }
 }
-@media (prefers-reduced-motion: reduce) { .collection-image img { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .collection-image img { transition: none; } .hero-content { animation: none; } }
 
 /* Butoni kontaktues "Na shkruani" — WhatsApp */
 .whatsapp-contact {
