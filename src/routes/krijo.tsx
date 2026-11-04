@@ -46,6 +46,7 @@ function Create() {
   const { theme } = Route.useSearch();
   const navigate = useNavigate();
   const create = useServerFn(createInvitation);
+  const createOrder = useServerFn(createPaymentOrder);
   const claim = useServerFn(claimInvitation);
   const session = useSession();
   const sendCover = useServerFn(uploadCover);
@@ -200,7 +201,7 @@ function Create() {
                 }}
               />
               <p className="text-xs text-muted-foreground">
-                Fotoja ruhet kur krijoni ftesën. Pas ruajtjes, nga paneli mund ta ndërroni dhe të vazhdoni me porosinë ({PRICING.currency}{premiumPrice}). Pagesa online nuk është ende aktive.
+                Fotoja ruhet kur krijoni ftesën. Pas ruajtjes vazhdoni te faqja e pagesës ({PRICING.currency}{premiumPrice}) — ftesa aktivizohet pasi pagesa të konfirmohet.
               </p>
             </div>
           ) : null}
