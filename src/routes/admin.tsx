@@ -59,8 +59,9 @@ type PaymentSettings = Awaited<ReturnType<typeof getPaymentSettingsAdmin>>;
 type ReminderStats = Awaited<ReturnType<typeof getReminderStats>>;
 
 function invitationOf(o: PaymentOrder) {
-  const inv = o.invitations as { partner_one: string; partner_two: string; event_date: string } | null;
-  return inv ? `${inv.partner_one} & ${inv.partner_two}` : "—";
+  const inv = o.invitations as { category?: string; partner_one: string; partner_two: string; event_date: string } | null;
+  if (!inv) return "—";
+  return inv.category === "kanagjegji" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
 }
 
 function DeleteRecordButton({ description, disabled, onDelete }: { description: string; disabled: boolean; onDelete: () => void }) {
@@ -356,7 +357,7 @@ function AdminPage() {
                             <AlertDialogHeader>
                               <AlertDialogTitle>Të fshihet ftesa përgjithmonë?</AlertDialogTitle>
                               <AlertDialogDescription>
-                                Ftesa "{inv.partner_one} & {inv.partner_two}" do të fshihet përfundimisht së bashku me RSVP-të, fotot e mysafirëve dhe porosinë e pagesës. Kjo nuk mund të zhbëhet.
+                                Ftesa "{coupleName(inv)}" do të fshihet përfundimisht së bashku me RSVP-të, fotot e mysafirëve dhe porosinë e pagesës. Kjo nuk mund të zhbëhet.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
