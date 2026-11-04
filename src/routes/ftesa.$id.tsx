@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { ClosedInvitation } from "@/components/ClosedInvitation";
+import { RsvpConfirmation } from "@/components/RsvpConfirmation";
 import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpening";
 import { Camera, Heart } from "lucide-react";
 import { getInvitation, submitRsvp } from "@/lib/invitations.functions";
@@ -49,6 +50,7 @@ function InvitePage() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<boolean | null>(null);
+  const [rsvpId, setRsvpId] = useState<string | null>(null);
   const [opened, setOpened] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
