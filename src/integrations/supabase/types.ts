@@ -299,36 +299,150 @@ export type Database = {
         }
         Relationships: []
       }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          invitation_id: string
+          p256dh: string
+          rsvp_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          invitation_id: string
+          p256dh: string
+          rsvp_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          invitation_id?: string
+          p256dh?: string
+          rsvp_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_subscriptions_rsvp_id_fkey"
+            columns: ["rsvp_id"]
+            isOneToOne: false
+            referencedRelation: "rsvps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reminder_notifications: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          invitation_id: string
+          kind: string
+          status: string
+          subscription_id: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          invitation_id: string
+          kind: string
+          status: string
+          subscription_id: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          invitation_id?: string
+          kind?: string
+          status?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reminder_notifications_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reminder_notifications_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "push_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reminder_settings: {
+        Row: {
+          id: boolean
+          push_enabled: boolean
+        }
+        Insert: {
+          id?: boolean
+          push_enabled?: boolean
+        }
+        Update: {
+          id?: boolean
+          push_enabled?: boolean
+        }
+        Relationships: []
+      }
       rsvps: {
         Row: {
           approval: string
           attending: boolean
+          calendar_added: string | null
           created_at: string
           guest_count: number
           guest_name: string
           id: string
           invitation_id: string
           note: string | null
+          push_status: string | null
         }
         Insert: {
           approval?: string
           attending: boolean
+          calendar_added?: string | null
           created_at?: string
           guest_count?: number
           guest_name: string
           id?: string
           invitation_id: string
           note?: string | null
+          push_status?: string | null
         }
         Update: {
           approval?: string
           attending?: boolean
+          calendar_added?: string | null
           created_at?: string
           guest_count?: number
           guest_name?: string
           id?: string
           invitation_id?: string
           note?: string | null
+          push_status?: string | null
         }
         Relationships: [
           {
