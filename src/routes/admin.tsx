@@ -50,13 +50,24 @@ function AdminPage() {
   const list = useServerFn(listOrderRequests);
   const listInvitations = useServerFn(listAdminInvitations);
   const update = useServerFn(updateOrderStatus);
+  const listPayments = useServerFn(listPaymentOrders);
+  const confirm = useServerFn(confirmPayment);
+  const setOrderStatus = useServerFn(setPaymentOrderStatus);
+  const resendEmail = useServerFn(resendPaymentEmail);
+  const loadSettings = useServerFn(getPaymentSettingsAdmin);
+  const saveSettings = useServerFn(savePaymentSettings);
   const [key, setKey] = useState("");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
-  const [view, setView] = useState<"invitations" | "orders">("invitations");
+  const [paymentOrders, setPaymentOrders] = useState<PaymentOrder[]>([]);
+  const [paymentStats, setPaymentStats] = useState<PaymentStats | null>(null);
+  const [settings, setSettings] = useState<PaymentSettings | null>(null);
+  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings">("invitations");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
+  const [payFilter, setPayFilter] = useState<PaymentOrderStatus | "all">("all");
+  const [paySearch, setPaySearch] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
 
   async function load(e?: React.FormEvent) {
@@ -64,18 +75,65 @@ function AdminPage() {
     setBusy(true);
     setLoginError(null);
     try {
-      const [orderRows, invitationRows] = await Promise.all([
+      const [orderRows, invitationRows, paymentData, settingsData] = await Promise.all([
         list({ data: { key: key.trim() } }),
         listInvitations({ data: { key: key.trim() } }),
+        listPayments({ data: { key: key.trim() } }),
+        loadSettings({ data: { key: key.trim() } }),
       ]);
       setOrders(orderRows);
       setInvitations(invitationRows);
+      setPaymentOrders(paymentData.orders);
+      setPaymentStats(paymentData.stats);
+      setSettings(settingsData);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gabim.";
       setLoginError(msg);
       toast.error(msg);
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function onConfirmPayment(id: string) {
+    try {
+      const res = await confirm({ data: { key: key.trim(), id } });
+      setPaymentOrders((rows) => rows.map((r) => (r.id === id ? { ...r, status: "paid" } : r)));
+      toast.success(res.already ? "Pagesa ishte konfirmuar më parë." : "Pagesa u konfirmua — ftesa u aktivizua.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    }
+  }
+
+  async function onOrderAction(id: string, action: "cancel" | "reactivate") {
+    try {
+      await setOrderStatus({ data: { key: key.trim(), id, action } });
+      setPaymentOrders((rows) =>
+        rows.map((r) => (r.id === id ? { ...r, status: action === "cancel" ? "cancelled" : "pending_payment" } : r)),
+      );
+      toast.success(action === "cancel" ? "Porosia u anulua." : "Porosia u riaktivizua.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    }
+  }
+
+  async function onResendEmail(id: string) {
+    try {
+      const res = await resendEmail({ data: { key: key.trim(), id } });
+      toast.success(res.email === "sent" ? "Email-i u ridërgua." : "Email-i nuk u dërgua: shërbimi i email-it nuk është konfiguruar ende.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    }
+  }
+
+  async function onSaveSettings(e: React.FormEvent) {
+    e.preventDefault();
+    if (!settings) return;
+    try {
+      await saveSettings({ data: { key: key.trim(), ...settings } });
+      toast.success("Cilësimet e pagesës u ruajtën.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
     }
   }
 
