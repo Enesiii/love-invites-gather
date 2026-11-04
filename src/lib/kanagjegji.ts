@@ -7,6 +7,8 @@ import {
 } from "@/lib/themes";
 import type { InvitationView } from "@/components/InvitationCard";
 
+export type KanaPackageRow = { package: "classic" | "premium"; price: number; features: string[]; templates: string[] };
+
 export const KANAGJEGJI_PATH = "/kanagjegji";
 
 // Çmimet fillestare. Administratori i ndryshon te /admin (ruhen veçmas nga dasma).

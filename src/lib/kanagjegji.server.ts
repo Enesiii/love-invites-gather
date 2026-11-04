@@ -1,8 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { KANAGJEGJI_DEFAULT_PRICES } from "@/lib/kanagjegji";
+import { KANAGJEGJI_DEFAULT_PRICES, type KanaPackageRow } from "@/lib/kanagjegji";
 
-export type KanaPackageRow = { package: "classic" | "premium"; price: number; features: string[]; templates: string[] };
 
 export async function readKanaPackages(supabase: SupabaseClient<Database>): Promise<KanaPackageRow[]> {
   const { data } = await supabase

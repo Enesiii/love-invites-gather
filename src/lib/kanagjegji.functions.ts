@@ -3,8 +3,6 @@ import { z } from "zod";
 import { KANAGJEGJI_THEMES } from "@/lib/themes";
 import { KANAGJEGJI_MUSIC, kanaPackageOf } from "@/lib/kanagjegji";
 import { savedMapsHref } from "@/lib/invitation-location";
-import { readKanaPackages } from "@/lib/kanagjegji.server";
-export type { KanaPackageRow } from "@/lib/kanagjegji.server";
 
 async function getAdmin() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -20,6 +18,7 @@ function checkKey(key: string) {
 
 // Publike: vetëm çmimet, përfshirjet dhe dizajnet aktive — asnjë e dhënë private.
 export const getKanaPackages = createServerFn({ method: "GET" }).handler(async () => {
+  const { readKanaPackages } = await import("@/lib/kanagjegji.server");
   return readKanaPackages(await getAdmin());
 });
 
@@ -42,6 +41,7 @@ export const createKanagjegjiInvitation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => createSchema.parse(input))
   .handler(async ({ data }) => {
     const supabase = await getAdmin();
+    const { readKanaPackages } = await import("@/lib/kanagjegji.server");
     const pkgs = await readKanaPackages(supabase);
     const pkg = pkgs.find((p) => p.package === kanaPackageOf(data.theme));
     if (pkg && pkg.templates.length && !pkg.templates.includes(data.theme)) {
@@ -78,7 +78,8 @@ export const listKanaPackagesAdmin = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ key: z.string().min(1).max(200) }).parse(input))
   .handler(async ({ data }) => {
     checkKey(data.key);
-    return readKanaPackages(await getAdmin());
+    const { readKanaPackages } = await import("@/lib/kanagjegji.server");
+  return readKanaPackages(await getAdmin());
   });
 
 export const saveKanaPackage = createServerFn({ method: "POST" })
