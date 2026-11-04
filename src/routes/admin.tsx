@@ -318,6 +318,14 @@ function AdminPage() {
           {view === "invitations" && (
             <section className="mt-6">
               <h2 className="font-display text-2xl">Ftesat e klientëve</h2>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {(["all", "wedding", "kanagjegji"] as const).map((c) => (
+                  <Button key={c} size="sm" variant={invFilter === c ? "default" : "outline"} onClick={() => setInvFilter(c)}>
+                    {c === "all" ? "Të gjitha" : c === "wedding" ? "Dasmë" : "Kanagjegji"} (
+                    {c === "all" ? invitations.length : invitations.filter((i) => (i.category ?? "wedding") === c).length})
+                  </Button>
+                ))}
+              </div>
               <Label htmlFor="invitation-search" className="mt-4 mb-2 block">Kërko çiftin, sallën ose datën</Label>
               <Input id="invitation-search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Emrat e çiftit…" className="max-w-md" />
               <div className="mt-5 space-y-3">
@@ -326,7 +334,12 @@ function AdminPage() {
                   <article key={inv.id} className="rounded-lg border border-border bg-card p-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <Link to="/ftesa/$id" params={{ id: inv.id }} target="_blank" rel="noopener noreferrer" className="font-display text-2xl break-words underline-offset-4 hover:underline">{inv.partner_one} & {inv.partner_two}</Link>
+                        <p className="mb-1 flex items-center gap-2 text-xs">
+                          <span className="rounded-full border border-border px-2 py-0.5 uppercase tracking-wider text-muted-foreground">
+                            {(inv.category ?? "wedding") === "kanagjegji" ? "Kanagjegji" : "Dasmë"}
+                          </span>
+                        </p>
+                        <Link to="/ftesa/$id" params={{ id: inv.id }} target="_blank" rel="noopener noreferrer" className="font-display text-2xl break-words underline-offset-4 hover:underline">{coupleName(inv)}</Link>
                         <p className="mt-1 text-sm text-muted-foreground">{formatDate(inv.event_date)} · {inv.event_time} · {inv.venue}</p>
                         <p className="mt-1 text-xs text-muted-foreground">Krijuar: {formatDateTime(inv.created_at)} · {inv.closed_at ? "Ndërprerë" : "Aktive"}</p>
                       </div>
@@ -381,8 +394,9 @@ function AdminPage() {
               <article key={o.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-2xl">{o.partner_one} & {o.partner_two}</h2>
+                    <h2 className="font-display text-2xl">{o.category === "kanagjegji" ? o.partner_one : `${o.partner_one} & ${o.partner_two}`}</h2>
                     <p className="text-sm text-muted-foreground">
+                      <span className="mr-2 rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wider">{o.category === "kanagjegji" ? "Kanagjegji" : "Dasmë"}</span>
                       Dasma: {o.wedding_date} · Stili: {o.style} · Dërguar: {new Date(o.created_at).toLocaleString("sq")}
                     </p>
                     <p className="mt-2 text-sm">
@@ -455,7 +469,7 @@ function AdminPage() {
                         <div className="min-w-0">
                           <p className="font-mono font-semibold">{o.order_number}</p>
                           <p className="mt-1 text-sm">
-                            {invitationOf(o)} · {PACKAGE_LABELS[o.package as keyof typeof PACKAGE_LABELS]} · €{Number(o.amount)}
+                            {invitationOf(o)} · {o.package_label ?? PACKAGE_LABELS[o.package as keyof typeof PACKAGE_LABELS]} · €{Number(o.amount)}
                           </p>
                           <p className="mt-1 text-sm text-muted-foreground">
                             {o.customer_name ?? "Pa të dhëna kontakti"}
