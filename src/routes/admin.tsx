@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BellRing, Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-react";
 import { deleteAdminInvitation, deleteAdminOrderRequest, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
+import { listKanaPackagesAdmin, saveKanaPackage } from "@/lib/kanagjegji.functions";
+import type { KanaPackageRow } from "@/lib/kanagjegji";
+import { KANAGJEGJI_THEMES, THEME_LABELS } from "@/lib/themes";
 import { deleteAdminReminder, getReminderStats, setPushEnabled } from "@/lib/reminders.functions";
 import {
   confirmPayment,
