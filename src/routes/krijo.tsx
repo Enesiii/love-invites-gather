@@ -9,6 +9,7 @@ import { AiWriter } from "@/components/AiWriter";
 import { Textarea } from "@/components/ui/textarea";
 import { InvitationCard } from "@/components/InvitationCard";
 import { createInvitation } from "@/lib/invitations.functions";
+import { createPaymentOrder } from "@/lib/payments.functions";
 import { claimInvitation } from "@/lib/account.functions";
 import { useSession } from "@/hooks/use-session";
 import { uploadCover } from "@/lib/invitations.functions";
@@ -107,7 +108,9 @@ function Create() {
           /* the panel offers saving again */
         }
       }
-      navigate({ to: "/menaxho/$token", params: { token: res.token } });
+      // Çdo ftesë e re kalon në porosi me pagesë bankare para aktivizimit publik.
+      const order = await createOrder({ data: { token: res.token } });
+      navigate({ to: "/pagesa/$token", params: { token: order.orderToken } });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Gabim gjatë ruajtjes.");
     } finally {
