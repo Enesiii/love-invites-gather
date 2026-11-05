@@ -1164,3 +1164,5 @@
 .category-card-syneti { border-color: var(--syneti-sky, oklch(0.80 0.09 235)); background: radial-gradient(120% 90% at 50% 0%, oklch(0.42 0.13 256 / .55), transparent 60%), linear-gradient(160deg, oklch(0.42 0.13 256), oklch(0.28 0.07 258)); color: oklch(0.95 0.025 235); }
 .category-card-syneti .category-badge { position: absolute; top: 14px; right: 14px; font-size: 10px; letter-spacing: .25em; padding: 4px 8px; background: oklch(0.80 0.09 235); color: oklch(0.28 0.07 258); }
 .category-card-syneti .category-icon { color: oklch(0.80 0.09 235); }
+.home-page .category-card-syneti p,
+.home-page .category-card-syneti .category-cta { color: var(--home-on-image); }
