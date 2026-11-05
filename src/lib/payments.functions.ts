@@ -114,12 +114,17 @@ export const createPaymentOrder = createServerFn({ method: "POST" })
     if (existing) return { orderToken: existing.access_token };
     const settings = await getSettings(supabase);
     const pkg = packageForTheme(inv.theme);
-    const category = inv.category === "kanagjegji" ? "kanagjegji" : "wedding";
+    const category = inv.category === "kanagjegji" ? "kanagjegji" : inv.category === "syneti" ? "syneti" : "wedding";
     let amount = amountForPackage(pkg);
     if (category === "kanagjegji") {
       // Çmimet e Kanagjegjit ruhen veçmas dhe ndryshohen nga administratori.
       const { readKanaPackages } = await import("@/lib/kanagjegji.server");
       amount = (await readKanaPackages(supabase)).find((p) => p.package === pkg)?.price ?? amount;
+    }
+    if (category === "syneti") {
+      // Çmimi i Synetit ruhet veçmas (parazgjedhja 10€) dhe ndryshohet nga administratori.
+      const { readSynetiPackages } = await import("@/lib/syneti.server");
+      amount = (await readSynetiPackages(supabase)).find((p) => p.package === "classic")?.price ?? amount;
     }
     const days = Math.min(Math.max(settings.order_expiration_days, 1), 90);
     const { data: numRow, error: numErr } = await supabase.rpc("next_order_number");

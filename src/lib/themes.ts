@@ -9,10 +9,19 @@ export const KANAGJEGJI_CLASSIC_THEMES = ["k-traditional", "k-modern"] as const;
 export const KANAGJEGJI_PREMIUM_THEMES = ["k-burgundy", "k-ottoman"] as const;
 export const KANAGJEGJI_THEMES = [...KANAGJEGJI_CLASSIC_THEMES, ...KANAGJEGJI_PREMIUM_THEMES] as const;
 export type KanagjegjiThemeId = (typeof KANAGJEGJI_THEMES)[number];
-export const ALL_THEME_IDS = [...THEME_IDS, ...KANAGJEGJI_THEMES] as const;
+
+// Kategoria e veçantë "Syneti" — dizajne blu & të bardha për festën e synetit.
+export const SYNETI_THEMES = ["s-royal", "s-sky", "s-minimal", "s-prince"] as const;
+export type SynetiThemeId = (typeof SYNETI_THEMES)[number];
+
+export const ALL_THEME_IDS = [...THEME_IDS, ...KANAGJEGJI_THEMES, ...SYNETI_THEMES] as const;
 export type AnyThemeId = (typeof ALL_THEME_IDS)[number];
 
 export const THEME_LABELS: Record<AnyThemeId, string> = {
+  "s-royal": "Blu Mbretërore & e Bardhë",
+  "s-sky": "Qielli Luksoz",
+  "s-minimal": "Minimal Blu Moderne",
+  "s-prince": "Princi i Vogël",
   "k-traditional": "Tradicionale Kuq & Ar",
   "k-modern": "Moderne Minimal e Kuqe",
   "k-burgundy": "Burgundy Luksoze",
@@ -35,6 +44,9 @@ export function isThemeId(v: unknown): v is ThemeId {
 }
 export function isKanagjegjiTheme(v: unknown): v is KanagjegjiThemeId {
   return typeof v === "string" && (KANAGJEGJI_THEMES as readonly string[]).includes(v);
+}
+export function isSynetiTheme(v: unknown): v is SynetiThemeId {
+  return typeof v === "string" && (SYNETI_THEMES as readonly string[]).includes(v);
 }
 // Premium = dizajn me foto personale (dasmë ose Kanagjegji).
 export function isPremiumTheme(v: string) {

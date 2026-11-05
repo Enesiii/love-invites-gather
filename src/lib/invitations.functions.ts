@@ -1,5 +1,5 @@
-import { ALL_THEME_IDS, COVER_MAX_BYTES, THEME_IDS, isKanagjegjiTheme, sniffImageType } from "@/lib/themes";
-import { KANAGJEGJI_MUSIC, KANAGJEGJI_UPLOAD_LIMITS, kanaPackageOf } from "@/lib/kanagjegji";
+import { ALL_THEME_IDS, COVER_MAX_BYTES, THEME_IDS, isKanagjegjiTheme, isSynetiTheme, sniffImageType } from "@/lib/themes";
+import { KANAGJEGJI_UPLOAD_LIMITS, kanaPackageOf } from "@/lib/kanagjegji";
 import { savedMapsHref } from "@/lib/invitation-location";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -283,7 +283,7 @@ const updateSchema = createSchema.extend({
   theme: z.enum(ALL_THEME_IDS),
   parents: z.string().trim().max(120).optional(),
   maps_url: z.string().trim().max(500).optional(),
-  music: z.enum(KANAGJEGJI_MUSIC).optional(),
+  music: z.enum(["henna", "romantic", "waltz", "celebration", "none"]).optional(),
 });
 
 export const updateInvitation = createServerFn({ method: "POST" })
@@ -300,6 +300,27 @@ export const updateInvitation = createServerFn({ method: "POST" })
       // Dizajni mbetet brenda Kanagjegjit dhe brenda paketës së paguar.
       if (!isKanagjegjiTheme(rest.theme) || kanaPackageOf(rest.theme) !== kanaPackageOf(current.theme)) {
         throw new Error("Zgjidhni një dizajn Kanagjegji të së njëjtës paketë.");
+      }
+      if (maps_url && !savedMapsHref(maps_url)) throw new Error("Linku i Google Maps nuk është i vlefshëm.");
+      const { error } = await supabaseAdmin
+        .from("invitations")
+        .update({
+          ...rest,
+          partner_two: "",
+          address: rest.address || null,
+          message: rest.message || null,
+          ...(parents !== undefined ? { parents: parents || null } : {}),
+          ...(maps_url !== undefined ? { maps_url: maps_url ? savedMapsHref(maps_url) : null } : {}),
+          ...(music !== undefined ? { music } : {}),
+        })
+        .eq("id", invitationId);
+      if (error) throw new Error("Ngjarja nuk u përditësua.");
+      return { ok: true };
+    }
+    if (current?.category === "syneti") {
+      // Dizajni mbetet brenda Synetit.
+      if (!isSynetiTheme(rest.theme)) {
+        throw new Error("Zgjidhni një dizajn Syneti.");
       }
       if (maps_url && !savedMapsHref(maps_url)) throw new Error("Linku i Google Maps nuk është i vlefshëm.");
       const { error } = await supabaseAdmin
@@ -381,7 +402,7 @@ export const uploadGuestMedia = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!inv || !inv.activated_at) throw new Error("Ftesa nuk u gjet.");
     if (inv.closed_at) throw new Error("Kjo ftesë ka përfunduar.");
-    if (inv.category === "kanagjegji") {
+    if (inv.category === "kanagjegji" || inv.category === "syneti") {
       const { data: existing } = await supabaseAdmin.from("event_photos").select("path").eq("invitation_id", inv.id);
       const videos = (existing ?? []).filter((r) => /\.(mp4|webm|mov)$/i.test(r.path)).length;
       const photos = (existing ?? []).length - videos;

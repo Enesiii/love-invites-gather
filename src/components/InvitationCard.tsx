@@ -4,8 +4,9 @@ import { Countdown } from "@/components/Countdown";
 import { formatDate } from "@/lib/format-date";
 import { MapsButton } from "@/components/MapsButton";
 import { PremiumInvitation } from "@/components/PremiumInvitation";
-import { isKanagjegjiTheme, isPremiumTheme } from "@/lib/themes";
+import { isKanagjegjiTheme, isPremiumTheme, isSynetiTheme } from "@/lib/themes";
 import { KanagjegjiInvitation } from "@/components/KanagjegjiInvitation";
+import { SynetiInvitation } from "@/components/SynetiInvitation";
 import botanical from "@/assets/wedding-botanical.png";
 import archFloral from "@/assets/arch-floral.webp";
 
@@ -33,6 +34,7 @@ export type InvitationView = {
 
 export function InvitationCard({ inv, showDirections = false }: { inv: InvitationView; showDirections?: boolean }) {
   if (isKanagjegjiTheme(inv.theme)) return <KanagjegjiInvitation inv={inv} showDirections={showDirections} />;
+  if (isSynetiTheme(inv.theme)) return <SynetiInvitation inv={inv} showDirections={showDirections} />;
   if (isPremiumTheme(inv.theme)) return <PremiumInvitation inv={inv} showDirections={showDirections} />;
   const directions = showDirections ? <MapsButton venue={inv.venue} address={inv.address} /> : null;
   if (inv.theme === "arch") {

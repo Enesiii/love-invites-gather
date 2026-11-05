@@ -1,34 +1,11 @@
 # Roadmap
-- [x] Kanagjegji: fixed preview build (music prop), homepage category cards, admin category labels + Kanagjegji package editor, category-aware couple edit dialog; verified wedding + Kanagjegji flows on mobile and desktop (create → pay → confirm → panel edit → RSVP), test data cleaned up.
-- [x] Admin deletion: requests, paid/unpaid payment orders and reminder history; confirmation, server-side admin validation and refreshed totals. Verified paid test order and request deletion in signed-in admin UI; fixtures cleaned up.
-- [x] Wedding Reminders: calendar options (Google/Apple/.ics) after RSVP confirmation, push notification opt-in, daily scheduled sending (10d/3d before, Europe/Belgrade), admin "Wedding Reminders" stats + push toggle; verified RSVP→confirmation flow in browser.
-- [x] Bank transfer payment & order system: payment_orders + payment_settings + payment_audit_log tables, FD-YYYY-NNNNNN order numbers, payment page /pagesa/$token, admin order management + bank settings, invitation locked until payment (invitations.activated_at), email via Resend when RESEND_API_KEY is configured.
-- [ ] Email delivery: needs RESEND_API_KEY secret + verified sending domain (user action).
-- [ ] Bank details (bank name, beneficiary, IBAN) must be entered by the owner in /admin → Cilësimet e pagesës.
-- [x] Restore original homepage/right-side invitation and apply exact uploaded background continuously; verified desktop/tablet/mobile and preview navigation.
-- [x] Shared clickable venue/address across all 11 invitation styles, translated labels and directions; example verified in SQ/SR/TR/EN on desktop/mobile, with saved Maps URL preserved. Live Google Maps destination remains for owner verification on published site.
-- [x] Admin: list all client invitations, open invitation/panel and copy recovery links; verify authenticated flow.
-- [x] Database: invitations + rsvps tables
-- [x] Homepage (/)
-- [x] Invitation creator (/krijo)
-- [x] Public invitation page with RSVP form (/ftesa/$id)
-- [x] Manage page showing responses + attending guest count (/menaxho/$token)
-- [x] Verify end-to-end (create -> RSVP -> count)
-- [x] Add luxurious invitation styling and animated envelope opening
-- [x] Add optional background music and Google Maps navigation
-- [x] Verify guest experience and existing RSVP flow
-- [x] Redesign homepage using the ten visual references without copying business claims
-- [x] Add optimized gallery imagery and working invitation preview pages
-- [x] Verify homepage and preview flows across mobile and desktop
-- [x] Order request flow from preview page (order_requests table + dialog)
-- [x] Order form validation + admin view (/admin)
-- [ ] Order confirmation email (blocked: needs verified email domain)
-- [x] Fix Google Maps button blocked in preview (ERR_BLOCKED_BY_RESPONSE)
-- [x] Approve flow: guests who confirm attendance are approved automatically; hydration and Approve button verified
-- [x] Buy Me a Coffee support button (homepage footer + invitation page) — needs the real buymeacoffee.com link from the owner
-- [x] Admin login (/admin) — failed because the database was paused; works after resume
-- [x] Manual close/reopen of an invitation from the dashboard (invitations.closed_at)
-- [x] Pricing section (€20 starting, configurable), demo buttons on all templates, configurable WhatsApp, language selector (SQ/SR/TR/EN on homepage), mobile/accessibility polish
-- [ ] Translate creator, invitation, panel and admin pages (only homepage translated so far)
-- [ ] Online payments (blocked: requires paid Lovable plan)
-- [x] Premium Collection: 4 photo designs, couple photo upload/crop/replace/remove, gallery selection, €15 package, order request from dashboard
+
+## Kategoria e re: Ftesa Syneti (spec i ngarkuar)
+- [x] Migrim: kategoria `syneti` në invitations/payment_orders/order_requests + rreshti i çmimit €10 në category_packages
+- [x] Lib: themes.ts, syneti.ts, syneti.server.ts, syneti.functions.ts, syneti-i18n.ts (SQ/SR/TR/EN)
+- [x] Komponentë: SynetiOrnaments, SynetiInvitation (4 dizajne), SynetiOpening (zarf blu)
+- [x] Rrugë: /syneti, /syneti/preview/$template, /syneti/krijo
+- [x] Integrim: InvitationCard, ftesa.$id, ftesa foto, index (karta e 3-të), admin (filtër + paketa), EditEventDialog, payments/orders/invitations functions
+- [x] Stile: sistemi .syneti (blu mbretërore/bardhë/argjend) në styles.css
+- [x] Teste: src/test/syneti.test.ts (7 teste) + tsgo + build OK (41 teste gjithsej)
+- [x] Verifikim Playwright: rruga e plotë Syneti (krijo €10 → pagesë → konfirmim admin → zarf → RSVP → panel) desktop + mobile; të dhënat e testit u fshinë

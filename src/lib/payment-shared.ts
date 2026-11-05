@@ -29,17 +29,19 @@ export function amountForPackage(pkg: PaymentPackage): number {
   return found.price;
 }
 
-export type InvitationCategory = "wedding" | "kanagjegji";
+export type InvitationCategory = "wedding" | "kanagjegji" | "syneti";
 export const CATEGORY_LABELS: Record<InvitationCategory, string> = {
   wedding: "Ftesa Jonë",
   kanagjegji: "Ftesa Kanagjegji",
+  syneti: "Ftesa Syneti",
 };
 export function categoryOf(v: unknown): InvitationCategory {
-  return v === "kanagjegji" ? "kanagjegji" : "wedding";
+  return v === "kanagjegji" ? "kanagjegji" : v === "syneti" ? "syneti" : "wedding";
 }
 export function packageLabel(category: unknown, pkg: string) {
   const base = PACKAGE_LABELS[pkg as PaymentPackage] ?? pkg;
-  return categoryOf(category) === "kanagjegji" ? `${base} · Kanagjegji` : base;
+  const c = categoryOf(category);
+  return c === "kanagjegji" ? `${base} · Kanagjegji` : c === "syneti" ? `Ftesa Syneti` : base;
 }
 
 export const ORDER_NUMBER_PATTERN = /^FD-\d{4}-\d{6}$/;

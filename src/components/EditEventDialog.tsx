@@ -1,5 +1,6 @@
-import { PREMIUM_THEMES, THEME_LABELS, type ThemeId } from "@/lib/themes";
+import { PREMIUM_THEMES, SYNETI_THEMES, THEME_LABELS, type ThemeId } from "@/lib/themes";
 import { KANAGJEGJI_MUSIC, kanaPackageOf, kanaThemesFor } from "@/lib/kanagjegji";
+import { SYNETI_MUSIC } from "@/lib/syneti";
 import { useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -34,6 +35,13 @@ const KANA_MUSIC_LABELS: Record<(typeof KANAGJEGJI_MUSIC)[number], string> = {
   none: "Pa muzikë",
 };
 
+const SYNETI_MUSIC_LABELS: Record<(typeof SYNETI_MUSIC)[number], string> = {
+  celebration: "Melodi festive",
+  romantic: "Romantike",
+  waltz: "Vals i qetë",
+  none: "Pa muzikë",
+};
+
 export function EditEventDialog({
   token,
   inv,
@@ -47,14 +55,16 @@ export function EditEventDialog({
 }) {
   const save = useServerFn(updateInvitation);
   const isKana = inv.category === "kanagjegji";
-  const kanaOptions = isKana ? kanaThemesFor(kanaPackageOf(inv.theme)) : [];
+  const isSyneti = inv.category === "syneti";
+  const isSingle = isKana || isSyneti;
+  const kanaOptions = isKana ? kanaThemesFor(kanaPackageOf(inv.theme)) : isSyneti ? SYNETI_THEMES : [];
   const [open, setOpen] = useState(false);
   const [f, setF] = useState({
     ...inv,
     address: inv.address ?? "",
     message: inv.message ?? "",
     parents: inv.parents ?? "",
-    music: inv.music ?? "henna",
+    music: inv.music ?? (isSyneti ? "celebration" : "henna"),
   });
   const [busy, setBusy] = useState(false);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) =>
@@ -63,7 +73,7 @@ export function EditEventDialog({
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!f.partner_one.trim() || (!isKana && !f.partner_two.trim()) || !f.venue.trim() || !f.event_date) {
+    if (!f.partner_one.trim() || (!isSingle && !f.partner_two.trim()) || !f.venue.trim() || !f.event_date) {
       toast.error("Plotësoni emrat, datën dhe vendin.");
       return;
     }
@@ -74,7 +84,7 @@ export function EditEventDialog({
           ...f,
           token,
           theme: f.theme as ThemeId,
-          ...(isKana ? { parents: f.parents, music: f.music } : {}),
+          ...(isSingle ? { parents: f.parents, music: f.music } : {}),
         },
       });
       toast.success("Ngjarja u përditësua.");
@@ -97,10 +107,10 @@ export function EditEventDialog({
         <form onSubmit={submit} className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <label className="text-sm">
-              {isKana ? "Nusja" : "Emri 1"}
+              {isKana ? "Nusja" : isSyneti ? "Djali" : "Emri 1"}
               <input className={field} value={f.partner_one} onChange={set("partner_one")} />
             </label>
-            {!isKana && (
+            {!isSingle && (
               <label className="text-sm">
                 Emri 2
                 <input className={field} value={f.partner_two} onChange={set("partner_two")} />
@@ -114,7 +124,7 @@ export function EditEventDialog({
               Ora
               <input type="time" className={field} value={f.event_time} onChange={set("event_time")} />
             </label>
-            {isKana && (
+            {isSingle && (
               <label className="text-sm">
                 Familja (opsionale)
                 <input className={field} value={f.parents} onChange={set("parents")} maxLength={120} />
@@ -143,10 +153,20 @@ export function EditEventDialog({
               </select>
             </label>
           )}
+          {isSyneti && (
+            <label className="block text-sm">
+              Muzika në sfond
+              <select className={field} value={f.music} onChange={set("music")}>
+                {SYNETI_MUSIC.map((m) => (
+                  <option key={m} value={m}>{SYNETI_MUSIC_LABELS[m]}</option>
+                ))}
+              </select>
+            </label>
+          )}
           <label className="block text-sm">
             Stili
             <select className={field} value={f.theme} onChange={set("theme")}>
-              {isKana
+              {isSingle
                 ? kanaOptions.map((id) => (
                     <option key={id} value={id}>{THEME_LABELS[id]}</option>
                   ))

@@ -78,6 +78,13 @@
       "when": 1793803845933,
       "tag": "0010_kanagjegji_category",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793880992717,
+      "tag": "0011_syneti_category",
+      "breakpoints": true
     }
   ]
 }

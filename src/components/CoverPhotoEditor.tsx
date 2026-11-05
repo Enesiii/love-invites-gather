@@ -30,6 +30,7 @@ export function CoverPhotoEditor({
   onRemove,
   busy = false,
   error,
+  label = "Ngarkoni foton e çiftit",
 }: {
   url: string | null;
   pos: CoverPosition;
@@ -38,6 +39,7 @@ export function CoverPhotoEditor({
   onRemove: () => void;
   busy?: boolean;
   error?: string | null;
+  label?: string;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(null);
@@ -81,7 +83,7 @@ export function CoverPhotoEditor({
         ) : (
           <button type="button" className="cover-empty" onClick={() => input.current?.click()} disabled={busy}>
             <ImagePlus className="h-7 w-7" aria-hidden="true" />
-            <span>Ngarkoni foton e çiftit</span>
+            <span>{label}</span>
             <small>JPEG, PNG ose WebP · deri 6 MB</small>
           </button>
         )}

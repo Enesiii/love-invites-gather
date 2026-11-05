@@ -33,8 +33,10 @@ export function InvitationOpening({ inv, onOpen }: { inv: InvitationView; onOpen
 }
 
 // An original, quiet piano-like waltz. Audio starts only after a guest chooses play.
-type MusicVariant = "waltz" | "henna" | "romantic";
+type MusicVariant = "waltz" | "henna" | "romantic" | "celebration";
 const MELODIES: Record<MusicVariant, { notes: number[]; bass: number[]; step: number; wave: OscillatorType }> = {
+  // Melodi origjinale festive, e gëzuar, për festën e synetit.
+  celebration: { notes: [72, 76, 79, 84, 79, 76, 74, 77, 81, 77, 74, 72, 76, 79, 83, 79, 76, 74, 72, 74, 76, 79, 84, 79], bass: [48, 43, 45, 43], step: 420, wave: "triangle" },
   waltz: { notes: [72, 76, 79, 76, 74, 72, 71, 74, 77, 74, 72, 71, 69, 72, 76, 72, 71, 69, 67, 71, 74, 71, 69, 67], bass: [48, 47, 45, 43], step: 550, wave: "sine" },
   // Melodi origjinale e qetë në modalitet hixhaz, e frymëzuar nga këngët e kanagjegjit.
   henna: { notes: [69, 70, 73, 74, 76, 74, 73, 70, 69, 70, 73, 70, 69, 67, 69, 70, 73, 74, 73, 70, 69, 67, 65, 69], bass: [45, 45, 43, 45], step: 480, wave: "triangle" },
