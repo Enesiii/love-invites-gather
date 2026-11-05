@@ -208,6 +208,7 @@ function SynetiCreate() {
                 onPos={setPos}
                 onFile={onCoverFile}
                 error={coverError}
+                label={s.creator.photo}
                 onRemove={() => { if (coverUrl) URL.revokeObjectURL(coverUrl); setCoverUrl(null); setCoverFile(null); }}
               />
               <p className="text-xs text-muted-foreground">{s.creator.photoHint}</p>
