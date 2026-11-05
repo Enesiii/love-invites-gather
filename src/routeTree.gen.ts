@@ -21,6 +21,7 @@ import { Route as MenaxhoTokenRouteImport } from './routes/menaxho.$token'
 import { Route as PagesaTokenRouteImport } from './routes/pagesa.$token'
 import { Route as PreviewStyleRouteImport } from './routes/preview.$style'
 import { Route as SynetiIndexRouteImport } from './routes/syneti.index'
+import { Route as SynetiKrijoRouteImport } from './routes/syneti.krijo'
 import { Route as FtesaIdFotoRouteImport } from './routes/ftesa_.$id.foto'
 import { Route as KanagjegjiPreviewTemplateRouteImport } from './routes/kanagjegji.preview.$template'
 import { Route as SynetiPreviewTemplateRouteImport } from './routes/syneti.preview.$template'
@@ -86,6 +87,11 @@ const SynetiIndexRoute = SynetiIndexRouteImport.update({
   path: '/syneti/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SynetiKrijoRoute = SynetiKrijoRouteImport.update({
+  id: '/syneti/krijo',
+  path: '/syneti/krijo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FtesaIdFotoRoute = FtesaIdFotoRouteImport.update({
   id: '/ftesa_/$id/foto',
   path: '/ftesa/$id/foto',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/syneti/krijo': typeof SynetiKrijoRoute
   '/kanagjegji/': typeof KanagjegjiIndexRoute
   '/syneti/': typeof SynetiIndexRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/syneti/krijo': typeof SynetiKrijoRoute
   '/kanagjegji': typeof KanagjegjiIndexRoute
   '/syneti': typeof SynetiIndexRoute
   '/ftesa/$id/foto': typeof FtesaIdFotoRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/menaxho/$token': typeof MenaxhoTokenRoute
   '/pagesa/$token': typeof PagesaTokenRoute
   '/preview/$style': typeof PreviewStyleRoute
+  '/syneti/krijo': typeof SynetiKrijoRoute
   '/kanagjegji/': typeof KanagjegjiIndexRoute
   '/syneti/': typeof SynetiIndexRoute
   '/ftesa_/$id/foto': typeof FtesaIdFotoRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/syneti/krijo'
     | '/kanagjegji/'
     | '/syneti/'
     | '/ftesa/$id/foto'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/syneti/krijo'
     | '/kanagjegji'
     | '/syneti'
     | '/ftesa/$id/foto'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/menaxho/$token'
     | '/pagesa/$token'
     | '/preview/$style'
+    | '/syneti/krijo'
     | '/kanagjegji/'
     | '/syneti/'
     | '/ftesa_/$id/foto'
@@ -232,6 +244,7 @@ export interface RootRouteChildren {
   MenaxhoTokenRoute: typeof MenaxhoTokenRoute
   PagesaTokenRoute: typeof PagesaTokenRoute
   PreviewStyleRoute: typeof PreviewStyleRoute
+  SynetiKrijoRoute: typeof SynetiKrijoRoute
   KanagjegjiIndexRoute: typeof KanagjegjiIndexRoute
   SynetiIndexRoute: typeof SynetiIndexRoute
   FtesaIdFotoRoute: typeof FtesaIdFotoRoute
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SynetiIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/syneti/krijo': {
+      id: '/syneti/krijo'
+      path: '/syneti/krijo'
+      fullPath: '/syneti/krijo'
+      preLoaderRoute: typeof SynetiKrijoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ftesa_/$id/foto': {
       id: '/ftesa_/$id/foto'
       path: '/ftesa/$id/foto'
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   MenaxhoTokenRoute: MenaxhoTokenRoute,
   PagesaTokenRoute: PagesaTokenRoute,
   PreviewStyleRoute: PreviewStyleRoute,
+  SynetiKrijoRoute: SynetiKrijoRoute,
   KanagjegjiIndexRoute: KanagjegjiIndexRoute,
   SynetiIndexRoute: SynetiIndexRoute,
   FtesaIdFotoRoute: FtesaIdFotoRoute,
