@@ -11,6 +11,7 @@ import {
   Palette,
   Smartphone,
   Sparkles,
+  Star,
   Users,
 } from "lucide-react";
 import { useEffect } from "react";
@@ -28,6 +29,7 @@ import { HomeNavigation } from "@/components/HomeNavigation";
 import { WhatsAppContact } from "@/components/WhatsAppContact";
 import { HomeGallery } from "@/components/HomeGallery";
 import { useKanaText } from "@/lib/kanagjegji-i18n";
+import { useSynetiText } from "@/lib/syneti-i18n";
 import stationery from "@/assets/home-stationery.webp";
 import heroBackground from "@/assets/golden-roses-hero.png.asset.json";
 
@@ -59,6 +61,7 @@ const promiseIcons = [Mail, Users, Music2, Smartphone];
 function Index() {
   const { t, lang } = useI18n();
   const { k } = useKanaText();
+  const { s } = useSynetiText();
   useEffect(() => {
     document.documentElement.lang = lang;
     return () => {
@@ -168,12 +171,20 @@ function Index() {
                 </span>
               </a>
               <Link to="/kanagjegji" className="category-card category-card-kana">
-                <span className="category-badge">{k.home.badge}</span>
                 <Sparkles className="category-icon" aria-hidden="true" />
                 <h3 className="font-display">{k.home.kanaTitle}</h3>
                 <p>{k.home.kanaDesc}</p>
                 <span className="category-cta">
                   {k.home.kanaCta} <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </Link>
+              <Link to="/syneti" className="category-card category-card-syneti">
+                <span className="category-badge">{s.home.badge}</span>
+                <Star className="category-icon" aria-hidden="true" />
+                <h3 className="font-display">{s.home.synetiTitle}</h3>
+                <p>{s.home.synetiDesc}</p>
+                <span className="category-cta">
+                  {s.home.synetiCta} <ArrowUpRight className="h-4 w-4" />
                 </span>
               </Link>
             </div>
