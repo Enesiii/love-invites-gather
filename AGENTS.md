@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Wedding invitations
+- Kanagjegji and Syneti templates share bundled date-fns locales for date formatting; never rely on Intl for these dates. Why: some browsers lack Albanian locale data and silently display English.
 - All invitation templates use InvitationLocation and the existing site language context; location helpers prefer allowlisted HTTPS Google Maps URLs saved in venue/address, otherwise build search/directions URLs from those fields. Why: preserve precise existing locations without duplicate fields or billable Maps APIs.
 - `invitations` and `rsvps` tables have RLS on with no anon/authenticated policies; all access goes through server functions in `src/lib/invitations.functions.ts` using the admin client loaded inside handlers. Why: no accounts, so the secret `manage_token` must never be readable via the Data API.
 - Owners view responses at `/menaxho/$token` (token = bearer secret); guests use public `/ftesa/$id`.
