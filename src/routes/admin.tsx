@@ -348,6 +348,7 @@ function AdminPage() {
             <Button variant={view === "settings" ? "default" : "outline"} onClick={() => setView("settings")}>Cilësimet e pagesës</Button>
             <Button variant={view === "reminders" ? "default" : "outline"} onClick={() => setView("reminders")}><BellRing className="h-4 w-4" />Wedding Reminders</Button>
             <Button variant={view === "kana" ? "default" : "outline"} onClick={() => setView("kana")}>Paketat Kanagjegji</Button>
+            <Button variant={view === "syneti" ? "default" : "outline"} onClick={() => setView("syneti")}>Paketa Syneti</Button>
             <Button variant="ghost" disabled={busy} onClick={() => load()}><RefreshCw className="h-4 w-4" />{busy ? "Duke ngarkuar…" : "Rifresko"}</Button>
             <Button variant="ghost" onClick={() => { setOrders(null); setInvitations([]); setKey(""); setSearch(""); setLoginError(null); setInvFilter("all"); }}><LogOut className="h-4 w-4" />Dil</Button>
           </div>
@@ -356,9 +357,9 @@ function AdminPage() {
             <section className="mt-6">
               <h2 className="font-display text-2xl">Ftesat e klientëve</h2>
               <div className="mt-4 flex flex-wrap gap-2">
-                {(["all", "wedding", "kanagjegji"] as const).map((c) => (
+                {(["all", "wedding", "kanagjegji", "syneti"] as const).map((c) => (
                   <Button key={c} size="sm" variant={invFilter === c ? "default" : "outline"} onClick={() => setInvFilter(c)}>
-                    {c === "all" ? "Të gjitha" : c === "wedding" ? "Dasmë" : "Kanagjegji"} (
+                    {c === "all" ? "Të gjitha" : c === "wedding" ? "Dasmë" : c === "kanagjegji" ? "Kanagjegji" : "Syneti"} (
                     {c === "all" ? invitations.length : invitations.filter((i) => (i.category ?? "wedding") === c).length})
                   </Button>
                 ))}
@@ -431,7 +432,7 @@ function AdminPage() {
               <article key={o.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-2xl">{o.category === "kanagjegji" ? o.partner_one : `${o.partner_one} & ${o.partner_two}`}</h2>
+                    <h2 className="font-display text-2xl">{(o.category ?? "wedding") === "wedding" ? `${o.partner_one} & ${o.partner_two}` : o.partner_one}</h2>
                     <p className="text-sm text-muted-foreground">
                       <span className="mr-2 rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wider">{CATEGORY_LABELS[(o.category ?? "wedding") as InvitationCategory]}</span>
                       Dasma: {o.wedding_date} · Stili: {o.style} · Dërguar: {new Date(o.created_at).toLocaleString("sq")}
@@ -682,6 +683,79 @@ function AdminPage() {
                   </article>
                 );
               })}
+            </section>
+          )}
+          {view === "syneti" && syneti && (
+            <section className="mt-6 max-w-2xl">
+              <h2 className="font-display text-2xl">Paketa Syneti</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Çmimi (parazgjedhja 10€), përfshirjet dhe dizajnet aktive për kategorinë Syneti — e veçantë nga çmimet e dasmës dhe Kanagjegjit. Çmimi dhe përfshirjet shfaqen vetëm në gjuhën shqipe.
+              </p>
+              {syneti.map((row) => (
+                <article key={row.package} className="mt-4 rounded-lg border border-border bg-card p-4">
+                  <h3 className="font-display text-xl">Ftesa Syneti</h3>
+                  <div className="mt-3 flex items-center gap-3">
+                    <Label htmlFor="syneti-price" className="whitespace-nowrap">Çmimi (€)</Label>
+                    <Input
+                      id="syneti-price"
+                      type="number"
+                      min={0}
+                      max={10000}
+                      value={row.price}
+                      onChange={(e) =>
+                        setSyneti((rows) =>
+                          rows?.map((r) =>
+                            r.package === "classic" ? { ...r, price: Math.max(0, Math.min(10000, Number(e.target.value) || 0)) } : r,
+                          ) ?? rows,
+                        )
+                      }
+                      className="w-28"
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <Label htmlFor="syneti-features">Përfshirjet (një për rresht)</Label>
+                    <textarea
+                      id="syneti-features"
+                      rows={6}
+                      className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={row.features.join("\n")}
+                      onChange={(e) =>
+                        setSyneti((rows) =>
+                          rows?.map((r) =>
+                            r.package === "classic"
+                              ? { ...r, features: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) }
+                              : r,
+                          ) ?? rows,
+                        )
+                      }
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <Label>Dizajnet aktive</Label>
+                    <div className="mt-1 flex flex-wrap gap-4">
+                      {SYNETI_THEMES.map((id) => (
+                        <label key={id} className="flex items-center gap-2 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={row.templates.includes(id)}
+                            onChange={(e) =>
+                              setSyneti((rows) =>
+                                rows?.map((r) =>
+                                  r.package === "classic"
+                                    ? { ...r, templates: e.target.checked ? [...r.templates, id] : r.templates.filter((t) => t !== id) }
+                                    : r,
+                                ) ?? rows,
+                              )
+                            }
+                          />
+                          {THEME_LABELS[id]}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <Button className="mt-4" onClick={() => onSaveSyneti()} disabled={busy}>Ruaj paketën</Button>
+                </article>
+              ))}
             </section>
           )}
           {view === "settings" && settings && (
