@@ -981,3 +981,186 @@
 .category-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); }
 .category-card-kana { border-color: var(--kana-gold); background: var(--kana-velvet); color: var(--kana-champagne); }
 .category-card-kana .category-badge { position: absolute; top: 14px; right: 14px; font-size: 10px; letter-spacing: .25em; padding: 4px 8px; background: var(--kana-gold); color: var(--kana-dark); }
+
+/* ============================================================
+   SYNETI — sistem dizajni i veçantë (blu mbretërore, e bardhë, argjend).
+   I izoluar nën .syneti që të mos prekë temat e dasmës dhe Kanagjegjit.
+   ============================================================ */
+.syneti {
+  --syneti-royal: oklch(0.42 0.13 256);
+  --syneti-navy: oklch(0.28 0.07 258);
+  --syneti-sky: oklch(0.80 0.09 235);
+  --syneti-ice: oklch(0.95 0.025 235);
+  --syneti-silver: oklch(0.82 0.02 250);
+  --syneti-silver-soft: oklch(0.82 0.02 250 / 0.55);
+  --syneti-gold: oklch(0.78 0.12 85);
+  --syneti-night: radial-gradient(120% 80% at 50% 0%, oklch(0.42 0.13 256 / .5), transparent 60%), radial-gradient(90% 70% at 50% 100%, oklch(0.22 0.05 258 / .9), transparent 70%), linear-gradient(160deg, var(--syneti-royal), var(--syneti-navy));
+  --background: var(--syneti-navy);
+  --foreground: var(--syneti-ice);
+  --card: var(--syneti-royal);
+  --card-foreground: var(--syneti-ice);
+  --primary: var(--syneti-sky);
+  --primary-foreground: var(--syneti-navy);
+  --accent: var(--syneti-sky);
+  --accent-foreground: var(--syneti-navy);
+  --muted: oklch(0.36 0.07 256);
+  --muted-foreground: oklch(0.87 0.03 240);
+  --border: var(--syneti-silver-soft);
+  --input: var(--syneti-silver-soft);
+  --ring: var(--syneti-sky);
+  --secondary: oklch(0.36 0.07 256);
+  --secondary-foreground: var(--syneti-ice);
+  --popover: var(--syneti-navy);
+  --popover-foreground: var(--syneti-ice);
+  --syneti-serif: "Cinzel", "Cormorant Garamond", Georgia, serif;
+  --syneti-display: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --syneti-script: "Great Vibes", cursive;
+}
+.syneti-page { min-height: 100vh; background: var(--syneti-night); background-attachment: fixed; color: var(--foreground); }
+.syneti-page .font-display, .syneti .syneti-serif { font-family: var(--syneti-serif); }
+
+/* --- Karta e ftesës --- */
+.syneti-card { position: relative; overflow: hidden; text-align: center; padding: 56px 28px 44px; color: var(--syneti-ice); }
+.syneti-eyebrow { font-family: var(--syneti-serif); font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--syneti-sky); }
+.syneti-title { font-family: var(--syneti-display); font-style: italic; font-size: clamp(24px, 5.6vw, 32px); line-height: 1.25; margin-top: 14px; }
+.syneti-boy { font-family: var(--syneti-script); font-size: clamp(54px, 15vw, 76px); line-height: 1.05; color: var(--syneti-sky); margin-top: 10px; }
+.syneti-hosts { margin-top: 12px; font-size: 14px; color: var(--muted-foreground); }
+.syneti-hosts span { display: block; font-family: var(--syneti-serif); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--syneti-sky); margin-bottom: 2px; }
+.syneti-divider { width: min(240px, 80%); height: auto; margin: 18px auto; color: var(--syneti-sky); }
+.syneti-details { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin: 26px auto 0; max-width: 360px; border-block: 1px solid var(--syneti-silver-soft); }
+.syneti-details > div { padding: 14px 6px; display: flex; flex-direction: column; gap: 4px; }
+.syneti-details > div + div { border-left: 1px solid var(--syneti-silver-soft); }
+.syneti-label { font-family: var(--syneti-serif); font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--syneti-sky); }
+.syneti-value { font-family: var(--syneti-display); font-size: 17px; text-transform: capitalize; }
+.syneti-location { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.syneti-location-link { display: inline-flex; gap: 8px; align-items: flex-start; max-width: 100%; color: inherit; text-decoration: underline; text-decoration-color: var(--syneti-silver-soft); text-underline-offset: 4px; }
+.syneti-location-link span { display: flex; flex-direction: column; text-align: left; min-width: 0; overflow-wrap: anywhere; }
+.syneti-location-link small { font-size: 12px; color: var(--muted-foreground); }
+.syneti-location-link svg { color: var(--syneti-sky); margin-top: 3px; }
+.syneti-maps-button { border-color: var(--syneti-sky); background: transparent; color: var(--syneti-sky); max-width: 100%; }
+.syneti-maps-button:hover { background: var(--syneti-sky); color: var(--syneti-navy); }
+.syneti .countdown-cell { background: oklch(0.28 0.07 258 / .55); border-color: var(--syneti-silver-soft); }
+.syneti .countdown-value { color: var(--syneti-sky); font-family: var(--syneti-serif); }
+.syneti .countdown-label, .syneti .countdown-unit { color: var(--muted-foreground); }
+.syneti-photo { position: relative; overflow: hidden; margin: 22px auto 0; width: min(62%, 230px); aspect-ratio: 3 / 4; border: 1px solid var(--syneti-sky); }
+.syneti-photo img { width: 100%; height: 100%; object-fit: cover; }
+.syneti-photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--syneti-sky); font-size: 12px; background: oklch(0.28 0.07 258 / .5); }
+
+/* 1. Blu Mbretërore — kornizë gjeometrike, yje argjendi */
+.syneti-s-royal .syneti-card { background: var(--syneti-night); box-shadow: inset 0 0 0 10px oklch(0.28 0.07 258 / .5), inset 0 0 0 11px var(--syneti-silver-soft); }
+.syneti-corner { position: absolute; width: 92px; height: 92px; color: var(--syneti-silver); opacity: .85; pointer-events: none; }
+.syneti-corner-tl { top: 14px; left: 14px; }
+.syneti-corner-tr { top: 14px; right: 14px; transform: scaleX(-1); }
+.syneti-corner-bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+.syneti-corner-br { bottom: 14px; right: 14px; transform: scale(-1); }
+.syneti-stars { display: flex; justify-content: center; align-items: center; gap: 10px; color: var(--syneti-silver); }
+.syneti-star { width: 34px; height: 34px; }
+.syneti-star-side { width: 22px; height: 22px; opacity: .7; }
+.syneti-stars-bottom { margin-top: 28px; }
+.syneti-s-royal .syneti-title { font-family: var(--syneti-serif); font-style: normal; text-transform: uppercase; letter-spacing: .06em; font-size: clamp(19px, 4.6vw, 24px); }
+
+/* 2. Qielli Luksoz — blu e butë, kumonë festore, re */
+.syneti-s-sky .syneti-card { background: linear-gradient(180deg, var(--syneti-sky), var(--syneti-ice) 55%, oklch(0.90 0.04 235)); color: var(--syneti-navy); padding-top: 64px; }
+.syneti-s-sky .syneti-eyebrow, .syneti-s-sky .syneti-label { color: var(--syneti-royal); }
+.syneti-s-sky .syneti-boy { color: var(--syneti-royal); }
+.syneti-s-sky .syneti-title { color: var(--syneti-navy); }
+.syneti-s-sky .syneti-hosts { color: oklch(0.40 0.07 256); }
+.syneti-s-sky .syneti-hosts span { color: var(--syneti-royal); }
+.syneti-s-sky .syneti-divider { color: var(--syneti-royal); }
+.syneti-bunting { width: min(280px, 88%); height: auto; margin: 0 auto 6px; color: var(--syneti-royal); }
+.syneti-s-sky .syneti-details { border-color: oklch(0.42 0.13 256 / .4); }
+.syneti-s-sky .syneti-details > div + div { border-color: oklch(0.42 0.13 256 / .4); }
+.syneti-s-sky .syneti-location-link small, .syneti-s-sky .countdown-label, .syneti-s-sky .countdown-unit { color: oklch(0.40 0.07 256); }
+.syneti-s-sky .countdown-cell { background: oklch(1 0 0 / .5); border-color: oklch(0.42 0.13 256 / .4); }
+.syneti-s-sky .countdown-value { color: var(--syneti-royal); }
+.syneti-s-sky .syneti-maps-button { color: var(--syneti-royal); border-color: var(--syneti-royal); }
+.syneti-s-sky .syneti-maps-button:hover { background: var(--syneti-royal); color: var(--syneti-ice); }
+.syneti-s-sky .syneti-photo { border-color: var(--syneti-royal); }
+.syneti-s-sky .syneti-photo-empty { color: var(--syneti-royal); background: oklch(1 0 0 / .45); }
+.syneti-clouds { height: 26px; margin-top: 30px; background: radial-gradient(circle at 12px 0, transparent 8px, oklch(1 0 0 / .8) 8.5px, oklch(1 0 0 / .8) 11px, transparent 11.5px) 0 0 / 26px 26px repeat-x; opacity: .8; }
+
+/* 3. Minimal Blu Moderne — e bardhë, vijë blu vertikale, tipografi editoriale */
+.syneti-s-minimal .syneti-card { background: var(--syneti-ice); color: var(--syneti-navy); text-align: left; padding: 48px 28px 40px; }
+.syneti-minimal-grid { display: grid; grid-template-columns: 6px 1fr; gap: 22px; }
+.syneti-minimal-rule { background: linear-gradient(var(--syneti-royal), var(--syneti-sky)); }
+.syneti-s-minimal .syneti-eyebrow { color: var(--syneti-royal); }
+.syneti-s-minimal .syneti-boy { font-family: var(--syneti-display); font-style: normal; font-weight: 500; color: var(--syneti-royal); font-size: clamp(46px, 13vw, 64px); letter-spacing: -.02em; }
+.syneti-s-minimal .syneti-title { font-style: normal; font-family: "Jost", system-ui, sans-serif; font-weight: 300; font-size: 18px; letter-spacing: .04em; color: var(--syneti-navy); }
+.syneti-s-minimal .syneti-hosts { color: oklch(0.40 0.07 256); }
+.syneti-s-minimal .syneti-hosts span, .syneti-s-minimal .syneti-label { color: var(--syneti-royal); }
+.syneti-minimal-star { width: 26px; height: 26px; color: var(--syneti-sky); margin: 18px 0 0; }
+.syneti-s-minimal .syneti-details { margin-left: 0; border-color: oklch(0.80 0.09 235 / .7); }
+.syneti-s-minimal .syneti-details > div + div { border-color: oklch(0.80 0.09 235 / .7); }
+.syneti-s-minimal .syneti-location { align-items: flex-start; }
+.syneti-s-minimal .syneti-location-link small, .syneti-s-minimal .countdown-label, .syneti-s-minimal .countdown-unit { color: oklch(0.40 0.07 256); }
+.syneti-s-minimal .countdown-cell { background: transparent; border-color: oklch(0.80 0.09 235 / .7); }
+.syneti-s-minimal .countdown-value { color: var(--syneti-royal); }
+.syneti-s-minimal .syneti-maps-button { color: var(--syneti-royal); border-color: var(--syneti-royal); }
+.syneti-s-minimal .syneti-maps-button:hover { background: var(--syneti-royal); color: var(--syneti-ice); }
+
+/* 4. Princi i Vogël — kurorë e artë, blu mbretërore, atmosferë mbretërore */
+.syneti-s-prince .syneti-card { background: radial-gradient(100% 55% at 50% 22%, oklch(0.55 0.14 256 / .45), transparent 70%), linear-gradient(180deg, var(--syneti-royal), var(--syneti-navy)); padding-top: 34px; border: 1px solid var(--syneti-silver-soft); }
+.syneti-crown-wrap { display: flex; justify-content: center; }
+.syneti-crown { width: 96px; height: 64px; color: var(--syneti-gold); animation: syneti-sway 6s ease-in-out infinite; }
+.syneti-s-prince .syneti-eyebrow, .syneti-s-prince .syneti-label { color: var(--syneti-gold); }
+.syneti-s-prince .syneti-boy { color: var(--syneti-gold); }
+.syneti-s-prince .syneti-divider { color: var(--syneti-gold); }
+.syneti-s-prince .syneti-hosts span { color: var(--syneti-gold); }
+.syneti-s-prince .syneti-stars { color: var(--syneti-gold); }
+.syneti-s-prince .syneti-photo { border-radius: 999px; aspect-ratio: 1; width: min(56%, 210px); border-width: 2px; border-color: var(--syneti-gold); box-shadow: 0 0 0 6px oklch(0.28 0.07 258 / .5), 0 0 0 7px var(--syneti-silver-soft); }
+.syneti-s-prince .countdown-value { color: var(--syneti-gold); }
+@keyframes syneti-sway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+
+/* --- Hapja e zarfit: blu mbretërore dhe argjend --- */
+.syneti-opening { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; text-align: center; background: var(--syneti-night); color: var(--syneti-ice); }
+.syneti-opening-dedication { font-family: var(--syneti-serif); font-size: 11px; letter-spacing: .38em; text-transform: uppercase; color: var(--syneti-sky); }
+.syneti-opening-name { font-family: var(--syneti-script); font-size: clamp(56px, 16vw, 84px); color: var(--syneti-sky); line-height: 1.1; margin-top: 8px; }
+.syneti-envelope { position: relative; width: min(100%, 360px); aspect-ratio: 1.5; margin: 80px 0 36px; background: linear-gradient(160deg, var(--syneti-royal), var(--syneti-navy)); border: 1px solid var(--syneti-silver); box-shadow: 0 30px 60px -20px oklch(0.12 0.04 258 / .8); perspective: 1000px; }
+.syneti-envelope-letter { position: absolute; inset: 8% 7% 6%; background: var(--syneti-ice); color: var(--syneti-royal); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-family: var(--syneti-display); font-style: italic; font-size: 22px; transition: transform 1s cubic-bezier(.2,.8,.2,1) .45s; z-index: 1; }
+.syneti-envelope-star { width: 30px; height: 30px; color: var(--syneti-royal); }
+.syneti-envelope-pocket { position: absolute; inset: 0; z-index: 2; background: linear-gradient(to top right, var(--syneti-royal) 50%, transparent 50.5%) left / 50.5% 100% no-repeat, linear-gradient(to top left, var(--syneti-royal) 50%, transparent 50.5%) right / 50.5% 100% no-repeat; }
+.syneti-envelope-flap { position: absolute; inset: 0 0 auto; height: 58%; z-index: 3; background: linear-gradient(170deg, oklch(0.48 0.14 256), var(--syneti-royal)); clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; transition: transform .7s ease; border-top: 1px solid var(--syneti-silver); }
+.syneti-envelope-seal { position: absolute; left: 50%; top: 58%; z-index: 4; width: 62px; height: 62px; margin: -31px 0 0 -31px; border-radius: 999px; display: grid; place-items: center; color: var(--syneti-royal); background: radial-gradient(circle at 35% 30%, oklch(0.95 0.02 250), var(--syneti-silver) 55%, oklch(0.65 0.03 250)); box-shadow: 0 6px 16px oklch(0.12 0.04 258 / .6); transition: opacity .3s ease, transform .3s ease; }
+.syneti-sparks { position: absolute; left: 50%; top: 58%; z-index: 5; pointer-events: none; }
+.syneti-sparks span { position: absolute; width: 6px; height: 6px; border-radius: 999px; background: var(--syneti-sky); opacity: 0; }
+.syneti-opening.is-opening .syneti-envelope-seal { opacity: 0; transform: scale(.6); }
+.syneti-opening.is-opening .syneti-envelope-flap { transform: rotateX(180deg); z-index: 0; }
+.syneti-opening.is-opening .syneti-envelope-letter { transform: translateY(-46%); }
+.syneti-opening.is-opening .syneti-sparks span { animation: syneti-spark 1.1s ease-out forwards; animation-delay: calc(var(--i) * 40ms); }
+@keyframes syneti-spark { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: rotate(calc(var(--i) * 36deg)) translateY(-110px) scale(.3); } }
+.syneti-open-button { background: var(--syneti-sky); color: var(--syneti-navy); border: 0; min-height: 48px; padding-inline: 28px; font-family: var(--syneti-serif); letter-spacing: .12em; }
+.syneti-open-button:hover { background: oklch(0.87 0.08 235); }
+.syneti-guest .rsvp-section { background: oklch(0.28 0.07 258 / .7); border: 1px solid var(--syneti-silver-soft); color: var(--syneti-ice); }
+.syneti-guest .rsvp-choice[aria-pressed="true"] { background: var(--syneti-sky); color: var(--syneti-navy); }
+.syneti-guest h2 { font-family: var(--syneti-serif); }
+.syneti-guest .music-control { border-color: var(--syneti-silver-soft); background: transparent; color: var(--syneti-sky); }
+.phone-screen .syneti-opening { min-height: 100%; }
+.phone-screen .syneti-envelope { width: min(100%, 240px); margin: 56px 0 20px; }
+@media (prefers-reduced-motion: reduce) {
+  .syneti-crown, .syneti-opening.is-opening .syneti-sparks span { animation: none; }
+  .syneti-envelope-flap, .syneti-envelope-letter { transition: none; }
+}
+@media (max-width: 420px) {
+  .syneti-card { padding: 44px 18px 34px; }
+  .syneti-corner { width: 64px; height: 64px; }
+  .syneti-envelope { width: min(100%, 300px); margin-top: 64px; }
+}
+
+/* --- Faqja Syneti --- */
+.syneti-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 72rem; margin: 0 auto; padding: 18px 20px; }
+.syneti-brand { font-family: var(--syneti-serif); letter-spacing: .14em; color: var(--syneti-sky); font-size: 15px; }
+.syneti-section { max-width: 72rem; margin: 0 auto; padding: 72px 20px; }
+.syneti-h { font-family: var(--syneti-serif); font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
+.syneti-h em { font-family: var(--syneti-display); color: var(--syneti-sky); }
+.syneti-lead { color: var(--muted-foreground); max-width: 40rem; }
+.syneti-panel { border: 1px solid var(--syneti-silver-soft); background: oklch(0.28 0.07 258 / .55); }
+.syneti-gold-btn { background: var(--syneti-sky); color: var(--syneti-navy); }
+.syneti-gold-btn:hover { background: oklch(0.87 0.08 235); }
+.syneti-choice[aria-pressed="true"] { border-color: var(--syneti-sky); box-shadow: 0 0 0 2px var(--syneti-sky); }
+.syneti-form input, .syneti-form textarea, .syneti-form select { background: oklch(0.28 0.07 258 / .6); color: var(--syneti-ice); border-color: var(--syneti-silver-soft); }
+.syneti-form select option { background: var(--syneti-navy); }
+
+/* Karta e kategorisë Syneti në faqen kryesore */
+.category-card-syneti { border-color: var(--syneti-sky, oklch(0.80 0.09 235)); background: radial-gradient(120% 90% at 50% 0%, oklch(0.42 0.13 256 / .55), transparent 60%), linear-gradient(160deg, oklch(0.42 0.13 256), oklch(0.28 0.07 258)); color: oklch(0.95 0.025 235); }
+.category-card-syneti .category-badge { position: absolute; top: 14px; right: 14px; font-size: 10px; letter-spacing: .25em; padding: 4px 8px; background: oklch(0.80 0.09 235); color: oklch(0.28 0.07 258); }
+.category-card-syneti .category-icon { color: oklch(0.80 0.09 235); }
