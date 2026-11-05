@@ -8,8 +8,8 @@ import type { InvitationView } from "@/components/InvitationCard";
 import { useI18n, type Lang } from "@/lib/i18n";
 import { kanaDictionaries } from "@/lib/kanagjegji-i18n";
 import { directionsHref, locationDisplay, savedMapsHref } from "@/lib/invitation-location";
+import { categoryInvitationDate } from "@/lib/category-invitation-date";
 
-const LOCALES: Record<Lang, string> = { sq: "sq-AL", sr: "sr-Latn-RS", tr: "tr-TR", en: "en-GB" };
 const UNITS: Record<Lang, [string, string, string, string]> = {
   sq: ["Ditë", "Orë", "Minuta", "Sekonda"],
   sr: ["Dana", "Sati", "Minuta", "Sekundi"],
@@ -17,12 +17,7 @@ const UNITS: Record<Lang, [string, string, string, string]> = {
   en: ["Days", "Hours", "Minutes", "Seconds"],
 };
 
-export function kanaDate(date: string, lang: Lang) {
-  if (!date) return "";
-  const d = new Date(`${date}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return date;
-  return new Intl.DateTimeFormat(LOCALES[lang], { weekday: "long", day: "numeric", month: "long", year: "numeric" }).format(d);
-}
+export const kanaDate = categoryInvitationDate;
 
 export function KanagjegjiInvitation({ inv, showDirections }: { inv: InvitationView; showDirections: boolean }) {
   const { lang, t } = useI18n();
