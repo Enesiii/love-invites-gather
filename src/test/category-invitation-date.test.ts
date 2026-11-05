@@ -3,7 +3,7 @@ import { categoryInvitationDate } from "@/lib/category-invitation-date";
 
 describe("category invitation date localization", () => {
   it("formats Friday in February in Albanian without relying on browser locale support", () => {
-    expect(categoryInvitationDate("2027-02-19", "sq")).toBe("e premte, 19 shkurt 2027");
+    expect(categoryInvitationDate("2027-02-19", "sq")).toBe("Premte, 19 Shkurt 2027");
   });
 
   it("keeps the chosen non-Albanian language", () => {
