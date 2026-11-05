@@ -9,7 +9,9 @@ import { BellRing, Copy, ExternalLink, LogOut, RefreshCw, Trash2 } from "lucide-
 import { deleteAdminInvitation, deleteAdminOrderRequest, listAdminInvitations, listOrderRequests, updateOrderStatus } from "@/lib/orders.functions";
 import { listKanaPackagesAdmin, saveKanaPackage } from "@/lib/kanagjegji.functions";
 import type { KanaPackageRow } from "@/lib/kanagjegji";
-import { KANAGJEGJI_THEMES, THEME_LABELS } from "@/lib/themes";
+import { listSynetiPackagesAdmin, saveSynetiPackage } from "@/lib/syneti.functions";
+import type { SynetiPackageRow } from "@/lib/syneti";
+import { KANAGJEGJI_THEMES, SYNETI_THEMES, THEME_LABELS } from "@/lib/themes";
 import { deleteAdminReminder, getReminderStats, setPushEnabled } from "@/lib/reminders.functions";
 import {
   confirmPayment,
@@ -61,7 +63,7 @@ type ReminderStats = Awaited<ReturnType<typeof getReminderStats>>;
 function invitationOf(o: PaymentOrder) {
   const inv = o.invitations as { category?: string; partner_one: string; partner_two: string; event_date: string } | null;
   if (!inv) return "—";
-  return inv.category === "kanagjegji" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
+  return inv.category === "kanagjegji" || inv.category === "syneti" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
 }
 
 function DeleteRecordButton({ description, disabled, onDelete }: { description: string; disabled: boolean; onDelete: () => void }) {
@@ -102,6 +104,8 @@ function AdminPage() {
   const togglePush = useServerFn(setPushEnabled);
   const loadKana = useServerFn(listKanaPackagesAdmin);
   const saveKana = useServerFn(saveKanaPackage);
+  const loadSyneti = useServerFn(listSynetiPackagesAdmin);
+  const saveSyneti = useServerFn(saveSynetiPackage);
   const [key, setKey] = useState("");
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -110,13 +114,14 @@ function AdminPage() {
   const [settings, setSettings] = useState<PaymentSettings | null>(null);
   const [reminders, setReminders] = useState<ReminderStats | null>(null);
   const [kana, setKana] = useState<KanaPackageRow[] | null>(null);
-  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders" | "kana">("invitations");
+  const [syneti, setSyneti] = useState<SynetiPackageRow[] | null>(null);
+  const [view, setView] = useState<"invitations" | "orders" | "payments" | "settings" | "reminders" | "kana" | "syneti">("invitations");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<Status | "all">("all");
   const [payFilter, setPayFilter] = useState<PaymentOrderStatus | "all">("all");
   const [paySearch, setPaySearch] = useState("");
-  const [invFilter, setInvFilter] = useState<"all" | "wedding" | "kanagjegji">("all");
+  const [invFilter, setInvFilter] = useState<"all" | "wedding" | "kanagjegji" | "syneti">("all");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -142,13 +147,14 @@ function AdminPage() {
     setBusy(true);
     setLoginError(null);
     try {
-      const [orderRows, invitationRows, paymentData, settingsData, reminderData, kanaRows] = await Promise.all([
+      const [orderRows, invitationRows, paymentData, settingsData, reminderData, kanaRows, synetiRows] = await Promise.all([
         list({ data: { key: key.trim() } }),
         listInvitations({ data: { key: key.trim() } }),
         listPayments({ data: { key: key.trim() } }),
         loadSettings({ data: { key: key.trim() } }),
         loadReminders({ data: { key: key.trim() } }),
         loadKana({ data: { key: key.trim() } }),
+        loadSyneti({ data: { key: key.trim() } }),
       ]);
       setOrders(orderRows);
       setInvitations(invitationRows);
@@ -157,6 +163,7 @@ function AdminPage() {
       setSettings(settingsData);
       setReminders(reminderData);
       setKana(kanaRows);
+      setSyneti(synetiRows);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Gabim.";
       setLoginError(msg);
@@ -222,6 +229,20 @@ function AdminPage() {
     }
   }
 
+  async function onSaveSyneti() {
+    const row = syneti?.find((r) => r.package === "classic");
+    if (!row) return;
+    setBusy(true);
+    try {
+      await saveSyneti({ data: { key: key.trim(), package: "classic", price: row.price, features: row.features, templates: row.templates } });
+      toast.success("Paketa Syneti u ruajt.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Gabim.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onSaveSettings(e: React.FormEvent) {
     e.preventDefault();
     if (!settings) return;
@@ -252,7 +273,7 @@ function AdminPage() {
     );
 
   const coupleName = (inv: Invitation) =>
-    (inv.category ?? "wedding") === "kanagjegji" ? inv.partner_one : `${inv.partner_one} & ${inv.partner_two}`;
+    (inv.category ?? "wedding") === "wedding" ? `${inv.partner_one} & ${inv.partner_two}` : inv.partner_one;
 
   async function copyInvitation(inv: Invitation, privateLink: boolean) {
     const path = privateLink ? `/menaxho/${inv.manage_token}` : `/ftesa/${inv.id}`;
