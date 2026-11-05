@@ -13,7 +13,9 @@ import { InvitationMusic, InvitationOpening } from "@/components/InvitationOpeni
 import { Camera, Heart } from "lucide-react";
 import { getInvitation, submitRsvp } from "@/lib/invitations.functions";
 import { KanaMusic, KanaOpening } from "@/components/KanaOpening";
+import { SynetiMusic, SynetiOpening } from "@/components/SynetiOpening";
 import { useKanaText } from "@/lib/kanagjegji-i18n";
+import { useSynetiText } from "@/lib/syneti-i18n";
 
 export const Route = createFileRoute("/ftesa/$id")({
   loader: async ({ params }) => {
@@ -22,6 +24,20 @@ export const Route = createFileRoute("/ftesa/$id")({
     return inv;
   },
   head: ({ loaderData }) => {
+    if (loaderData?.category === "syneti") {
+      const title = `${loaderData.partner_one} — Ftesë Syneti`;
+      const desc = `Jeni të ftuar në festën e synetit të ${loaderData.partner_one}. Konfirmoni pjesëmarrjen tuaj.`;
+      return {
+        meta: [
+          { title },
+          { name: "description", content: desc },
+          { property: "og:title", content: title },
+          { property: "og:description", content: desc },
+          { property: "og:type", content: "website" },
+          { name: "twitter:card", content: "summary" },
+        ],
+      };
+    }
     if (loaderData?.category === "kanagjegji") {
       const title = `${loaderData.partner_one} — Ftesë Kanagjegji`;
       const desc = `Jeni të ftuar në kanagjegjin e ${loaderData.partner_one}. Konfirmoni pjesëmarrjen tuaj.`;
@@ -69,9 +85,13 @@ function InvitePage() {
   const [rsvpId, setRsvpId] = useState<string | null>(null);
   const [opened, setOpened] = useState(false);
   const { k } = useKanaText();
+  const { s } = useSynetiText();
   const kana = inv.category === "kanagjegji";
-  // Dasma ruan tekstet ekzistuese; Kanagjegji përdor përkthimet e veta.
-  const tx = kana
+  const syneti = inv.category === "syneti";
+  // Dasma ruan tekstet ekzistuese; Kanagjegji dhe Syneti përdorin përkthimet e veta.
+  const tx = syneti
+    ? s.invite
+    : kana
     ? k.invite
     : { rsvpTitle: "A do të jeni me ne?", name: "Emri juaj", yes: "Do të vij", no: "Nuk mund të vij", count: "Sa persona (përfshirë ju)?", note: "Mesazh (opsional)", send: "Dërgo përgjigjen", sending: "Duke dërguar…", thanks: "Faleminderit! Përgjigjja juaj u ruajt — ju presim me shumë gëzim.", sorry: "Faleminderit që na njoftuat. Do të ndiejmë mungesën tuaj.", enterName: "Shkruani emrin tuaj.", chooseAttend: "Zgjidhni nëse do të vini.", memories: "Ndani kujtimet", memoriesDesc: "Bëtë një foto ose video të bukur? Dërgojani çiftit.", upload: "Ngarko foto ose video", footer: "Ftesa u krijua me dashuri nga Ftesa Jonë." };
 
@@ -104,10 +124,10 @@ function InvitePage() {
   }
 
   return (
-    <div className={kana ? "kana kana-page kana-guest guest-invitation" : `theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
-      {!opened ? (kana ? <KanaOpening inv={inv} onOpen={() => setOpened(true)} /> : <InvitationOpening inv={inv} onOpen={() => setOpened(true)} />) : (
+    <div className={syneti ? "syneti syneti-page syneti-guest guest-invitation" : kana ? "kana kana-page kana-guest guest-invitation" : `theme-${inv.theme} guest-invitation min-h-screen bg-background text-foreground`}>
+      {!opened ? (syneti ? <SynetiOpening inv={inv} onOpen={() => setOpened(true)} /> : kana ? <KanaOpening inv={inv} onOpen={() => setOpened(true)} /> : <InvitationOpening inv={inv} onOpen={() => setOpened(true)} />) : (
       <main className="invitation-reveal mx-auto max-w-xl space-y-8 px-4 pb-14 pt-6 sm:px-6">
-        <div className="flex justify-center">{kana ? <KanaMusic music={inv.music} /> : <InvitationMusic />}</div>
+        <div className="flex justify-center">{syneti ? <SynetiMusic music={inv.music} /> : kana ? <KanaMusic music={inv.music} /> : <InvitationMusic />}</div>
         <InvitationCard inv={inv} showDirections />
         <section className="rsvp-section px-3 py-8 text-card-foreground sm:px-6">
           <Heart className="mx-auto mb-3 h-5 w-5 text-accent" strokeWidth={1} />
